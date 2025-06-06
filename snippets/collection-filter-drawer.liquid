@@ -1,0 +1,140 @@
+<aside class="store-front-filter sidebar ltn__shop-sidebar shop-sidebar sidebar-small-width collection-filter-drawer ltn__utilize ltn__utilize-cart-menu">
+  <div class="ltn__utilize-menu-inner ltn__scrollbar">
+    <form class="filter-form" name="storefrontfilter" id="storefrontfilter">
+    <div class="widget ltn__tagcloud-widget selected-filter-value">
+      <ul>
+        {%- for filter in collection.filters -%}
+        {% if filter.type == "price_range"  %}
+        {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+        <li>
+          <a class="active-filter-data-remove" href="{{ filter.url_to_remove }}">
+            {%- assign min_value = filter.min_value.value | default: 0 -%}
+            {%- assign max_value = filter.max_value.value | default: filter.range_max -%}
+            {{ min_value | money }} - {{ max_value | money }} <i class="icon-cancel"></i>
+          </a>
+        </li>
+        {%- endif -%}
+        {% endif %}
+        {%- for filter_value in filter.active_values -%}
+        <li>
+          <a class="active-filter-data-remove" href="{{ filter_value.url_to_remove }}">
+            {{ filter_value.label }} <i class="icon-cancel"></i>
+          </a>
+        </li>
+        {%- endfor -%}
+        {%- endfor -%}
+        <li class="active">
+          <a href="{{ collection.url }}" class="active-filters-clear">Clear all</a>
+        </li>
+      </ul>
+      <script>
+        $('.active-filter-data-remove').parents('.selected-filter-value').addClass('mb-30');
+      </script>
+    </div>
+
+    {%- for block in section.blocks -%}
+    {%- case block.type -%}
+    {%- when 'category' -%}
+    <div class="widget ltn__menu-widget widget-collapse">
+      {%- if block.settings.widget_title != '' -%}
+      <h4 class="ltn__widget-title ltn__widget-title-border">{{ block.settings.widget_title }} <span></span></h4>
+      {%- endif -%}
+      <div class="widget-collapse-hide ltn__scrollbar">
+        <ul>
+          {%- assign categories_list_limit = block.settings.categories_list_limit_hanlde -%}
+          {%- for c in collections limit: categories_list_limit -%}
+          <li class="{% if collection and collection.handle == c.handle %}active{% endif %}"><a href="{{ c.url }}">{{ c.title }} <span>({{ c.products_count }})</span></a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+    {%- endcase -%}
+    {%- endfor -%}
+    
+    {%- for filter in collection.filters -%}
+    {%- case filter.type -%}
+    {%- when 'list' -%}
+    
+    <div class="widget ltn__menu-widget widget-collapse">
+      <h4 class="ltn__widget-title ltn__widget-title-border">{{ filter.label }} <span></span></h4>
+      
+      <div class="widget-collapse-hide ltn__scrollbar">
+        {%- if filter.active_values.size > 0 -%}
+        <div class="each-filter-value-counter">
+          <span class="filter-selected-value">{{ filter.active_values.size }} selected</span>
+          <a href="{{ filter.url_to_remove }}" class="filter-selected-value-reset">Reset</a>
+        </div>
+        {%- endif -%}
+        <ul>
+          {%- for filter_value in filter.values -%}
+          <li>
+            <div class="filter-value-checkbox">
+              <input type="checkbox"
+                     name="{{ filter_value.param_name }}"
+                     value="{{ filter_value.value }}"
+                     id="filter-{{ filter.label | handle }}-{{ forloop.index }}"
+                     {% if filter_value.active -%}checked{%- endif %}
+                    {% if filter_value.count == 0 and filter_value.active == false %}disabled{% endif %}
+                     class="filter-value-input"
+                     >
+              <label for="filter-{{ filter.label | handle }}-{{ forloop.index }}" class="filter-value-control-label">{{ filter_value.label | escape }} <span>({{ filter_value.count }})</span></label>
+            </div>
+          </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+    
+    {%- when 'price_range' -%}
+    <div class="widget ltn__menu-widget widget-collapse">
+      <h4 class="ltn__widget-title ltn__widget-title-border">{{ filter.label }} <span></span></h4>
+      
+      <div class="widget-collapse-hide ltn__scrollbar">
+        {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+        <div class="each-filter-value-counter">
+          <span class="filter-selected-value">
+          {%- assign min_value = filter.min_value.value | default: 0 -%}
+              {%- assign max_value = filter.max_value.value | default: filter.range_max -%}
+              Price: {{ min_value | money }} - {{ max_value | money }}
+          </span>
+          <a href="{{ filter.url_to_remove }}" class="filter-selected-value-reset">Reset</a>
+        </div>
+        {%- endif -%}
+        <div class="price-filter-widget">
+          <div class="sidebar-price-filter price_filter">
+            <div class="filter-range-from">
+              <label for="filter-{{ filter.label }}-form">From <span>{{ cart.currency.symbol }}</span></label>
+              <input name="{{ filter.min_value.param_name }}"
+                     id="filter-{{ filter.label }}-form"
+                     {% if filter.min_value.value -%}
+                     value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                     {%- endif %}
+                    type="number"
+                     placeholder="0"
+                     min="0"
+                     max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                     >
+            </div>
+            <div class="filter-price-range-to">
+              <label for="filter-{{ filter.label }}-to">To <span>{{ cart.currency.symbol }}</span></label>
+              <input name="{{ filter.max_value.param_name }}"
+                     id="filter-{{ filter.label }}-to"
+                     {% if filter.max_value.value -%}
+                     value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                     {%- endif %}
+                    type="number"
+                     placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                     min="0"
+                     max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                     >
+            </div>
+          </div>
+          <button class="btn theme-btn-1 btn-effect-1" type="submit">{{ section.settings.filter_title }}</button>
+        </div>
+      </div>
+    </div>
+    {%- endcase -%}
+    {%- endfor -%}
+  </form>
+  </div>
+</aside>

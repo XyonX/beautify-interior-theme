@@ -1,0 +1,90 @@
+{%- comment -%} "theme-default-pagination" this Class is needed for active page pagination button disable{%- endcomment -%}
+
+{% liquid
+assign theme_rtl = false
+if settings.rtl_enable and settings.langauges_rtl == blank
+  assign theme_rtl = true
+endif
+
+if settings.rtl_enable and settings.langauges_rtl != blank
+  assign rtl_languages = settings.langauges_rtl | split: ','
+  for language in rtl_languages
+    if language == request.locale.iso_code
+      assign theme_rtl = true
+    endif
+  endfor
+endif
+%}
+
+{% if paginate.pages > 1 %}
+<ul class="">
+  {% if paginate.previous %}
+  <li>
+    <a href="{{ paginate.previous.url }}" aria-label="Previous">
+      <span aria-hidden="true">
+        {% if theme_rtl %}
+        <i class="fas fa-angle-double-right"></i>
+        {% else %}
+        <i class="fas fa-angle-double-left"></i>
+        {% endif %}
+      </span>
+    </a>
+  </li>
+  {% else %}
+  <li class="disabled prev">
+    <a href="#">
+      <span>
+        {% if theme_rtl %}
+        <i class="fas fa-angle-double-right"></i>
+        {% else %}
+        <i class="fas fa-angle-double-left"></i>
+        {% endif %}
+      </span>
+    </a>
+  </li>
+  {% endif %}
+  {% for part in paginate.parts %}
+  {% if part.is_link %}
+  <li>
+    <a href="{{ part.url }}" title="">{{ part.title }}</a>
+  </li>
+  {% else %}
+  {% if part.title == paginate.current_page %}
+  <li class="active"><a href="">{{ part.title }}</a></li>
+  {% else %}
+  <li><a href="#">{{ part.title }}</a></li>
+  {% endif %}
+  {% endif %}
+  {% endfor %}
+  {% if paginate.next %}
+  <li class="next">
+    <a href="{{ paginate.next.url }}" title="{{ paginate.next.title }}">
+      <span aria-hidden="true">
+        {% if theme_rtl %}
+        <i class="fas fa-angle-double-left"></i>
+        {% else %}
+        <i class="fas fa-angle-double-right"></i>
+        {% endif %}
+      </span>
+    </a>
+  </li>
+  {% else %}
+  <li class="disabled next">
+    <a href="#">
+      <span>
+        {% if theme_rtl %}
+        <i class="fas fa-angle-double-left"></i>
+        {% else %}
+        <i class="fas fa-angle-double-right"></i>
+        {% endif %}
+      </span>
+    </a>
+  </li>
+  {% endif %}
+</ul>
+{% endif %}
+
+<script>
+  $(".theme-default-pagination .disabled a").removeAttr("href");
+  $(".theme-default-pagination li.active a").removeAttr("href");
+</script>

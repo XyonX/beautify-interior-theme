@@ -1,0 +1,19 @@
+{%- if section.settings.heading_style_handle == 'style_one' -%}
+<div class="section-title-area {% unless section.settings.heading_left_position %}ltn__section-title-2 text-center{% endunless %}">
+  {%- if section.settings.section_sub_title != '' -%}
+  <h6 class="section-subtitle ltn__secondary-color">{{ section.settings.section_sub_title }}</h6>
+  {%- endif -%}
+  {%- if section.settings.section_title != '' -%}
+  <h2 class="section-title">{{ section.settings.section_title }}</h2>
+  {%- endif -%}
+</div>
+{%- elsif section.settings.heading_style_handle == 'style_two' -%}
+<div class="section-title-area {% unless section.settings.heading_left_position %}text-center{% endunless %}">
+  {%- if section.settings.section_title != '' -%}
+  <h2 class="section-title">{{ section.settings.section_title }}</h2>
+  {%- endif -%}
+  {%- if section.settings.section_sub_title != '' -%}
+  <p>{{ section.settings.section_sub_title }}</p>
+  {%- endif -%}
+</div>
+{%- endif -%}

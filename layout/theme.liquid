@@ -1,0 +1,133 @@
+{% liquid
+assign theme_rtl = false
+if settings.rtl_enable and settings.langauges_rtl == blank
+  assign theme_rtl = true
+endif
+
+if settings.rtl_enable and settings.langauges_rtl != blank
+  assign rtl_languages = settings.langauges_rtl | split: ','
+  for language in rtl_languages
+    if language == request.locale.iso_code
+      assign theme_rtl = true
+    endif
+  endfor
+endif
+%}
+
+<!doctype html>
+<!--[if IE 9]> <html class="ie9 no-js supports-no-cookies" lang="{{ shop.locale }}"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js supports-no-cookies" lang="{{ request.locale.iso_code }}" {% if theme_rtl %}dir="rtl"{% endif %}> <!--<![endif]-->
+
+<head>
+  <!-- Basic and Helper page needs -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="{{ settings.color_primary }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+  
+  <link rel="preconnect" href="https://cdn.shopify.com">
+  <link rel="preconnect" href="https://ajax.googleapis.com">
+  <link rel="dns-prefetch" href="https://cdn.shopify.com">
+
+  {%- if settings.favicon != blank -%}
+  <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png" />
+  {%- endif -%}
+
+  <!-- Title and description -->
+  <title>
+    {{ page_title -}}
+    {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+    {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+    {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+  </title>
+
+  {% if page_description %}
+  <meta name="description" content="{{ page_description | escape }}" />
+  {% endif %}
+
+  <!-- Helpers -->
+  {%- render 'social-meta-tags', product: product, article: article -%}
+  
+  {%- render 'typography-and-color' -%}
+
+  <!-- Header hook for plugins -->
+  {{ content_for_header }}
+  {%- render 'oldIE-js' -%}
+
+  <!-- CSS -->
+  {%- render 'header-css' -%}
+  
+  {%- if settings.mrn_custom_css != '' -%}
+    <style>
+    {{ settings.mrn_custom_css }}
+    </style>
+  {%- endif -%}
+  
+  <!-- JS -->
+  {%- render 'header-js' -%}
+
+  {% if template contains 'customers' %}
+  {{ 'shopify_common.js' | shopify_asset_url | script_tag }}
+  {% endif %}
+</head>
+
+<body id="{{ page_title | handle }}" class="{% if customer %}customer-logged-in {% endif %}template-{{ template.name | handle }}" >
+  {%- if settings.enable_preloader -%}
+  {%- render 'preloader' -%} 
+  {%- endif -%}
+
+  {%- if template == 'index' and settings.newsletter_popup_enable -%}
+  {%- render 'newsletter-popup' -%}
+  {%- endif -%}
+
+  <div class="wrapper{% if settings.box_layout_enable %} wrapper-box{% endif %}">
+
+    {% sections 'header-group' %}
+
+    {%- if template != 'index' -%}
+    {%- if template == 'collection' -%}
+    {% if collection.handle == 'all' %}
+    {%- section 'breadcrumb' -%}
+    {%- endif -%}
+    {%- else -%}
+    {%- section 'breadcrumb' -%}
+    {%- endif -%}
+    {%- endif -%}
+    <main>
+      {{ content_for_layout }}
+    </main>
+    
+    {% sections 'footer-group' %}
+  </div>
+
+  {%- if settings.compare_product_enalbe -%}
+  {%- render 'compare-popup' -%}
+  {%- endif -%}
+  <!-- Necessary JS -->
+  {%- render 'footer-js' -%}
+  
+  {%- if settings.body_bg_color != blank and settings.body_bg_color_enable -%}
+  <style>
+    html, body, .slick-append{
+      background: {{ settings.body_bg_color }};
+    }
+  </style>
+  {% endif %}
+
+  {%- if settings.common_color_enable -%}
+  <style>
+    :root {
+      --black: {{ settings.common_color_black }};
+      --white: {{ settings.common_color_white }};
+      --border-color-1: {{ settings.border_color_1 }};
+      --section-bg-1: {{ settings.section_bg_color_1 }};
+    }
+    .slick-arrow-1 .slick-arrow {
+        color: {{ settings.carousel_arrow_color }}!important;
+    }
+  </style>
+  {%- endif -%}
+  
+</body>
+</html>

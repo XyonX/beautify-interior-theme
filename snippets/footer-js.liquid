@@ -1,0 +1,172 @@
+<script src="{{ 'plugins.js' | asset_url }}"></script>
+<script id="setmore_script" type="text/javascript" src="https://my.setmore.com/webapp/js/src/others/setmore_iframe.js" async="async"></script>
+<!-- Put all third-party JS files in the vendor.css file and minify the files -->
+<script src="{{ 'vendor.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'aos.min.js' | asset_url }}" defer="defer"></script>
+{%- if settings.wishlist_enable -%}
+<script src="{{ 'wishlist.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+<script async="async">
+  window.money_format = "{{ shop.money_with_currency_format }}"; 
+</script>
+
+{%- if settings.predictive_search_enabled -%}
+<script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
+<script>
+  $('body').on('click', function() {
+    $('.predictive-search-item').attr('style',$('.predictive-search-item').attr('style')==='display: block;'?'display: none':'display: none;'); 
+    $('.predictive-search-input').click(function(){return false;});
+    $('.predictive-search__list-item a').click(function(){return false;});
+  });
+</script>
+{%- endif -%}
+
+<!-- Ajax Cart js -->
+<script src="{{ 'option_selection.js' | shopify_asset_url }}" defer="defer"></script>
+<script src="{{ 'api.jquery.js' | shopify_asset_url }}" defer="defer"></script>
+<script src="{{ 'cart.api.js' | asset_url }}" defer="defer"></script>
+<!-- Your main.js file upload this file -->
+<script src="{{ 'main.js' | asset_url }}" defer="defer"></script>
+
+<script src="{{ 'fastclick.min.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
+
+{% comment %}
+Template-specific js
+{% endcomment %}
+<script>
+  {% if resetPassword %}
+  $(function() {
+    timber.resetPasswordSuccess();
+  });
+  {% endif %}
+</script>
+
+{%- unless settings.product_cart_type == 'without_ajax_cart' -%}
+{%- render 'popup_cart' -%}
+{%- endunless -%}
+
+{%- if settings.ajax_search_enable -%}
+{% render 'ajax-search-bar' %}
+{%- endif -%}
+
+{%- if settings.product_quickview_enalbe -%}
+{% render 'product-quickview' %}
+{%- endif -%}
+
+{% if settings.product_cart_type == 'ajax_spin_cart' or settings.product_cart_type == 'ajax_cart_drawer' %}
+<script defer="defer">
+  $('.ajax-spin-cart').on('click', function() {
+    $(this).addClass('loading add-item');
+    setTimeout(function () {
+      $('.ajax-spin-cart').removeClass('loading');
+    },500);
+    setTimeout(function () {
+      $('.ajax-spin-cart').removeClass("add-item");
+    },1000);
+  });
+</script>
+{% endif %}
+
+<script defer="defer">
+  $('[data-countdown].product-grid-countdown').each(function() {
+    var $this = $(this), finalDate = $(this).data('countdown');
+    $this.countdown(finalDate, function(event) {
+      $this.html(event.strftime('<div class="single-countdown"><span class="single-countdown__time">%D</span><span class="single-countdown__text">{{ settings.day_title }}</span></div><div class="single-countdown"><span class="single-countdown__time">%H</span><span class="single-countdown__text">{{ settings.hour_title }}</span></div><div class="single-countdown"><span class="single-countdown__time">%M</span><span class="single-countdown__text">{{ settings.minute_title }}</span></div><div class="single-countdown"><span class="single-countdown__time">%S</span><span class="single-countdown__text">{{ settings.second_title }}</span></div>'));
+    });
+  });
+</script>
+
+{%- if settings.currency_enable or settings.compare_product_enalbe -%}
+<ul class="d-none">
+  <li class="currency"><a href="#" class="dropdown-toggle"><span class="active-currency"><span class="current-currency">{{ shop.currency }}</span></span></a>
+    {% assign currency = settings.supported_currencies | split: '|' %}
+    <ul id="currencies">
+      {% for value in currency %}
+      {% assign array = value | split: ',' %}
+      {% assign iso_4217 = array[0] | upcase | strip %}
+      {% assign name = array[1] | strip %}
+      <li data-currency="{{ iso_4217 }}" class="currency__item"><a style="cursor: pointer">{{ name }}</a></li>
+      {% endfor %}
+    </ul>
+  </li>
+</ul>
+{%- render 'currency' -%}
+{%- endif -%}
+
+{%- if settings.scroll_top_enable -%}
+<script defer="defer">
+  /* --------------------------------------------------------
+            34. scrollUp active
+        -------------------------------------------------------- */
+  $.scrollUp({
+    scrollText: '<i class="fa fa-angle-up"></i>',
+    easingType: 'linear',
+    scrollSpeed: 900,
+    animation: 'fade'
+  });
+</script>
+{%- endif -%}
+
+{%- if settings.disable_selection_text -%}
+<script>
+  (function($){
+    $.fn.disableSelection = function() {
+      return this
+      .attr('unselectable', 'on')
+      .css('user-select', 'none')
+      .on('selectstart', false);
+    };
+  })(jQuery);
+
+  $('body').disableSelection();
+</script>
+{%- endif -%}
+
+{%- if settings.disable_right_click -%}
+<script>
+document.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+});
+</script>
+{%- endif -%}
+
+{%- if settings.animation_title_enable -%}
+<script>
+  window.onload = function() {
+
+  var pageTitle = document.title;
+  var attentionMessage = '{{ settings.animation_title }}';
+  var blinkEvent = null;
+
+  document.addEventListener('visibilitychange', function(e) {
+    var isPageActive = !document.hidden;
+
+      if(!isPageActive){
+        blink();
+      }else {
+        document.title = pageTitle;
+        clearInterval(blinkEvent);
+      }
+      });
+    
+      function blink(){
+        blinkEvent = setInterval(function() {
+          if(document.title === attentionMessage){
+            document.title = pageTitle;
+          }else {
+            document.title = attentionMessage;
+          }
+        }, 500);
+      }
+    };
+</script>
+{%- endif -%}
+
+{{ "//cdn.shopify.com/s/files/1/0644/2975/2553/t/2/assets/arist.js" | script_tag}}
+
+{%- if settings.mrn_custom_script != '' -%}
+  <script>
+  {{ settings.mrn_custom_script }}
+  </script>
+{%- endif -%}

@@ -1,0 +1,15 @@
+{% liquid
+assign theme_rtl = false
+if settings.rtl_enable and settings.langauges_rtl == blank
+  assign theme_rtl = true
+endif
+
+if settings.rtl_enable and settings.langauges_rtl != blank
+  assign rtl_languages = settings.langauges_rtl | split: ','
+  for language in rtl_languages
+    if language == request.locale.iso_code
+      assign theme_rtl = true
+    endif
+  endfor
+endif
+%}

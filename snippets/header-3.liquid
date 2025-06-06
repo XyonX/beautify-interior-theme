@@ -1,0 +1,219 @@
+<style>
+  {%- for block in section.blocks -%}
+  {%- case block.type -%}
+  {%- when 'header_color_3' -%}
+  {%- if block.settings.header_middle_color_enable -%}
+  .ltn__header-4 .ltn__header-middle-area, .ltn__header-5 .ltn__header-middle-area, .ltn__header-3 .ltn__header-middle-area, .mobile-header-area{
+    background: {{ block.settings.header_bg_color }};
+  }
+  .ltn__header-options .ltn__drop-menu>ul>li>a, .ltn__header-options, .mini-cart-icon, .mini-cart-icon-2 > a .mini-cart-icon i, 
+  .header-feature-item p, .header-feature-item p a, .header-feature-item h6{
+    color: {{ block.settings.header_color }};
+  }
+  .header-feature-icon {
+    color: {{ block.settings.support_icon_color }};
+  }
+  .mini-cart-icon.mini-cart-icon-2 .ltn__secondary-color {
+    color: {{ block.settings.mini_cart_price_color }}!important;
+      }
+  .mini-cart-icon-2 > a .mini-cart-icon sup{
+  	background-color: {{ block.settings.mini_cart_price_color }};
+  }
+  .sticky-active.ltn__sticky-bg-white{
+    background: {{ block.settings.header_sticky_bg_color }};
+  }
+  .sticky-active.ltn__sticky-bg-white .header-feature-icon, .sticky-active.ltn__sticky-bg-white .header-feature-item h6, .sticky-active.ltn__sticky-bg-white .header-feature-item p, .sticky-active.ltn__sticky-bg-white .header-search-1 .search-icon, .sticky-active.ltn__sticky-bg-white .header-wishlist a, .sticky-active.ltn__sticky-bg-white .ltn__main-menu>ul>li>a, .sticky-active.ltn__sticky-bg-white .mini-cart-icon,
+  .sticky-active.ltn__sticky-bg-white .get-support .get-support-info h6, .sticky-active.ltn__sticky-bg-white .get-support .get-support-info h4 p{
+  	color: {{ block.settings.header_sticky_color }};
+  }
+  {%- endif -%}
+  {%- if block.settings.menu_color_enable -%}
+  .header-bottom-area {
+    background-color: {{ block.settings.menu_bg_color }};
+  }
+  .ltn__main-menu>ul>li>a{
+    color: {{ block.settings.menu_color }};
+  }
+  {%- endif -%}
+  {%- endcase -%}
+  {%- endfor -%}
+</style>
+
+<header id="section-{{ section.id }}" data-section="headerSection" class="ltn__header-area ltn__header-3 section-bg-6 d-none d-sm-none d-md-none d-lg-none d-xl-block">
+
+  {%- for block in section.blocks -%}
+  {%- case block.type -%}
+  {%- when 'header_top' -%}
+  {%- unless template != 'index' and block.settings.disable_header_top -%}
+  {%- render 'header-top', block: block -%}
+  {%- endunless -%}
+  {%- endcase -%}
+  {%- endfor -%}
+  
+  <!-- ltn__header-middle-area start -->
+  <div class="ltn__header-middle-area">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <div class="site-logo">
+            {%- render 'header-logo' -%}
+          </div>
+        </div>
+        <div class="col header-contact-serarch-column d-none d-lg-block">
+          <div class="header-contact-search">
+            <!-- header-feature-item -->
+            {%- if section.settings.support_title != '' or section.settings.support_number != '' -%}
+            <div class="header-feature-item">
+              <div class="header-feature-icon">
+                <i class="icon-call"></i>
+              </div>
+              <div class="header-feature-info">
+                {%- if section.settings.support_title != '' -%}
+                <h6>{{ section.settings.support_title }}</h6>
+                {%- endif -%}
+                {%- if section.settings.support_number != '' -%}
+                <p>{{ section.settings.support_number }}</p>
+                {%- endif -%}
+              </div>
+            </div>
+            {%- endif -%}
+            <!-- header-search-2 -->
+            <div class="header-search-2">
+              <predictive-search search-open="false">
+                <form action="{{ routes.search_url }}" method="get" role="search" class="">
+                  <input
+                         id="Search"
+                         type="search"
+                         name="q"
+                         value="{{ search.terms | escape }}"
+                         {%- if settings.predictive_search_enabled -%}
+                         role="combobox"
+                         aria-expanded="false"
+                         aria-owns="predictive-search-results-list"
+                         aria-controls="predictive-search-results-list"
+                         aria-haspopup="listbox"
+                         aria-autocomplete="list"
+                         autocorrect="off"
+                         autocomplete="off"
+                         autocapitalize="off"
+                         spellcheck="false"
+                         {%- endif -%}
+                         class="predictive-search-input"
+                         placeholder="{{ 'general.search.placeholder' | t }}"
+                         >
+                  <button type="submit">
+                    <span><i class="icon-search"></i></span>
+                  </button>
+                  <input name="options[prefix]" type="hidden" value="last">
+              
+                  {%- if settings.predictive_search_enabled -%}
+                  <div id="predictive-search" class="predictive-search-item" tabindex="-1"></div>
+                  {%- endif -%}
+                </form>
+              </predictive-search>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <!-- header-options -->
+          <div class="ltn__header-options">
+            <ul>
+              <li class="d-lg-none">
+                <!-- header-search-1 -->
+                {%- if section.settings.header_search_enable -%}
+                <!-- header-search-1 -->
+                <div class="header-search-wrap">
+                  <div class="header-search-1">
+                    <div class="search-icon">
+                      <i class="icon-search for-search-show"></i>
+                      <i class="icon-cancel  for-search-close"></i>
+                    </div>
+                  </div>
+                  <div class="header-search-1-form">
+                    {%- render 'search-bar' -%}
+                  </div>
+                </div>
+                {%- endif -%}
+              </li>
+              <li class="d-none---"> 
+                <!-- user-menu -->
+                {%- if section.settings.user_menu_enable -%}
+                <div class="ltn__drop-menu user-menu">
+                  <ul>
+                    <li>
+                      <a href="#"><i class="icon-user"></i></a>
+                      <ul>
+                        {%- assign user_menu = section.settings.user_menu_handle -%}
+                        {%- for link in linklists[user_menu].links -%}
+                        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                        {%- endfor -%}
+                        {%- if shop.customer_accounts_enabled and customer and section.settings.logout_title != '' -%}
+                        <li>
+                          <a href="{{ routes.account_logout_url }}">{{ section.settings.logout_title }}</a>
+                        </li>
+                        {%- elsif shop.customer_accounts_enabled and section.settings.login_title != '' -%}
+                        <li>
+                          <a href="{{ routes.account_login_url }}">{{ section.settings.login_title }}</a>
+                        </li>
+                        {%- endif -%}
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+                {%- endif -%}
+              </li>
+              <li>
+                <!-- mini-cart 2 -->
+                <div class="mini-cart-icon mini-cart-icon-2">
+                  <a href="#ltn__utilize-cart-menu" class="ltn__utilize-toggle">
+                    <span class="mini-cart-icon">
+                      <i class="icon-shopping-cart"></i>
+                      <sup><span class="bigcounter">{{ cart.item_count }}</span></sup>
+                    </span>
+                    <h6><span>{{ section.settings.your_cart_title }}</span> <span class="ltn__secondary-color"><span class="shopping-cart__total">{{ cart.total_price | money }}</span></span></h6>
+                  </a>
+                </div>
+              </li>
+              {% comment %}
+              <li class="d-none">      
+                <!-- Mobile Menu Button -->
+                <div class="mobile-menu-toggle d-lg-none d-none">
+                  <a href="#ltn__utilize-mobile-menu" class="ltn__utilize-toggle">
+                    <svg viewBox="0 0 800 600">
+                      <path d="M300,220 C300,220 520,220 540,220 C740,220 640,540 520,420 C440,340 300,200 300,200" id="top"></path>
+                      <path d="M300,320 L540,320" id="middle"></path>
+                      <path d="M300,210 C300,210 520,210 540,210 C740,210 640,530 520,410 C440,330 300,190 300,190" id="bottom" transform="translate(480, 320) scale(1, -1) translate(-480, -318) "></path>
+                    </svg>
+                  </a>
+                </div>
+              </li>
+              {% endcomment %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ltn__header-middle-area end -->
+  <!-- header-bottom-area start -->
+  <div class="header-bottom-area ltn__border-top {% if section.settings.sticky_header_enable %}ltn__header-sticky{% endif %} ltn__sticky-bg-white ltn__primary-bg--- section-bg-1 menu-color-white--- d-none d-lg-block">
+    <div class="container">
+      <div class="row">
+        <div class="col header-menu-column justify-content-center">
+          <div class="sticky-logo">
+            <div class="site-logo">
+              {%- render 'header-logo' -%}
+            </div>
+          </div>
+          <div class="header-menu header-menu-2">
+            {%- render 'main-menu' -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- header-bottom-area end -->
+</header>
+
+{%- render 'mini-cart' -%}
+{%- render 'mobile-header' -%}
