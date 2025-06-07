@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 export default function ComingSoonPage() {
   const [email, setEmail] = useState("");
   const { toast } = useToast();
-  const handleSubmit = (et) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     // Here you would typically send this to your backend or email service
     toast({
@@ -21,7 +21,7 @@ export default function ComingSoonPage() {
   };
 
   return (
-    <>
+    <div className="h-full w-full bg-black">
       {/* Header */}
       <header className="w-full py-4 px-4">
         <div className="container mx-auto">
@@ -142,6 +142,6 @@ export default function ComingSoonPage() {
           </div>
         </div>
       </footer>
-    </>
+    </div>
   );
 }
