@@ -156,7 +156,7 @@ const ComingSoon = () => {
                 href="mailto:hello@beautifyinterior.com"
                 className="text-xs text-stone-500 hover:text-stone-800"
               >
-                Contact Us.
+                Contact Us
               </a>
               <span className="hidden md:inline text-xs text-stone-500">|</span>
               <p className="text-xs text-stone-500">Launching Soon</p>
