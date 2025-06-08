@@ -43,18 +43,20 @@ const ComingSoon = () => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-grow flex items-center justify-center px-4 py-12">
-        <div className="container max-w-3xl mx-auto">
+      <main className="flex-grow flex items-center justify-center px-4 py-8 md:py-12">
+        <div className="container max-w-4xl mx-auto">
           <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div className="space-y-6">
+            {/* Content - Full width on mobile, half width on desktop */}
+            <div className="space-y-6 text-center md:text-left">
               <div>
-                <h2 className="text-3xl font-medium text-stone-800 mb-2">
+                <h2 className="text-2xl md:text-3xl font-medium text-stone-800 mb-3">
                   Coming Soon
                 </h2>
-                <p className="text-sm text-stone-600">
+                <p className="text-sm text-stone-600 leading-relaxed">
                   We're working hard to bring you a beautiful shopping
-                  experience. Our website is under construction, but we're
-                  launching soon.
+                  experience for home decoration items, aesthetic lightings, and
+                  handmade craft items. Our website is under construction, but
+                  we're launching soon.
                 </p>
               </div>
 
@@ -62,18 +64,21 @@ const ComingSoon = () => {
                 <p className="text-sm text-stone-800 font-medium">
                   Get notified when we launch:
                 </p>
-                <form onSubmit={handleSubmit} className="flex gap-2">
+                <form
+                  onSubmit={handleSubmit}
+                  className="flex flex-col sm:flex-row gap-2"
+                >
                   <Input
                     type="email"
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="h-8 text-xs rounded-sm"
+                    className="h-10 text-sm rounded-sm flex-1"
                   />
                   <Button
                     type="submit"
-                    className="bg-stone-800 hover:bg-stone-700 h-8 text-xs rounded-sm"
+                    className="bg-stone-800 hover:bg-stone-700 h-10 text-sm rounded-sm px-6"
                   >
                     Notify Me
                   </Button>
@@ -84,40 +89,51 @@ const ComingSoon = () => {
                 <p className="text-xs text-stone-600 mb-3">
                   Follow us for updates:
                 </p>
-                <div className="flex space-x-4">
+                <div className="flex justify-center md:justify-start space-x-4">
                   <a
                     href="#"
-                    className="w-8 h-8 rounded-sm bg-stone-100 flex items-center justify-center text-stone-800 hover:bg-stone-200 transition-colors"
+                    className="w-10 h-10 rounded-sm bg-stone-100 flex items-center justify-center text-stone-800 hover:bg-stone-200 transition-colors"
                   >
                     <Facebook className="h-4 w-4" />
                   </a>
                   <Link
                     href="https://www.instagram.com/beautifyinterior07"
                     target="blank"
-                    className="w-8 h-8 rounded-sm bg-stone-100 flex items-center justify-center text-stone-800 hover:bg-stone-200 transition-colors"
+                    className="w-10 h-10 rounded-sm bg-stone-100 flex items-center justify-center text-stone-800 hover:bg-stone-200 transition-colors"
                   >
                     <Instagram className="h-4 w-4" />
                   </Link>
                   <a
                     href="#"
-                    className="w-8 h-8 rounded-sm bg-stone-100 flex items-center justify-center text-stone-800 hover:bg-stone-200 transition-colors"
+                    className="w-10 h-10 rounded-sm bg-stone-100 flex items-center justify-center text-stone-800 hover:bg-stone-200 transition-colors"
                   >
                     <Twitter className="h-4 w-4" />
                   </a>
-                  <Link
+                  <a
                     href="mailto:beautifyinterior@gmail.com"
-                    target="blank"
-                    className="w-8 h-8 rounded-sm bg-stone-100 flex items-center justify-center text-stone-800 hover:bg-stone-200 transition-colors"
+                    className="w-10 h-10 rounded-sm bg-stone-100 flex items-center justify-center text-stone-800 hover:bg-stone-200 transition-colors"
                   >
                     <Mail className="h-4 w-4" />
-                  </Link>
+                  </a>
+                </div>
+              </div>
+
+              {/* Contact info - visible on mobile */}
+              <div className="pt-4 md:hidden">
+                <p className="text-xs text-stone-600 mb-2">Contact us:</p>
+                <div className="space-y-1">
+                  <p className="text-xs text-stone-800">
+                    beautifyinterior@gmail.com
+                  </p>
+                  <p className="text-xs text-stone-800">+91 988-360-8843</p>
                 </div>
               </div>
             </div>
 
-            <div className="relative aspect-square md:aspect-auto md:h-full">
+            {/* Image - Hidden on mobile, visible on md and up */}
+            <div className="hidden md:block relative aspect-square">
               <Image
-                src="/logo_transparent.png?height=400&width=400"
+                src="/logo_transparent.png?height=500&width=500"
                 alt="BeautifyInterior Coming Soon"
                 fill
                 className="object-cover rounded-sm"
@@ -131,18 +147,18 @@ const ComingSoon = () => {
       {/* Footer */}
       <footer className="w-full py-4 px-4 border-t border-stone-100">
         <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
             <p className="text-xs text-stone-500">
-              © 2024 BeautifyInterior. All rights reserved.
+              © 2025 BeautifyInterior. All rights reserved.
             </p>
-            <div className="flex space-x-4 mt-2 md:mt-0">
+            <div className="flex flex-col md:flex-row items-center space-y-1 md:space-y-0 md:space-x-4">
               <a
                 href="mailto:hello@beautifyinterior.com"
                 className="text-xs text-stone-500 hover:text-stone-800"
               >
                 Contact Us
               </a>
-              <span className="text-xs text-stone-500">|</span>
+              <span className="hidden md:inline text-xs text-stone-500">|</span>
               <p className="text-xs text-stone-500">Launching Soon</p>
             </div>
           </div>
