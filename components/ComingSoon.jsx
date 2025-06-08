@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Facebook, Instagram, Twitter, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
-export default function ComingSoonPage() {
+import Link from "next/link";
+const ComingSoon = () => {
   const [email, setEmail] = useState("");
   const { toast } = useToast();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Here you would typically send this to your backend or email service
@@ -19,15 +20,18 @@ export default function ComingSoonPage() {
     });
     setEmail("");
   };
-
   return (
-    <div className="h-full w-full bg-black">
+    <div className="min-h-screen bg-white flex flex-col">
       {/* Header */}
       <header className="w-full py-4 px-4">
         <div className="container mx-auto">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-stone-800 rounded-sm flex items-center justify-center">
-              <span className="text-white font-medium text-sm">BI</span>
+            <div className="w-12 h-12  ">
+              <img
+                src="/BI.svg"
+                alt="Logo"
+                className="w-full h-full object-contain"
+              />
             </div>
             <div>
               <h1 className="text-lg font-medium text-stone-800">
@@ -87,31 +91,33 @@ export default function ComingSoonPage() {
                   >
                     <Facebook className="h-4 w-4" />
                   </a>
-                  <a
-                    href="#"
+                  <Link
+                    href="https://www.instagram.com/beautifyinterior07"
+                    target="blank"
                     className="w-8 h-8 rounded-sm bg-stone-100 flex items-center justify-center text-stone-800 hover:bg-stone-200 transition-colors"
                   >
                     <Instagram className="h-4 w-4" />
-                  </a>
+                  </Link>
                   <a
                     href="#"
                     className="w-8 h-8 rounded-sm bg-stone-100 flex items-center justify-center text-stone-800 hover:bg-stone-200 transition-colors"
                   >
                     <Twitter className="h-4 w-4" />
                   </a>
-                  <a
-                    href="mailto:hello@beautifyinterior.com"
+                  <Link
+                    href="mailto:beautifyinterior@gmail.com"
+                    target="blank"
                     className="w-8 h-8 rounded-sm bg-stone-100 flex items-center justify-center text-stone-800 hover:bg-stone-200 transition-colors"
                   >
                     <Mail className="h-4 w-4" />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
 
             <div className="relative aspect-square md:aspect-auto md:h-full">
               <Image
-                src="/placeholder.svg?height=500&width=500"
+                src="/logo_transparent.png?height=400&width=400"
                 alt="BeautifyInterior Coming Soon"
                 fill
                 className="object-cover rounded-sm"
@@ -144,4 +150,6 @@ export default function ComingSoonPage() {
       </footer>
     </div>
   );
-}
+};
+
+export default ComingSoon;
