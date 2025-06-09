@@ -162,7 +162,7 @@ const products = [
 ];
 
 export default function ProductsPage() {
-  const [viewMode, setViewMode] = (useState < "grid") | ("list" > "grid");
+  const [viewMode, setViewMode] = useState("grid");
   const [sortBy, setSortBy] = useState("featured");
   const [priceRange, setPriceRange] = useState([0, 200]);
   const [selectedCategories, setSelectedCategories] = useState([]);
