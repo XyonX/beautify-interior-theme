@@ -6,7 +6,7 @@ import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { Loader2 } from "lucide-react";
-
+import "../globals.css";
 function AdminLayoutContent({ children }) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
@@ -55,8 +55,14 @@ function AdminLayoutContent({ children }) {
 
 export default function AdminLayout({ children }) {
   return (
-    <AuthProvider>
-      <AdminLayoutContent>{children}</AdminLayoutContent>
-    </AuthProvider>
+    <html lang="en">
+      <head></head>
+
+      <body className="min-h-screen bg-white">
+        <AuthProvider>
+          <AdminLayoutContent>{children}</AdminLayoutContent>
+        </AuthProvider>
+      </body>
+    </html>
   );
 }
