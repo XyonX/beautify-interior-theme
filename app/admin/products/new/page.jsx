@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,6 +38,30 @@ export default function NewProductPage() {
   const [thumbnailError, setThumbnailError] = useState("");
   const [imagePreviews, setImagePreviews] = useState([]);
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
+
+  const [categories, setCategories] = useState([]);
+
+  // Fetch categories from backend on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const backendUrl =
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+        if (!backendUrl) {
+          throw new Error("BACKEND_URL is not defined");
+        }
+
+        const response = await fetch(`${backendUrl}/api/categories`);
+        if (!response.ok) throw new Error("Failed to fetch categories");
+        const data = await response.json();
+        setCategories(data);
+        console.log("Found categories: ", categories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -330,40 +354,118 @@ export default function NewProductPage() {
     setIsLoading(true);
 
     try {
+      if (!formData.sku) {
+        const sku = formData.name.toUpperCase().replace(/[^A-Z0-9]/g, "");
+      }
+
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Generate SKU if not provided
       if (!formData.sku) {
-        const sku =
-          formData.name
-            .toUpperCase()
-            .replace(/[^A-Z0-9]/g, "")
-            .substring(0, 6) +
-          "-" +
-          Math.random().toString(36).substring(2, 5).toUpperCase();
-        formData.sku = sku;
+        const cleanName = (formData.name || "")
+          .toUpperCase()
+          .replace(/[^A-Z0-9]/g, "")
+          .substring(0, 3)
+          .padEnd(3, "X");
+
+        const cleanVendor = (formData.vendor || "NOVENDOR")
+          .toUpperCase()
+          .replace(/[^A-Z0-9]/g, "")
+          .substring(0, 3)
+          .padEnd(3, "X");
+
+        const randomPart = Math.random()
+          .toString(36)
+          .substring(2, 5)
+          .toUpperCase()
+          .padEnd(3, "X");
+
+        const sku = `${cleanName}-${cleanVendor}-${randomPart}`;
+        setFormData((prev) => ({ ...prev, sku }));
       }
 
-      console.log("Creating product:", formData);
-      console.log(
-        "Thumbnail:",
-        thumbnailPreview
-          ? { name: thumbnailPreview.name, size: thumbnailPreview.size }
-          : null
-      );
-      console.log(
-        "Product Images:",
-        imagePreviews.map((img) => ({
-          name: img.name,
-          size: img.size,
-          type: img.file.type,
-        }))
-      );
+      const formDataToSend = new FormData();
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("description", formData.description);
+      formDataToSend.append("shortDescription", formData.shortDescription);
+      formDataToSend.append("sku", formData.sku);
+      formDataToSend.append("price", formData.price);
+      formDataToSend.append("categoryId", formData.categoryId);
 
+      //optional
+      formDataToSend.append("compareAtPrice", formData.compareAtPrice || "");
+      formDataToSend.append("costPrice", formData.costPrice || "");
+      formDataToSend.append("trackQuantity", formData.trackQuantity);
+      // Better handling for optional numbers
+      formDataToSend.append(
+        "quantity",
+        formData.quantity !== undefined ? formData.quantity : 0
+      );
+      formDataToSend.append(
+        "lowStockThreshold",
+        formData.lowStockThreshold !== undefined
+          ? formData.lowStockThreshold
+          : 5
+      );
+      formDataToSend.append("weight", formData.weight || "");
+      formDataToSend.append(
+        "dimensions",
+        JSON.stringify(formData.dimensions) || ""
+      );
+      formDataToSend.append("status", formData.status || "draft");
+      formDataToSend.append("visibility", formData.visibility || "visible");
+
+      formDataToSend.append("tags", formData.tags || []);
+      formDataToSend.append("seo_title", formData.seoTitle || "");
+      formDataToSend.append("seo_description", formData.seoDescription || "");
+      formDataToSend.append("vendor", formData.vendor || "");
+      formDataToSend.append("is_featured", formData.isFeatured || false);
+      formDataToSend.append("is_new", formData.isNew || false);
+      formDataToSend.append("on_sale", formData.onSale || false);
+
+      if (formData.thumbnail) {
+        formDataToSend.append("thumbnail", formData.thumbnail);
+      } else {
+        throw new Error("Thumbnail is required");
+      }
+
+      if (formData.images.length > 0) {
+        formData.images.forEach((image, index) => {
+          formDataToSend.append("detailedImages", image);
+        });
+      } else {
+        throw new Error("At least one detailed image is required");
+      }
+
+      // Debug FormData contents
+      for (const [key, value] of formDataToSend.entries()) {
+        console.log(`FormData: ${key} =`, value);
+      }
+
+      // Send data to the backend
+      const backendUrl =
+        process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+      const response = await fetch(`${backendUrl}/api/products`, {
+        method: "POST",
+        body: formDataToSend,
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create product");
+      }
+
+      const newProduct = await response.json();
+      console.log("Product created successfully:", newProduct);
+
+      // Redirect to products page
       router.push("/admin/products");
     } catch (error) {
-      console.error("Error creating product:", error);
+      console.error("Error creating product:", error.message);
+      // Show error to user (you could set an error state here)
+      setImageError(error.message); // Example: reuse imageError for feedback
     } finally {
       setIsLoading(false);
     }
@@ -454,7 +556,7 @@ export default function NewProductPage() {
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                       <SelectContent>
-                        {mockCategories.map((category) => (
+                        {categories.map((category) => (
                           <SelectItem key={category.id} value={category.id}>
                             {category.name}
                           </SelectItem>

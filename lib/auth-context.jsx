@@ -9,33 +9,71 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const savedUser = localStorage.getItem("adminUser");
-    if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (error) {
-        localStorage.removeItem("adminUser");
+  const checkAuth = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/check-auth`,
+        {
+          credentials: "include",
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+        console.log("After checkiing auth : ", user);
+      } else {
+        setUser(null);
       }
+    } catch (error) {
+      setUser(null);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    console.log("Autho check  started..");
+    checkAuth();
+
+    console.log("Autho check  done");
   }, []);
 
   const login = async (email, password) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setIsLoading(true);
 
-    if (email === "admin@beautifyinterior.com" && password === "admin123") {
-      setUser(mockAdminUser);
-      localStorage.setItem("adminUser", JSON.stringify(mockAdminUser));
-      return true;
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`,
+        {
+          method: "POST",
+          credentials: "include", // Necessary for cookies
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: email, password }),
+        }
+      );
+
+      if (response.ok) {
+        const { user } = await response.json();
+        setUser(user);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Login error:", error);
+      return false;
+    } finally {
+      setIsLoading(false);
     }
-
-    return false;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
     setUser(null);
-    localStorage.removeItem("adminUser");
+    router.push("/login");
   };
 
   return (

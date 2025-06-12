@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -45,7 +45,7 @@ import { mockCategories } from "@/lib/mock-data";
 
 export default function AdminCategoriesPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [categories, setCategories] = useState(mockCategories);
+  const [categories, setCategories] = useState([]);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -59,14 +59,36 @@ export default function AdminCategoriesPage() {
     isActive: true,
   });
 
+  // Fetch categories from backend on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const backendUrl =
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+        if (!backendUrl) {
+          throw new Error("BACKEND_URL is not defined");
+        }
+
+        const response = await fetch(`${backendUrl}/api/categories`);
+        if (!response.ok) throw new Error("Failed to fetch categories");
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   const filteredCategories = categories.filter((category) =>
     category.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const parentCategories = categories.filter((cat) => !cat.parentId);
   const getChildCategories = (parentId) =>
-    categories.filter((cat) => cat.parentId === parentId);
-
+    categories.filter(
+      (cat) => cat.parentId === parentId && cat.parentId != cat.Id
+    );
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
@@ -113,28 +135,33 @@ export default function AdminCategoriesPage() {
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const backendUrl =
+        process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+      if (!backendUrl) {
+        throw new Error("BACKEND_URL is not defined");
+      }
 
-      const newCategory = {
-        id: (categories.length + 1).toString(),
-        name: formData.name,
-        slug: formData.name.toLowerCase().replace(/\s+/g, "-"),
-        description: formData.description,
-        image: selectedImage
-          ? `/placeholder.svg?height=200&width=300&text=${encodeURIComponent(
-              formData.name
-            )}`
-          : undefined,
-        parentId: formData.parentId || undefined,
-        isActive: formData.isActive,
-        sortOrder: categories.length + 1,
-        productCount: 0,
-        seoTitle: formData.seoTitle,
-        seoDescription: formData.seoDescription,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
+      const formDataToSend = new FormData();
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("description", formData.description);
+      formDataToSend.append("parentId", formData.parentId);
+      formDataToSend.append("seoTitle", formData.seoTitle);
+      formDataToSend.append("seoDescription", formData.seoDescription);
+      formDataToSend.append("isActive", formData.isActive.toString());
+      if (selectedImage) formDataToSend.append("thumbnail", selectedImage);
+
+      const response = await fetch(`${backendUrl}/api/categories`, {
+        method: "POST",
+        body: formDataToSend,
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create category");
+      }
+
+      const newCategory = await response.json(); // Fix: Await the response.json()
 
       setCategories([...categories, newCategory]);
       setIsCreateDialogOpen(false);
@@ -432,178 +459,188 @@ export default function AdminCategoriesPage() {
                     .toLowerCase()
                     .includes(searchQuery.toLowerCase())
                 )
-                .map((parentCategory) => (
-                  <div key={parentCategory.id} className="space-y-2">
-                    {/* Parent Category */}
-                    <div className="flex items-center justify-between p-3 bg-stone-50 rounded-lg border">
-                      <div className="flex items-center space-x-3">
-                        {parentCategory.image ? (
-                          <img
-                            src={parentCategory.image || "/placeholder.svg"}
-                            alt={parentCategory.name}
-                            className="h-10 w-10 rounded-md object-cover"
-                          />
-                        ) : (
-                          <div className="h-10 w-10 bg-stone-200 rounded-md flex items-center justify-center">
-                            <ImageIcon className="h-5 w-5 text-stone-400" />
-                          </div>
-                        )}
-                        <div>
-                          <p className="font-medium text-stone-900">
-                            {parentCategory.name}
-                          </p>
-                          <p className="text-xs text-stone-500">
-                            {parentCategory.description}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Badge variant="outline" className="text-xs">
-                          {parentCategory.productCount} products
-                        </Badge>
-                        <Badge
-                          className={`text-xs ${
-                            parentCategory.isActive
-                              ? "bg-green-100 text-green-800"
-                              : "bg-stone-100 text-stone-800"
-                          }`}
-                        >
-                          {parentCategory.isActive ? "Active" : "Inactive"}
-                        </Badge>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-8 w-8 p-0"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
-                              <Eye className="h-4 w-4 mr-2" />
-                              View Products
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Edit className="h-4 w-4 mr-2" />
-                              Edit Category
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() =>
-                                handleToggleStatus(parentCategory.id)
-                              }
-                            >
-                              <Eye className="h-4 w-4 mr-2" />
-                              {parentCategory.isActive
-                                ? "Deactivate"
-                                : "Activate"}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="text-red-600"
-                              onClick={() =>
-                                handleDeleteCategory(parentCategory.id)
-                              }
-                            >
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    </div>
+                .map((parentCategory) => {
+                  const cdnUrl = process.env.NEXT_PUBLIC_CDN_URL;
 
-                    {/* Child Categories */}
-                    {getChildCategories(parentCategory.id).map(
-                      (childCategory) => (
-                        <div key={childCategory.id} className="ml-8">
-                          <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-stone-200">
-                            <div className="flex items-center space-x-3">
-                              <div className="w-5 h-5 flex items-center justify-center">
-                                <div className="w-2 h-2 bg-stone-300 rounded-full"></div>
-                              </div>
-                              {childCategory.image ? (
-                                <img
-                                  src={
-                                    childCategory.image || "/placeholder.svg"
-                                  }
-                                  alt={childCategory.name}
-                                  className="h-8 w-8 rounded-md object-cover"
-                                />
-                              ) : (
-                                <div className="h-8 w-8 bg-stone-200 rounded-md flex items-center justify-center">
-                                  <ImageIcon className="h-4 w-4 text-stone-400" />
-                                </div>
-                              )}
-                              <div>
-                                <p className="font-medium text-stone-900">
-                                  {childCategory.name}
-                                </p>
-                                <p className="text-xs text-stone-500">
-                                  {childCategory.description}
-                                </p>
-                              </div>
+                  console.log(`${cdnUrl}${parentCategory.image}`);
+                  return (
+                    <div key={parentCategory.id} className="space-y-2">
+                      {/* Parent Category */}
+                      <div className="flex items-center justify-between p-3 bg-stone-50 rounded-lg border">
+                        <div className="flex items-center space-x-3">
+                          {parentCategory.image ? (
+                            <img
+                              src={
+                                `${cdnUrl}${parentCategory.image}` ||
+                                "/placeholder.svg"
+                              }
+                              alt={parentCategory.name}
+                              className="h-10 w-10 rounded-md object-cover"
+                            />
+                          ) : (
+                            <div className="h-10 w-10 bg-stone-200 rounded-md flex items-center justify-center">
+                              <ImageIcon className="h-5 w-5 text-stone-400" />
                             </div>
-                            <div className="flex items-center space-x-2">
-                              <Badge variant="outline" className="text-xs">
-                                {childCategory.productCount} products
-                              </Badge>
-                              <Badge
-                                className={`text-xs ${
-                                  childCategory.isActive
-                                    ? "bg-green-100 text-green-800"
-                                    : "bg-stone-100 text-stone-800"
-                                }`}
-                              >
-                                {childCategory.isActive ? "Active" : "Inactive"}
-                              </Badge>
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-8 w-8 p-0"
-                                  >
-                                    <MoreHorizontal className="h-4 w-4" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  <DropdownMenuItem>
-                                    <Eye className="h-4 w-4 mr-2" />
-                                    View Products
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem>
-                                    <Edit className="h-4 w-4 mr-2" />
-                                    Edit Category
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    onClick={() =>
-                                      handleToggleStatus(childCategory.id)
-                                    }
-                                  >
-                                    <Eye className="h-4 w-4 mr-2" />
-                                    {childCategory.isActive
-                                      ? "Deactivate"
-                                      : "Activate"}
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    className="text-red-600"
-                                    onClick={() =>
-                                      handleDeleteCategory(childCategory.id)
-                                    }
-                                  >
-                                    <Trash2 className="h-4 w-4 mr-2" />
-                                    Delete
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </div>
+                          )}
+                          <div>
+                            <p className="font-medium text-stone-900">
+                              {parentCategory.name}
+                            </p>
+                            <p className="text-xs text-stone-500">
+                              {parentCategory.description}
+                            </p>
                           </div>
                         </div>
-                      )
-                    )}
-                  </div>
-                ))}
+                        <div className="flex items-center space-x-2">
+                          <Badge variant="outline" className="text-xs">
+                            {parentCategory.productCount} products
+                          </Badge>
+                          <Badge
+                            className={`text-xs ${
+                              parentCategory.isActive
+                                ? "bg-green-100 text-green-800"
+                                : "bg-stone-100 text-stone-800"
+                            }`}
+                          >
+                            {parentCategory.isActive ? "Active" : "Inactive"}
+                          </Badge>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 w-8 p-0"
+                              >
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem>
+                                <Eye className="h-4 w-4 mr-2" />
+                                View Products
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                <Edit className="h-4 w-4 mr-2" />
+                                Edit Category
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  handleToggleStatus(parentCategory.id)
+                                }
+                              >
+                                <Eye className="h-4 w-4 mr-2" />
+                                {parentCategory.isActive
+                                  ? "Deactivate"
+                                  : "Activate"}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="text-red-600"
+                                onClick={() =>
+                                  handleDeleteCategory(parentCategory.id)
+                                }
+                              >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </div>
+
+                      {/* Child Categories */}
+                      {getChildCategories(parentCategory.id).map(
+                        (childCategory) => (
+                          <div key={childCategory.id} className="ml-8">
+                            <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-stone-200">
+                              <div className="flex items-center space-x-3">
+                                <div className="w-5 h-5 flex items-center justify-center">
+                                  <div className="w-2 h-2 bg-stone-300 rounded-full"></div>
+                                </div>
+                                {childCategory.image ? (
+                                  <img
+                                    src={
+                                      childCategory.image || "/placeholder.svg"
+                                    }
+                                    alt={childCategory.name}
+                                    className="h-8 w-8 rounded-md object-cover"
+                                  />
+                                ) : (
+                                  <div className="h-8 w-8 bg-stone-200 rounded-md flex items-center justify-center">
+                                    <ImageIcon className="h-4 w-4 text-stone-400" />
+                                  </div>
+                                )}
+                                <div>
+                                  <p className="font-medium text-stone-900">
+                                    {childCategory.name}
+                                  </p>
+                                  <p className="text-xs text-stone-500">
+                                    {childCategory.description}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <Badge variant="outline" className="text-xs">
+                                  {childCategory.productCount} products
+                                </Badge>
+                                <Badge
+                                  className={`text-xs ${
+                                    childCategory.isActive
+                                      ? "bg-green-100 text-green-800"
+                                      : "bg-stone-100 text-stone-800"
+                                  }`}
+                                >
+                                  {childCategory.isActive
+                                    ? "Active"
+                                    : "Inactive"}
+                                </Badge>
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-8 w-8 p-0"
+                                    >
+                                      <MoreHorizontal className="h-4 w-4" />
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end">
+                                    <DropdownMenuItem>
+                                      <Eye className="h-4 w-4 mr-2" />
+                                      View Products
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                      <Edit className="h-4 w-4 mr-2" />
+                                      Edit Category
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                      onClick={() =>
+                                        handleToggleStatus(childCategory.id)
+                                      }
+                                    >
+                                      <Eye className="h-4 w-4 mr-2" />
+                                      {childCategory.isActive
+                                        ? "Deactivate"
+                                        : "Activate"}
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                      className="text-red-600"
+                                      onClick={() =>
+                                        handleDeleteCategory(childCategory.id)
+                                      }
+                                    >
+                                      <Trash2 className="h-4 w-4 mr-2" />
+                                      Delete
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  );
+                })}
             </div>
           ) : (
             <div className="text-center py-12">

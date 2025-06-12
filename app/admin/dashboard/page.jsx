@@ -16,11 +16,8 @@ import {
   DollarSign,
   ShoppingCart,
   Users,
-  Package,
   TrendingUp,
   TrendingDown,
-  AlertTriangle,
-  Star,
   Calendar,
   ArrowRight,
   Eye,
@@ -66,19 +63,12 @@ export default function AdminDashboardPage() {
   const totalCustomers = customers.length;
   const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
-  const pendingReviews = reviews.filter((review) => {
-    return review && review.status === "pending";
-  }).length;
-
-  const lowStockItems = products.filter((product) => {
-    if (!product) return false;
-    return (
-      product.trackQuantity === true &&
-      typeof product.quantity === "number" &&
-      typeof product.lowStockThreshold === "number" &&
-      product.quantity <= product.lowStockThreshold
-    );
-  }).length;
+  const formatCurrency = (amount) => {
+    if (typeof amount !== "number" || isNaN(amount)) {
+      return "₹0";
+    }
+    return `₹${amount.toLocaleString("en-IN")}`;
+  };
 
   // Top products data with safe operations
   const topProducts = products
@@ -91,13 +81,6 @@ export default function AdminDashboardPage() {
     }))
     .sort((a, b) => b.revenue - a.revenue)
     .slice(0, 5);
-
-  const formatCurrency = (amount) => {
-    if (typeof amount !== "number" || isNaN(amount)) {
-      return "₹0";
-    }
-    return `₹${amount.toLocaleString("en-IN")}`;
-  };
 
   // Recent orders with safe operations
   const recentOrders = orders
@@ -234,75 +217,6 @@ export default function AdminDashboardPage() {
         </Card>
       </div>
 
-      {/* Alerts */}
-      {(inventoryAlerts.length > 0 ||
-        pendingReviews > 0 ||
-        lowStockItems > 0) && (
-        <Card className="border-yellow-200 bg-yellow-50">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm flex items-center text-yellow-800">
-              <AlertTriangle className="h-4 w-4 mr-2" />
-              Alerts Requiring Attention
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="space-y-2">
-              {lowStockItems > 0 && (
-                <div className="flex items-center justify-between p-2 bg-white rounded border">
-                  <div className="flex items-center">
-                    <Package className="h-4 w-4 mr-2 text-yellow-600" />
-                    <p className="text-xs text-stone-700">
-                      {lowStockItems} products with low stock
-                    </p>
-                  </div>
-                  <Link href="/admin/inventory">
-                    <Button variant="ghost" size="sm" className="h-7 text-xs">
-                      View
-                    </Button>
-                  </Link>
-                </div>
-              )}
-              {pendingReviews > 0 && (
-                <div className="flex items-center justify-between p-2 bg-white rounded border">
-                  <div className="flex items-center">
-                    <Star className="h-4 w-4 mr-2 text-yellow-600" />
-                    <p className="text-xs text-stone-700">
-                      {pendingReviews} reviews awaiting moderation
-                    </p>
-                  </div>
-                  <Link href="/admin/reviews">
-                    <Button variant="ghost" size="sm" className="h-7 text-xs">
-                      View
-                    </Button>
-                  </Link>
-                </div>
-              )}
-              {inventoryAlerts.map((alert) => {
-                if (!alert || !alert.id) return null;
-                return (
-                  <div
-                    key={alert.id}
-                    className="flex items-center justify-between p-2 bg-white rounded border"
-                  >
-                    <div className="flex items-center">
-                      <AlertTriangle className="h-4 w-4 mr-2 text-red-600" />
-                      <p className="text-xs text-stone-700">
-                        {alert.message || "Alert message unavailable"}
-                      </p>
-                    </div>
-                    <Link href="/admin/inventory">
-                      <Button variant="ghost" size="sm" className="h-7 text-xs">
-                        View
-                      </Button>
-                    </Link>
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
       {/* Revenue Overview - Simplified */}
       <Card>
         <CardHeader>
@@ -392,7 +306,7 @@ export default function AdminDashboardPage() {
               </div>
             ) : (
               <div className="p-8 text-center text-stone-500">
-                <Package className="h-12 w-12 mx-auto mb-4 text-stone-300" />
+                <ShoppingCart className="h-12 w-12 mx-auto mb-4 text-stone-300" />
                 <p>No products available</p>
               </div>
             )}

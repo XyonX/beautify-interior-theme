@@ -32,12 +32,57 @@ import {
   Filter,
 } from "lucide-react";
 import { mockProducts, mockCategories } from "@/lib/mock-data";
-
+import { useEffect } from "react";
 export default function AdminProductsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [products, setProducts] = useState(mockProducts);
+  const [products, setProducts] = useState([]);
+
+  // Fetch categories from backend on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const backendUrl =
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+        if (!backendUrl) {
+          throw new Error("NEXT_PUBLIC_BACKEND_URL is not defined");
+        }
+
+        const response = await fetch(`${backendUrl}/api/products`);
+        if (!response.ok) throw new Error("Failed to fetch products");
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Error fetching Products:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const [categories, setCategories] = useState([]);
+
+  // Fetch categories from backend on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const backendUrl =
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+        if (!backendUrl) {
+          throw new Error("BACKEND_URL is not defined");
+        }
+
+        const response = await fetch(`${backendUrl}/api/categories`);
+        if (!response.ok) throw new Error("Failed to fetch categories");
+        const data = await response.json();
+        setCategories(data);
+        console.log("Found categories: ", categories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const filteredProducts = (products || []).filter((product) => {
     const matchesSearch =
@@ -268,7 +313,7 @@ export default function AdminProductsPage() {
                 <tbody>
                   {filteredProducts.map((product) => {
                     const stockStatus = getStockStatus(product);
-                    const category = mockCategories.find(
+                    const category = categories.find(
                       (c) => c.id === product.categoryId
                     );
                     return (
@@ -279,10 +324,11 @@ export default function AdminProductsPage() {
                         <td className="p-4">
                           <div className="flex items-center space-x-3">
                             <div className="w-12 h-12 bg-stone-100 rounded overflow-hidden">
-                              {product.images[0] ? (
+                              {product.thumbnail ? (
                                 <Image
                                   src={
-                                    product.images[0].url || "/placeholder.svg"
+                                    `${process.env.NEXT_PUBLIC_CDN_URL}${product.thumbnail}` ||
+                                    "/placeholder.svg"
                                   }
                                   alt={product.name}
                                   width={48}
@@ -330,7 +376,7 @@ export default function AdminProductsPage() {
                         </td>
                         <td className="p-4">
                           <span className="text-sm text-stone-700">
-                            {category?.name || "Uncategorized"}
+                            {category?.name.toLowerCase() || "Uncategorized"}
                           </span>
                         </td>
                         <td className="p-4">
