@@ -7,7 +7,7 @@ const trendingProducts = [
   {
     id: 1,
     name: "Minimalist Ceramic Vase",
-    price: 3299,
+    price: 329,
     image: "/placeholder.svg?height=300&width=300",
     category: "Decor",
     trending: "#1",
@@ -15,7 +15,7 @@ const trendingProducts = [
   {
     id: 2,
     name: "Scandinavian Floor Lamp",
-    price: 10799,
+    price: 1899,
     image: "/placeholder.svg?height=300&width=300",
     category: "Lighting",
     trending: "#2",
@@ -23,7 +23,7 @@ const trendingProducts = [
   {
     id: 3,
     name: "Handwoven Basket Set",
-    price: 3799,
+    price: 379,
     image: "/placeholder.svg?height=300&width=300",
     category: "Storage",
     trending: "#3",
@@ -31,7 +31,7 @@ const trendingProducts = [
   {
     id: 4,
     name: "Abstract Wall Art",
-    price: 6699,
+    price: 669,
     image: "/placeholder.svg?height=300&width=300",
     category: "Wall Art",
     trending: "#4",

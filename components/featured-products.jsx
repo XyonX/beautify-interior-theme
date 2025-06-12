@@ -9,8 +9,8 @@ const featuredProducts = [
   {
     id: 1,
     name: "Moroccan Pendant Light",
-    price: 7499,
-    originalPrice: 9999,
+    price: 749,
+    originalPrice: 999,
     rating: 4.8,
     reviews: 124,
     image: "/placeholder.svg?height=300&width=300",
@@ -21,7 +21,7 @@ const featuredProducts = [
   {
     id: 2,
     name: "Handwoven Macrame Wall Hanging",
-    price: 3799,
+    price: 379,
     originalPrice: null,
     rating: 4.9,
     reviews: 89,
@@ -33,8 +33,8 @@ const featuredProducts = [
   {
     id: 3,
     name: "Ceramic Vase Set",
-    price: 2899,
-    originalPrice: 4199,
+    price: 289,
+    originalPrice: 419,
     rating: 4.7,
     reviews: 156,
     image: "/placeholder.svg?height=300&width=300",
@@ -45,7 +45,7 @@ const featuredProducts = [
   {
     id: 4,
     name: "Boho Table Lamp",
-    price: 5699,
+    price: 569,
     originalPrice: null,
     rating: 4.6,
     reviews: 78,
@@ -57,8 +57,8 @@ const featuredProducts = [
   {
     id: 5,
     name: "Handmade Wooden Bowl",
-    price: 2399,
-    originalPrice: 3299,
+    price: 239,
+    originalPrice: 329,
     rating: 4.8,
     reviews: 203,
     image: "/placeholder.svg?height=300&width=300",
@@ -69,7 +69,7 @@ const featuredProducts = [
   {
     id: 6,
     name: "Velvet Throw Pillow",
-    price: 2099,
+    price: 209,
     originalPrice: null,
     rating: 4.5,
     reviews: 92,
@@ -81,7 +81,7 @@ const featuredProducts = [
   {
     id: 7,
     name: "Geometric Wall Shelf",
-    price: 4999,
+    price: 499,
     originalPrice: null,
     rating: 4.7,
     reviews: 67,
@@ -93,8 +93,8 @@ const featuredProducts = [
   {
     id: 8,
     name: "Minimalist Desk Lamp",
-    price: 4199,
-    originalPrice: 5799,
+    price: 419,
+    originalPrice: 579,
     rating: 4.6,
     reviews: 112,
     image: "/placeholder.svg?height=300&width=300",
