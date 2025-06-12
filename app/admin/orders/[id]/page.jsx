@@ -1,119 +1,144 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Separator } from "@/components/ui/separator"
-import { ArrowLeft, Package, CreditCard, User, MapPin, Phone, Mail, Edit, Save, X, ExternalLink } from "lucide-react"
-import { mockOrders, mockCustomers, mockProducts } from "@/lib/mock-data"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
+import {
+  ArrowLeft,
+  Package,
+  CreditCard,
+  User,
+  MapPin,
+  Phone,
+  Mail,
+  Edit,
+  Save,
+  X,
+  ExternalLink,
+} from "lucide-react";
+import { mockOrders, mockCustomers, mockProducts } from "@/lib/mock-data";
 
 export default function OrderDetailsPage({ params }) {
-  const router = useRouter()
-  const [isEditing, setIsEditing] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter();
+  const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Find the order (in real app, this would be fetched from API)
-  const order = mockOrders.find((o) => o.id === params.id)
-  const customer = mockCustomers.find((c) => c.id === order?.customerId)
+  const order = mockOrders.find((o) => o.id === params.id);
+  const customer = mockCustomers.find((c) => c.id === order?.customerId);
 
-  const [formData, setFormData] = useState<UpdateOrderForm>({
-    status: order?.status || "pending",
-    paymentStatus: order?.paymentStatus || "pending",
-    fulfillmentStatus: order?.fulfillmentStatus || "unfulfilled",
-    trackingNumber: order?.trackingNumber || "",
-    trackingUrl: "",
-    estimatedDelivery: order?.estimatedDelivery || "",
-    actualDelivery: "",
-    notes: order?.notes || "",
-    adminNotes: "",
-    tags: order?.tags || [],
-    paymentIntentId: "",
-    source: "web",
-  })
+  const [formData, setFormData] =
+    useState <
+    UpdateOrderForm >
+    {
+      status: order?.status || "pending",
+      paymentStatus: order?.paymentStatus || "pending",
+      fulfillmentStatus: order?.fulfillmentStatus || "unfulfilled",
+      trackingNumber: order?.trackingNumber || "",
+      trackingUrl: "",
+      estimatedDelivery: order?.estimatedDelivery || "",
+      actualDelivery: "",
+      notes: order?.notes || "",
+      adminNotes: "",
+      tags: order?.tags || [],
+      paymentIntentId: "",
+      source: "web",
+    };
 
   if (!order) {
     return (
       <div className="text-center py-12">
         <Package className="h-12 w-12 text-stone-300 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-stone-900 mb-2">Order not found</h3>
-        <p className="text-sm text-stone-500 mb-6">The order you're looking for doesn't exist.</p>
+        <h3 className="text-lg font-medium text-stone-900 mb-2">
+          Order not found
+        </h3>
+        <p className="text-sm text-stone-500 mb-6">
+          The order you're looking for doesn't exist.
+        </p>
         <Button onClick={() => router.back()}>Go Back</Button>
       </div>
-    )
+    );
   }
 
   const handleSave = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      console.log("Updating order:", formData)
-      setIsEditing(false)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log("Updating order:", formData);
+      setIsEditing(false);
     } catch (error) {
-      console.error("Error updating order:", error)
+      console.error("Error updating order:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
       case "confirmed":
-        return "bg-green-100 text-green-800"
+        return "bg-green-100 text-green-800";
       case "processing":
-        return "bg-blue-100 text-blue-800"
+        return "bg-blue-100 text-blue-800";
       case "shipped":
-        return "bg-purple-100 text-purple-800"
+        return "bg-purple-100 text-purple-800";
       case "delivered":
-        return "bg-stone-100 text-stone-800"
+        return "bg-stone-100 text-stone-800";
       case "cancelled":
-        return "bg-red-100 text-red-800"
+        return "bg-red-100 text-red-800";
       case "pending":
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-yellow-100 text-yellow-800";
       default:
-        return "bg-stone-100 text-stone-800"
+        return "bg-stone-100 text-stone-800";
     }
-  }
+  };
 
   const getPaymentStatusColor = (status) => {
     switch (status) {
       case "paid":
-        return "bg-green-100 text-green-800"
+        return "bg-green-100 text-green-800";
       case "pending":
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-yellow-100 text-yellow-800";
       case "failed":
-        return "bg-red-100 text-red-800"
+        return "bg-red-100 text-red-800";
       case "refunded":
-        return "bg-purple-100 text-purple-800"
+        return "bg-purple-100 text-purple-800";
       case "partially_refunded":
-        return "bg-orange-100 text-orange-800"
+        return "bg-orange-100 text-orange-800";
       default:
-        return "bg-stone-100 text-stone-800"
+        return "bg-stone-100 text-stone-800";
     }
-  }
+  };
 
   const getFulfillmentStatusColor = (status) => {
     switch (status) {
       case "fulfilled":
-        return "bg-green-100 text-green-800"
+        return "bg-green-100 text-green-800";
       case "partial":
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-yellow-100 text-yellow-800";
       case "unfulfilled":
-        return "bg-red-100 text-red-800"
+        return "bg-red-100 text-red-800";
       default:
-        return "bg-stone-100 text-stone-800"
+        return "bg-stone-100 text-stone-800";
     }
-  }
+  };
 
   const formatCurrency = (amount) => {
-    return `₹${amount.toLocaleString("en-IN")}`
-  }
+    return `₹${amount.toLocaleString("en-IN")}`;
+  };
 
   return (
     <div className="space-y-6">
@@ -124,7 +149,9 @@ export default function OrderDetailsPage({ params }) {
             Back to Orders
           </Button>
           <div>
-            <h1 className="text-2xl font-semibold text-stone-900">Order {order.orderNumber}</h1>
+            <h1 className="text-2xl font-semibold text-stone-900">
+              Order {order.orderNumber}
+            </h1>
             <p className="text-sm text-stone-600">
               Placed on {new Date(order.createdAt).toLocaleDateString()} at{" "}
               {new Date(order.createdAt).toLocaleTimeString()}
@@ -166,9 +193,14 @@ export default function OrderDetailsPage({ params }) {
             <CardContent>
               <div className="space-y-4">
                 {order.items.map((item) => {
-                  const product = mockProducts.find((p) => p.id === item.productId)
+                  const product = mockProducts.find(
+                    (p) => p.id === item.productId
+                  );
                   return (
-                    <div key={item.id} className="flex items-center space-x-4 p-4 border rounded-lg">
+                    <div
+                      key={item.id}
+                      className="flex items-center space-x-4 p-4 border rounded-lg"
+                    >
                       <div className="w-16 h-16 bg-stone-100 rounded overflow-hidden">
                         {product?.images[0] ? (
                           <img
@@ -183,17 +215,31 @@ export default function OrderDetailsPage({ params }) {
                         )}
                       </div>
                       <div className="flex-1">
-                        <h4 className="font-medium text-stone-900">{product?.name || "Product not found"}</h4>
-                        <p className="text-sm text-stone-500">SKU: {product?.sku}</p>
-                        <p className="text-sm text-stone-600">Quantity: {item.quantity}</p>
-                        {item.variantId && <p className="text-sm text-stone-500">Variant: {item.variantId}</p>}
+                        <h4 className="font-medium text-stone-900">
+                          {product?.name || "Product not found"}
+                        </h4>
+                        <p className="text-sm text-stone-500">
+                          SKU: {product?.sku}
+                        </p>
+                        <p className="text-sm text-stone-600">
+                          Quantity: {item.quantity}
+                        </p>
+                        {item.variantId && (
+                          <p className="text-sm text-stone-500">
+                            Variant: {item.variantId}
+                          </p>
+                        )}
                       </div>
                       <div className="text-right">
-                        <p className="font-medium">{formatCurrency(item.price)}</p>
-                        <p className="text-sm text-stone-500">Total: {formatCurrency(item.total)}</p>
+                        <p className="font-medium">
+                          {formatCurrency(item.price)}
+                        </p>
+                        <p className="text-sm text-stone-500">
+                          Total: {formatCurrency(item.total)}
+                        </p>
                       </div>
                     </div>
-                  )
+                  );
                 })}
               </div>
             </CardContent>
@@ -210,7 +256,9 @@ export default function OrderDetailsPage({ params }) {
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                   <div>
                     <p className="text-sm font-medium">Order Placed</p>
-                    <p className="text-xs text-stone-500">{new Date(order.createdAt).toLocaleString()}</p>
+                    <p className="text-xs text-stone-500">
+                      {new Date(order.createdAt).toLocaleString()}
+                    </p>
                   </div>
                 </div>
                 {order.status !== "pending" && (
@@ -218,7 +266,9 @@ export default function OrderDetailsPage({ params }) {
                     <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
                     <div>
                       <p className="text-sm font-medium">Order Confirmed</p>
-                      <p className="text-xs text-stone-500">{new Date(order.updatedAt).toLocaleString()}</p>
+                      <p className="text-xs text-stone-500">
+                        {new Date(order.updatedAt).toLocaleString()}
+                      </p>
                     </div>
                   </div>
                 )}
@@ -227,7 +277,9 @@ export default function OrderDetailsPage({ params }) {
                     <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
                     <div>
                       <p className="text-sm font-medium">Order Shipped</p>
-                      <p className="text-xs text-stone-500">Tracking: {order.trackingNumber}</p>
+                      <p className="text-xs text-stone-500">
+                        Tracking: {order.trackingNumber}
+                      </p>
                       {formData.trackingUrl && (
                         <a
                           href={formData.trackingUrl}
@@ -235,7 +287,8 @@ export default function OrderDetailsPage({ params }) {
                           rel="noopener noreferrer"
                           className="text-xs text-blue-600 hover:text-blue-800 flex items-center"
                         >
-                          Track Package <ExternalLink className="h-3 w-3 ml-1" />
+                          Track Package{" "}
+                          <ExternalLink className="h-3 w-3 ml-1" />
                         </a>
                       )}
                     </div>
@@ -246,7 +299,9 @@ export default function OrderDetailsPage({ params }) {
                     <div className="w-3 h-3 bg-green-600 rounded-full"></div>
                     <div>
                       <p className="text-sm font-medium">Order Delivered</p>
-                      <p className="text-xs text-stone-500">{new Date(formData.actualDelivery).toLocaleString()}</p>
+                      <p className="text-xs text-stone-500">
+                        {new Date(formData.actualDelivery).toLocaleString()}
+                      </p>
                     </div>
                   </div>
                 )}
@@ -269,7 +324,9 @@ export default function OrderDetailsPage({ params }) {
                     <Label htmlFor="status">Order Status</Label>
                     <Select
                       value={formData.status}
-                      onValueChange={(value) => setFormData((prev) => ({ ...prev, status: value as any }))}
+                      onValueChange={(value) =>
+                        setFormData((prev) => ({ ...prev, status: value }))
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -289,7 +346,12 @@ export default function OrderDetailsPage({ params }) {
                     <Label htmlFor="paymentStatus">Payment Status</Label>
                     <Select
                       value={formData.paymentStatus}
-                      onValueChange={(value) => setFormData((prev) => ({ ...prev, paymentStatus: value as any }))}
+                      onValueChange={(value) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          paymentStatus: value,
+                        }))
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -299,15 +361,24 @@ export default function OrderDetailsPage({ params }) {
                         <SelectItem value="paid">Paid</SelectItem>
                         <SelectItem value="failed">Failed</SelectItem>
                         <SelectItem value="refunded">Refunded</SelectItem>
-                        <SelectItem value="partially_refunded">Partially Refunded</SelectItem>
+                        <SelectItem value="partially_refunded">
+                          Partially Refunded
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="fulfillmentStatus">Fulfillment Status</Label>
+                    <Label htmlFor="fulfillmentStatus">
+                      Fulfillment Status
+                    </Label>
                     <Select
                       value={formData.fulfillmentStatus}
-                      onValueChange={(value) => setFormData((prev) => ({ ...prev, fulfillmentStatus: value as any }))}
+                      onValueChange={(value) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          fulfillmentStatus: value,
+                        }))
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -324,7 +395,12 @@ export default function OrderDetailsPage({ params }) {
                     <Input
                       id="trackingNumber"
                       value={formData.trackingNumber}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, trackingNumber: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          trackingNumber: e.target.value,
+                        }))
+                      }
                       placeholder="Enter tracking number"
                     />
                   </div>
@@ -333,17 +409,29 @@ export default function OrderDetailsPage({ params }) {
                     <Input
                       id="trackingUrl"
                       value={formData.trackingUrl}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, trackingUrl: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          trackingUrl: e.target.value,
+                        }))
+                      }
                       placeholder="Enter tracking URL"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="estimatedDelivery">Estimated Delivery</Label>
+                    <Label htmlFor="estimatedDelivery">
+                      Estimated Delivery
+                    </Label>
                     <Input
                       id="estimatedDelivery"
                       type="date"
                       value={formData.estimatedDelivery}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, estimatedDelivery: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          estimatedDelivery: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                   <div>
@@ -352,7 +440,12 @@ export default function OrderDetailsPage({ params }) {
                       id="actualDelivery"
                       type="date"
                       value={formData.actualDelivery}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, actualDelivery: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          actualDelivery: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                 </>
@@ -360,28 +453,50 @@ export default function OrderDetailsPage({ params }) {
                 <>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-stone-600">Order Status</span>
-                    <Badge className={`${getStatusColor(order.status)}`}>{order.status}</Badge>
+                    <Badge className={`${getStatusColor(order.status)}`}>
+                      {order.status}
+                    </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-stone-600">Payment Status</span>
-                    <Badge className={`${getPaymentStatusColor(order.paymentStatus)}`}>{order.paymentStatus}</Badge>
+                    <span className="text-sm text-stone-600">
+                      Payment Status
+                    </span>
+                    <Badge
+                      className={`${getPaymentStatusColor(
+                        order.paymentStatus
+                      )}`}
+                    >
+                      {order.paymentStatus}
+                    </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-stone-600">Fulfillment Status</span>
-                    <Badge className={`${getFulfillmentStatusColor(order.fulfillmentStatus)}`}>
+                    <span className="text-sm text-stone-600">
+                      Fulfillment Status
+                    </span>
+                    <Badge
+                      className={`${getFulfillmentStatusColor(
+                        order.fulfillmentStatus
+                      )}`}
+                    >
                       {order.fulfillmentStatus}
                     </Badge>
                   </div>
                   {order.trackingNumber && (
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-stone-600">Tracking</span>
-                      <span className="text-sm font-mono">{order.trackingNumber}</span>
+                      <span className="text-sm font-mono">
+                        {order.trackingNumber}
+                      </span>
                     </div>
                   )}
                   {order.estimatedDelivery && (
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-stone-600">Est. Delivery</span>
-                      <span className="text-sm">{new Date(order.estimatedDelivery).toLocaleDateString()}</span>
+                      <span className="text-sm text-stone-600">
+                        Est. Delivery
+                      </span>
+                      <span className="text-sm">
+                        {new Date(order.estimatedDelivery).toLocaleDateString()}
+                      </span>
                     </div>
                   )}
                 </>
@@ -409,7 +524,9 @@ export default function OrderDetailsPage({ params }) {
                   <p className="font-medium">
                     {customer?.firstName} {customer?.lastName}
                   </p>
-                  <p className="text-sm text-stone-500">{customer?.totalOrders} orders</p>
+                  <p className="text-sm text-stone-500">
+                    {customer?.totalOrders} orders
+                  </p>
                 </div>
               </div>
               <div className="space-y-2">
@@ -438,16 +555,24 @@ export default function OrderDetailsPage({ params }) {
             <CardContent>
               <div className="text-sm space-y-1">
                 <p className="font-medium">
-                  {order.shippingAddress.firstName} {order.shippingAddress.lastName}
+                  {order.shippingAddress.firstName}{" "}
+                  {order.shippingAddress.lastName}
                 </p>
-                {order.shippingAddress.company && <p>{order.shippingAddress.company}</p>}
+                {order.shippingAddress.company && (
+                  <p>{order.shippingAddress.company}</p>
+                )}
                 <p>{order.shippingAddress.address1}</p>
-                {order.shippingAddress.address2 && <p>{order.shippingAddress.address2}</p>}
+                {order.shippingAddress.address2 && (
+                  <p>{order.shippingAddress.address2}</p>
+                )}
                 <p>
-                  {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zipCode}
+                  {order.shippingAddress.city}, {order.shippingAddress.state}{" "}
+                  {order.shippingAddress.zipCode}
                 </p>
                 <p>{order.shippingAddress.country}</p>
-                {order.shippingAddress.phone && <p>{order.shippingAddress.phone}</p>}
+                {order.shippingAddress.phone && (
+                  <p>{order.shippingAddress.phone}</p>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -487,7 +612,9 @@ export default function OrderDetailsPage({ params }) {
               <div className="text-xs text-stone-500">
                 <p>Payment Method: {order.paymentMethod}</p>
                 <p>Source: {formData.source}</p>
-                {formData.paymentIntentId && <p>Payment ID: {formData.paymentIntentId}</p>}
+                {formData.paymentIntentId && (
+                  <p>Payment ID: {formData.paymentIntentId}</p>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -503,12 +630,19 @@ export default function OrderDetailsPage({ params }) {
                 {isEditing ? (
                   <Textarea
                     value={formData.notes}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, notes: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        notes: e.target.value,
+                      }))
+                    }
                     placeholder="Customer notes..."
                     rows={3}
                   />
                 ) : (
-                  <p className="text-sm text-stone-600 mt-1">{order.notes || "No customer notes"}</p>
+                  <p className="text-sm text-stone-600 mt-1">
+                    {order.notes || "No customer notes"}
+                  </p>
                 )}
               </div>
               <div>
@@ -516,12 +650,19 @@ export default function OrderDetailsPage({ params }) {
                 {isEditing ? (
                   <Textarea
                     value={formData.adminNotes}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, adminNotes: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        adminNotes: e.target.value,
+                      }))
+                    }
                     placeholder="Internal admin notes..."
                     rows={3}
                   />
                 ) : (
-                  <p className="text-sm text-stone-600 mt-1">{formData.adminNotes || "No admin notes"}</p>
+                  <p className="text-sm text-stone-600 mt-1">
+                    {formData.adminNotes || "No admin notes"}
+                  </p>
                 )}
               </div>
             </CardContent>
@@ -529,5 +670,5 @@ export default function OrderDetailsPage({ params }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
