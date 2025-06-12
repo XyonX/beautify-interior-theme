@@ -55,7 +55,7 @@ export default function AboutPage() {
         <div className="space-y-4">
           <div className="aspect-video relative overflow-hidden rounded-sm">
             <Image
-              src="/placeholder.svg?height=300&width=500"
+              src="https://cdn.beautifyinterior.com/assets/banner/og-image.png"
               alt="Our workshop"
               fill
               className="object-cover"
@@ -83,7 +83,7 @@ export default function AboutPage() {
                 <li className="flex items-start gap-2">
                   <span className="w-1.5 h-1.5 bg-stone-800 rounded-full mt-1.5 flex-shrink-0" />
                   <span className="text-xs text-stone-600">
-                    Free shipping on orders over $99
+                    Free shipping on orders over ₹500
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
