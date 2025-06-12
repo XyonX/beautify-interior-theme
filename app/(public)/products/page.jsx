@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Star, Heart, Filter, Grid, List } from "lucide-react";
+import { ProductsPageSkeleton } from "@/components/skeletons/products-page-skeleton";
 
 const products = [
   {
@@ -162,11 +163,22 @@ const products = [
 ];
 
 export default function ProductsPage() {
+  const [isLoading, setIsLoading] = useState(true);
   const [viewMode, setViewMode] = useState("grid");
+
   const [sortBy, setSortBy] = useState("featured");
   const [priceRange, setPriceRange] = useState([0, 200]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
+
+  useEffect(() => {
+    // Simulate loading delay
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleCategoryChange = (category, checked) => {
     if (checked) {
@@ -183,6 +195,14 @@ export default function ProductsPage() {
       setSelectedColors(selectedColors.filter((c) => c !== color));
     }
   };
+
+  if (isLoading) {
+    return (
+      <main className="flex-grow">
+        <ProductsPageSkeleton />
+      </main>
+    );
+  }
 
   return (
     <main className="container mx-auto px-4 py-4">
@@ -292,7 +312,7 @@ export default function ProductsPage() {
               </div>
             </div>
 
-            <Button className="w-full bg-stone-800 hover:bg-stone-700 text-xs rounded-sm h-8">
+            <Button className="w-full bg-accent2-600 hover:bg-accent2-700 text-xs rounded-sm h-8">
               Apply Filters
             </Button>
           </div>
@@ -330,7 +350,7 @@ export default function ProductsPage() {
                   variant={viewMode === "grid" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setViewMode("grid")}
-                  className="rounded-r-none h-8 w-8 p-0 bg-stone-800"
+                  className="rounded-r-none h-8 w-8 p-0 bg-accent2-600 hover:bg-accent2-700"
                 >
                   <Grid className="h-3 w-3" />
                 </Button>
@@ -355,90 +375,81 @@ export default function ProductsPage() {
             }`}
           >
             {products.map((product) => (
-              <Card
-                key={product.id}
-                className="group hover:shadow-md transition-all duration-300 border-stone-100 bg-white rounded-sm h-full"
-              >
-                <div className={`${viewMode === "list" ? "flex" : ""}`}>
-                  <div
-                    className={`relative ${
-                      viewMode === "list"
-                        ? "w-40 flex-shrink-0"
-                        : "aspect-square"
-                    } overflow-hidden`}
-                  >
-                    <Image
-                      src={product.image || "/placeholder.svg"}
-                      alt={product.name}
-                      width={300}
-                      height={300}
-                      className={`object-cover group-hover:scale-105 transition-transform duration-300 ${
-                        viewMode === "list" ? "w-full h-full" : "w-full h-full"
-                      }`}
-                    />
-                    <div className="absolute top-2 left-2 flex flex-col gap-1">
-                      {product.isNew && (
-                        <Badge className="bg-stone-800 text-white text-xs px-1.5 py-0.5 rounded-sm">
-                          New
-                        </Badge>
-                      )}
-                      {product.isSale && (
-                        <Badge className="bg-stone-700 text-white text-xs px-1.5 py-0.5 rounded-sm">
-                          Sale
-                        </Badge>
-                      )}
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="absolute top-2 right-2 bg-white/80 hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0 rounded-sm"
+              <Link key={product.id} href={`/products/${product.id}`}>
+                <Card className="group hover:shadow-md transition-all duration-300 border-stone-100 bg-white rounded-sm h-full">
+                  <div className={`${viewMode === "list" ? "flex" : ""}`}>
+                    <div
+                      className={`relative ${
+                        viewMode === "list"
+                          ? "w-40 flex-shrink-0"
+                          : "aspect-square"
+                      } overflow-hidden`}
                     >
-                      <Heart className="h-3 w-3" />
-                    </Button>
-                  </div>
-
-                  <CardContent
-                    className={`p-3 ${viewMode === "list" ? "flex-1" : ""}`}
-                  >
-                    <p className="text-xs text-stone-500 mb-1">
-                      {product.category}
-                    </p>
-                    <h3 className="text-xs font-medium text-stone-800 mb-1 truncate group-hover:text-stone-900 transition-colors">
-                      {product.name}
-                    </h3>
-                    <div className="flex items-center mb-2">
-                      <div className="flex items-center">
-                        <Star className="h-3 w-3 fill-stone-800 text-stone-800" />
-                        <span className="text-xs text-stone-600 ml-1">
-                          {product.rating}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1">
-                        <span className="text-xs font-medium text-stone-800">
-                          ${product.price}
-                        </span>
-                        {product.originalPrice && (
-                          <span className="text-xs text-stone-500 line-through">
-                            ${product.originalPrice}
-                          </span>
+                      <Image
+                        src={product.image || "/placeholder.svg"}
+                        alt={product.name}
+                        width={300}
+                        height={300}
+                        className={`object-cover group-hover:scale-105 transition-transform duration-300 ${
+                          viewMode === "list"
+                            ? "w-full h-full"
+                            : "w-full h-full"
+                        }`}
+                      />
+                      <div className="absolute top-2 left-2 flex flex-col gap-1">
+                        {product.isNew && (
+                          <Badge className="bg-accent3-600 text-white text-xs px-1.5 py-0.5 rounded-sm">
+                            New
+                          </Badge>
+                        )}
+                        {product.isSale && (
+                          <Badge className="bg-accent1-600 text-white text-xs px-1.5 py-0.5 rounded-sm">
+                            Sale
+                          </Badge>
                         )}
                       </div>
-                      {viewMode === "list" && (
-                        <Link href={`/products/${product.id}`}>
-                          <Button
-                            size="sm"
-                            className="bg-stone-800 hover:bg-stone-700 h-7 text-xs rounded-sm"
-                          >
-                            View
-                          </Button>
-                        </Link>
-                      )}
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="absolute top-2 right-2 bg-white/80 hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0 rounded-sm"
+                      >
+                        <Heart className="h-3 w-3" />
+                      </Button>
                     </div>
-                  </CardContent>
-                </div>
-              </Card>
+
+                    <CardContent
+                      className={`p-3 ${viewMode === "list" ? "flex-1" : ""}`}
+                    >
+                      <p className="text-xs text-stone-500 mb-1">
+                        {product.category}
+                      </p>
+                      <h3 className="text-xs font-medium text-stone-800 mb-1 truncate group-hover:text-stone-900 transition-colors">
+                        {product.name}
+                      </h3>
+                      <div className="flex items-center mb-2">
+                        <div className="flex items-center">
+                          <Star className="h-3 w-3 fill-accent2-600 text-accent2-600" />
+                          <span className="text-xs text-stone-600 ml-1">
+                            {product.rating}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs font-medium text-stone-800">
+                            ${product.price}
+                          </span>
+                          {product.originalPrice && (
+                            <span className="text-xs text-accent1-600 line-through">
+                              ${product.originalPrice}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </div>
+                </Card>
+              </Link>
             ))}
           </div>
 
@@ -455,7 +466,7 @@ export default function ProductsPage() {
               </Button>
               <Button
                 size="sm"
-                className="bg-stone-800 text-white h-7 w-7 p-0 text-xs rounded-sm"
+                className="bg-accent2-600 hover:bg-accent2-700 text-white h-7 w-7 p-0 text-xs rounded-sm"
               >
                 1
               </Button>

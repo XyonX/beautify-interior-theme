@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,6 +25,7 @@ import {
   Plus,
   Minus,
 } from "lucide-react";
+import { AddToCartButton } from "@/components/add-to-cart-button";
 
 export default function ProductDetailPage() {
   const [selectedImage, setSelectedImage] = useState(0);
@@ -33,8 +35,8 @@ export default function ProductDetailPage() {
   const product = {
     id: 1,
     name: "Moroccan Pendant Light",
-    price: 89.99,
-    originalPrice: 119.99,
+    price: 7499,
+    originalPrice: 9999,
     rating: 4.8,
     reviews: 124,
     category: "Lighting",
@@ -48,9 +50,9 @@ export default function ProductDetailPage() {
       "/placeholder.svg?height=600&width=600",
     ],
     variants: [
-      { id: "gold", name: "Gold", price: 89.99 },
-      { id: "silver", name: "Silver", price: 94.99 },
-      { id: "bronze", name: "Bronze", price: 87.99 },
+      { id: "gold", name: "Gold", price: 7499 },
+      { id: "silver", name: "Silver", price: 7899 },
+      { id: "bronze", name: "Bronze", price: 7299 },
     ],
     description:
       "Transform your space with this stunning Moroccan-inspired pendant light. Handcrafted with intricate metalwork and featuring beautiful geometric patterns, this piece adds warmth and elegance to any room.",
@@ -75,28 +77,28 @@ export default function ProductDetailPage() {
     {
       id: 2,
       name: "Boho Table Lamp",
-      price: 67.99,
+      price: 5699,
       image: "/placeholder.svg?height=200&width=200",
       rating: 4.6,
     },
     {
       id: 3,
       name: "Ceramic Pendant Light",
-      price: 54.99,
+      price: 4599,
       image: "/placeholder.svg?height=200&width=200",
       rating: 4.7,
     },
     {
       id: 4,
       name: "Woven Ceiling Light",
-      price: 78.99,
+      price: 6599,
       image: "/placeholder.svg?height=200&width=200",
       rating: 4.5,
     },
     {
       id: 5,
       name: "Modern Floor Lamp",
-      price: 129.99,
+      price: 10799,
       image: "/placeholder.svg?height=200&width=200",
       rating: 4.8,
     },
@@ -148,7 +150,7 @@ export default function ProductDetailPage() {
                 onClick={() => setSelectedImage(index)}
                 className={`aspect-square overflow-hidden rounded-sm border transition-colors ${
                   selectedImage === index
-                    ? "border-stone-800"
+                    ? "border-accent2-600"
                     : "border-stone-100"
                 }`}
               >
@@ -167,7 +169,7 @@ export default function ProductDetailPage() {
         {/* Product Details */}
         <div className="space-y-4">
           <div>
-            <Badge className="bg-stone-100 text-stone-800 mb-2 text-xs rounded-sm">
+            <Badge className="bg-accent1-100 text-accent1-800 mb-2 text-xs rounded-sm">
               Sale
             </Badge>
             <h1 className="text-xl font-medium text-stone-800 mb-1">
@@ -177,7 +179,7 @@ export default function ProductDetailPage() {
 
             <div className="flex items-center mb-3">
               <div className="flex items-center">
-                <Star className="h-3 w-3 fill-stone-800 text-stone-800" />
+                <Star className="h-3 w-3 fill-accent2-500 text-accent2-500" />
                 <span className="text-xs text-stone-600 ml-1">
                   {product.rating} ({product.reviews} reviews)
                 </span>
@@ -186,13 +188,16 @@ export default function ProductDetailPage() {
 
             <div className="flex items-center gap-2 mb-4">
               <span className="text-lg font-medium text-stone-800">
-                ${product.price}
+                ₹{product.price.toLocaleString("en-IN")}
               </span>
               <span className="text-sm text-stone-500 line-through">
-                ${product.originalPrice}
+                ₹{product.originalPrice.toLocaleString("en-IN")}
               </span>
-              <Badge className="bg-stone-700 text-white text-xs rounded-sm">
-                Save ${(product.originalPrice - product.price).toFixed(2)}
+              <Badge className="bg-accent1-600 text-white text-xs rounded-sm">
+                Save ₹
+                {(product.originalPrice - product.price).toLocaleString(
+                  "en-IN"
+                )}
               </Badge>
             </div>
           </div>
@@ -217,7 +222,7 @@ export default function ProductDetailPage() {
                       value={variant.id}
                       className="text-xs"
                     >
-                      {variant.name} - ${variant.price}
+                      {variant.name} - ₹{variant.price.toLocaleString("en-IN")}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -257,18 +262,29 @@ export default function ProductDetailPage() {
 
             {/* Add to Cart */}
             <div className="flex gap-2">
-              <Button
+              <AddToCartButton
+                product={{
+                  id: product.id,
+                  name: product.name,
+                  price:
+                    product.variants.find((v) => v.id === selectedVariant)
+                      ?.price || product.price,
+                  image: product.images[0],
+                  variant: product.variants.find(
+                    (v) => v.id === selectedVariant
+                  )?.name,
+                }}
+                quantity={quantity}
+                className="flex-1 bg-accent2-600 hover:bg-accent2-700 h-8 text-xs rounded-sm"
                 size="sm"
-                className="flex-1 bg-stone-800 hover:bg-stone-700 h-8 text-xs rounded-sm"
-              >
-                Add to Cart
-              </Button>
+                disabled={!product.inStock}
+              />
               <Button
                 size="sm"
                 variant="outline"
                 className="border-stone-200 h-8 w-8 p-0 rounded-sm"
               >
-                <Heart className="h-3 w-3" />
+                <Heart className="h-3 w-3 text-accent1-600" />
               </Button>
               <Button
                 size="sm"
@@ -279,27 +295,30 @@ export default function ProductDetailPage() {
               </Button>
             </div>
 
-            <Button
-              size="sm"
-              variant="outline"
-              className="w-full border-stone-800 text-stone-800 hover:bg-stone-50 h-8 text-xs rounded-sm"
-            >
-              Buy Now
-            </Button>
+            <Link href="/checkout">
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full border-stone-800 text-stone-800 hover:bg-stone-50 h-8 text-xs rounded-sm"
+                disabled={!product.inStock}
+              >
+                Buy Now
+              </Button>
+            </Link>
           </div>
 
           {/* Features */}
           <div className="grid grid-cols-3 gap-2 py-4 border-t border-stone-100">
             <div className="flex items-center gap-1">
-              <Truck className="h-3 w-3 text-stone-800" />
+              <Truck className="h-3 w-3 text-accent3-600" />
               <span className="text-xs text-stone-600">Free Shipping</span>
             </div>
             <div className="flex items-center gap-1">
-              <Shield className="h-3 w-3 text-stone-800" />
+              <Shield className="h-3 w-3 text-accent3-600" />
               <span className="text-xs text-stone-600">2 Year Warranty</span>
             </div>
             <div className="flex items-center gap-1">
-              <RotateCcw className="h-3 w-3 text-stone-800" />
+              <RotateCcw className="h-3 w-3 text-accent3-600" />
               <span className="text-xs text-stone-600">30 Day Returns</span>
             </div>
           </div>
@@ -310,13 +329,22 @@ export default function ProductDetailPage() {
       <div className="mb-10">
         <Tabs defaultValue="description" className="w-full">
           <TabsList className="grid w-full grid-cols-3 h-8 rounded-sm">
-            <TabsTrigger value="description" className="text-xs rounded-sm">
+            <TabsTrigger
+              value="description"
+              className="text-xs rounded-sm data-[state=active]:bg-accent2-600 data-[state=active]:text-white"
+            >
               Description
             </TabsTrigger>
-            <TabsTrigger value="specifications" className="text-xs rounded-sm">
+            <TabsTrigger
+              value="specifications"
+              className="text-xs rounded-sm data-[state=active]:bg-accent2-600 data-[state=active]:text-white"
+            >
               Specifications
             </TabsTrigger>
-            <TabsTrigger value="reviews" className="text-xs rounded-sm">
+            <TabsTrigger
+              value="reviews"
+              className="text-xs rounded-sm data-[state=active]:bg-accent2-600 data-[state=active]:text-white"
+            >
               Reviews ({product.reviews})
             </TabsTrigger>
           </TabsList>
@@ -333,7 +361,7 @@ export default function ProductDetailPage() {
                 <ul className="space-y-1.5">
                   {product.features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 bg-stone-800 rounded-full mt-1.5 flex-shrink-0" />
+                      <span className="w-1.5 h-1.5 bg-accent2-600 rounded-full mt-1.5 flex-shrink-0" />
                       <span className="text-xs text-stone-700">{feature}</span>
                     </li>
                   ))}
@@ -408,10 +436,10 @@ export default function ProductDetailPage() {
                 </h3>
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-stone-800">
-                    ${product.price}
+                    ₹{product.price.toLocaleString("en-IN")}
                   </span>
                   <div className="flex items-center">
-                    <Star className="h-3 w-3 fill-stone-800 text-stone-800" />
+                    <Star className="h-3 w-3 fill-accent2-500 text-accent2-500" />
                     <span className="text-xs text-stone-600 ml-1">
                       {product.rating}
                     </span>

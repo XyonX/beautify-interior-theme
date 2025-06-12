@@ -7,7 +7,7 @@ const trendingProducts = [
   {
     id: 1,
     name: "Minimalist Ceramic Vase",
-    price: 39.99,
+    price: 3299,
     image: "/placeholder.svg?height=300&width=300",
     category: "Decor",
     trending: "#1",
@@ -15,7 +15,7 @@ const trendingProducts = [
   {
     id: 2,
     name: "Scandinavian Floor Lamp",
-    price: 129.99,
+    price: 10799,
     image: "/placeholder.svg?height=300&width=300",
     category: "Lighting",
     trending: "#2",
@@ -23,7 +23,7 @@ const trendingProducts = [
   {
     id: 3,
     name: "Handwoven Basket Set",
-    price: 45.99,
+    price: 3799,
     image: "/placeholder.svg?height=300&width=300",
     category: "Storage",
     trending: "#3",
@@ -31,7 +31,7 @@ const trendingProducts = [
   {
     id: 4,
     name: "Abstract Wall Art",
-    price: 79.99,
+    price: 6699,
     image: "/placeholder.svg?height=300&width=300",
     category: "Wall Art",
     trending: "#4",
@@ -52,7 +52,7 @@ export function TrendingSection() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {trendingProducts.map((product) => (
+          {trendingProducts.map((product, index) => (
             <Link key={product.id} href={`/products/${product.id}`}>
               <Card className="group hover:shadow-md transition-all duration-300 border-stone-100 bg-white rounded-sm h-full">
                 <div className="relative aspect-square overflow-hidden">
@@ -63,7 +63,18 @@ export function TrendingSection() {
                     height={300}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <Badge className="absolute top-2 left-2 bg-stone-800 text-white text-xs px-1.5 py-0.5 rounded-sm">
+                  <Badge
+                    className={`absolute top-2 left-2 text-white text-xs px-1.5 py-0.5 rounded-sm
+                      ${
+                        index === 0
+                          ? "bg-accent1-600"
+                          : index === 1
+                          ? "bg-accent1-500"
+                          : index === 2
+                          ? "bg-accent2-600"
+                          : "bg-accent2-500"
+                      }`}
+                  >
                     {product.trending}
                   </Badge>
                 </div>
@@ -75,7 +86,7 @@ export function TrendingSection() {
                     {product.name}
                   </h3>
                   <p className="text-xs font-medium text-stone-800">
-                    ${product.price}
+                    ₹{product.price.toLocaleString("en-IN")}
                   </p>
                 </CardContent>
               </Card>

@@ -9,8 +9,8 @@ const featuredProducts = [
   {
     id: 1,
     name: "Moroccan Pendant Light",
-    price: 89.99,
-    originalPrice: 119.99,
+    price: 7499,
+    originalPrice: 9999,
     rating: 4.8,
     reviews: 124,
     image: "/placeholder.svg?height=300&width=300",
@@ -21,7 +21,7 @@ const featuredProducts = [
   {
     id: 2,
     name: "Handwoven Macrame Wall Hanging",
-    price: 45.99,
+    price: 3799,
     originalPrice: null,
     rating: 4.9,
     reviews: 89,
@@ -33,8 +33,8 @@ const featuredProducts = [
   {
     id: 3,
     name: "Ceramic Vase Set",
-    price: 34.99,
-    originalPrice: 49.99,
+    price: 2899,
+    originalPrice: 4199,
     rating: 4.7,
     reviews: 156,
     image: "/placeholder.svg?height=300&width=300",
@@ -45,7 +45,7 @@ const featuredProducts = [
   {
     id: 4,
     name: "Boho Table Lamp",
-    price: 67.99,
+    price: 5699,
     originalPrice: null,
     rating: 4.6,
     reviews: 78,
@@ -57,8 +57,8 @@ const featuredProducts = [
   {
     id: 5,
     name: "Handmade Wooden Bowl",
-    price: 28.99,
-    originalPrice: 39.99,
+    price: 2399,
+    originalPrice: 3299,
     rating: 4.8,
     reviews: 203,
     image: "/placeholder.svg?height=300&width=300",
@@ -69,7 +69,7 @@ const featuredProducts = [
   {
     id: 6,
     name: "Velvet Throw Pillow",
-    price: 24.99,
+    price: 2099,
     originalPrice: null,
     rating: 4.5,
     reviews: 92,
@@ -81,7 +81,7 @@ const featuredProducts = [
   {
     id: 7,
     name: "Geometric Wall Shelf",
-    price: 59.99,
+    price: 4999,
     originalPrice: null,
     rating: 4.7,
     reviews: 67,
@@ -93,8 +93,8 @@ const featuredProducts = [
   {
     id: 8,
     name: "Minimalist Desk Lamp",
-    price: 49.99,
-    originalPrice: 69.99,
+    price: 4199,
+    originalPrice: 5799,
     rating: 4.6,
     reviews: 112,
     image: "/placeholder.svg?height=300&width=300",
@@ -119,67 +119,66 @@ export function FeaturedProducts() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {featuredProducts.map((product) => (
-            <Card
-              key={product.id}
-              className="group hover:shadow-md transition-all duration-300 border-stone-100 bg-white rounded-sm h-full"
-            >
-              <div className="relative aspect-square overflow-hidden">
-                <Image
-                  src={product.image || "/placeholder.svg"}
-                  alt={product.name}
-                  width={300}
-                  height={300}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute top-2 left-2 flex flex-col gap-1">
-                  {product.isNew && (
-                    <Badge className="bg-stone-800 text-white text-xs px-1.5 py-0.5 rounded-sm">
-                      New
-                    </Badge>
-                  )}
-                  {product.isSale && (
-                    <Badge className="bg-stone-700 text-white text-xs px-1.5 py-0.5 rounded-sm">
-                      Sale
-                    </Badge>
-                  )}
-                </div>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="absolute top-2 right-2 bg-white/80 hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0 rounded-sm"
-                >
-                  <Heart className="h-3 w-3" />
-                </Button>
-              </div>
-              <CardContent className="p-3">
-                <p className="text-xs text-stone-500 mb-1">
-                  {product.category}
-                </p>
-                <h3 className="text-xs font-medium text-stone-800 mb-1 truncate group-hover:text-stone-900 transition-colors">
-                  {product.name}
-                </h3>
-                <div className="flex items-center mb-2">
-                  <div className="flex items-center">
-                    <Star className="h-3 w-3 fill-stone-800 text-stone-800" />
-                    <span className="text-xs text-stone-600 ml-1">
-                      {product.rating}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1">
-                    <span className="text-xs font-medium text-stone-800">
-                      ${product.price}
-                    </span>
-                    {product.originalPrice && (
-                      <span className="text-xs text-stone-500 line-through">
-                        ${product.originalPrice}
-                      </span>
+            <Link key={product.id} href={`/products/${product.id}`}>
+              <Card className="group hover:shadow-md transition-all duration-300 border-stone-100 bg-white rounded-sm h-full">
+                <div className="relative aspect-square overflow-hidden">
+                  <Image
+                    src={product.image || "/placeholder.svg"}
+                    alt={product.name}
+                    width={300}
+                    height={300}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute top-2 left-2 flex flex-col gap-1">
+                    {product.isNew && (
+                      <Badge className="bg-accent3-600 text-white text-xs px-1.5 py-0.5 rounded-sm">
+                        New
+                      </Badge>
+                    )}
+                    {product.isSale && (
+                      <Badge className="bg-accent1-600 text-white text-xs px-1.5 py-0.5 rounded-sm">
+                        Sale
+                      </Badge>
                     )}
                   </div>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="absolute top-2 right-2 bg-white/80 hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0 rounded-sm"
+                  >
+                    <Heart className="h-3 w-3" />
+                  </Button>
                 </div>
-              </CardContent>
-            </Card>
+                <CardContent className="p-3">
+                  <p className="text-xs text-stone-500 mb-1">
+                    {product.category}
+                  </p>
+                  <h3 className="text-xs font-medium text-stone-800 mb-1 truncate group-hover:text-stone-900 transition-colors">
+                    {product.name}
+                  </h3>
+                  <div className="flex items-center mb-2">
+                    <div className="flex items-center">
+                      <Star className="h-3 w-3 fill-stone-800 text-stone-800" />
+                      <span className="text-xs text-stone-600 ml-1">
+                        {product.rating}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs font-medium text-stone-800">
+                        ₹{product.price.toLocaleString("en-IN")}
+                      </span>
+                      {product.originalPrice && (
+                        <span className="text-xs text-stone-500 line-through">
+                          ₹{product.originalPrice.toLocaleString("en-IN")}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
 

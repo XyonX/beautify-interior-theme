@@ -1,19 +1,42 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Search, MoreHorizontal, UserPlus, Shield, Key, UserCheck, UserX } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Search,
+  MoreHorizontal,
+  UserPlus,
+  Shield,
+  Key,
+  UserCheck,
+  UserX,
+} from "lucide-react";
 
 // Mock admin users data
 const mockAdminUsers = [
@@ -61,7 +84,7 @@ const mockAdminUsers = [
     lastLogin: "2023-05-20T09:10:00Z",
     createdAt: "2023-04-12T13:45:00Z",
   },
-]
+];
 
 // Available permissions
 const availablePermissions = [
@@ -74,14 +97,14 @@ const availablePermissions = [
   { id: "settings", label: "System Settings" },
   { id: "users", label: "User Management" },
   { id: "content", label: "Content Management" },
-]
+];
 
 export default function UsersPage() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [roleFilter, setRoleFilter] = useState("all")
-  const [users, setUsers] = useState(mockAdminUsers)
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [users, setUsers] = useState(mockAdminUsers);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Form state for new user
   const [formData, setFormData] = useState({
@@ -91,46 +114,48 @@ export default function UsersPage() {
     role: "support",
     permissions: ["orders", "customers"],
     isActive: true,
-  })
+  });
 
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
       user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesRole = roleFilter === "all" || user.role === roleFilter
+      user.email.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesRole = roleFilter === "all" || user.role === roleFilter;
 
-    return matchesSearch && matchesRole
-  })
+    return matchesSearch && matchesRole;
+  });
 
-  const handleInputChange = (field: string, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+  const handleInputChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
-  const handlePermissionChange = (permission: string, checked: boolean) => {
+  const handlePermissionChange = (permission, checked) => {
     setFormData((prev) => ({
       ...prev,
-      permissions: checked ? [...prev.permissions, permission] : prev.permissions.filter((p) => p !== permission),
-    }))
-  }
+      permissions: checked
+        ? [...prev.permissions, permission]
+        : prev.permissions.filter((p) => p !== permission),
+    }));
+  };
 
-  const handleCreateUser = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+  const handleCreateUser = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
 
     try {
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const newUser = {
         id: (users.length + 1).toString(),
         ...formData,
         lastLogin: null,
         createdAt: new Date().toISOString(),
-      }
+      };
 
-      setUsers([...users, newUser])
-      setIsCreateDialogOpen(false)
+      setUsers([...users, newUser]);
+      setIsCreateDialogOpen(false);
       setFormData({
         firstName: "",
         lastName: "",
@@ -138,39 +163,49 @@ export default function UsersPage() {
         role: "support",
         permissions: ["orders", "customers"],
         isActive: true,
-      })
+      });
     } catch (error) {
-      console.error("Error creating user:", error)
+      console.error("Error creating user:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
-  const handleToggleStatus = (userId: string) => {
-    setUsers(users.map((user) => (user.id === userId ? { ...user, isActive: !user.isActive } : user)))
-  }
+  const handleToggleStatus = (userId) => {
+    setUsers(
+      users.map((user) =>
+        user.id === userId ? { ...user, isActive: !user.isActive } : user
+      )
+    );
+  };
 
-  const getRoleBadge = (role: string) => {
+  const getRoleBadge = (role) => {
     switch (role) {
       case "super_admin":
-        return <Badge className="bg-purple-100 text-purple-800">Super Admin</Badge>
+        return (
+          <Badge className="bg-purple-100 text-purple-800">Super Admin</Badge>
+        );
       case "admin":
-        return <Badge className="bg-blue-100 text-blue-800">Admin</Badge>
+        return <Badge className="bg-blue-100 text-blue-800">Admin</Badge>;
       case "support":
-        return <Badge className="bg-green-100 text-green-800">Support</Badge>
+        return <Badge className="bg-green-100 text-green-800">Support</Badge>;
       case "editor":
-        return <Badge className="bg-amber-100 text-amber-800">Editor</Badge>
+        return <Badge className="bg-amber-100 text-amber-800">Editor</Badge>;
       default:
-        return <Badge className="bg-stone-100 text-stone-800">{role}</Badge>
+        return <Badge className="bg-stone-100 text-stone-800">{role}</Badge>;
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-stone-900">User Management</h1>
-          <p className="text-sm text-stone-600">Manage admin users and permissions</p>
+          <h1 className="text-2xl font-semibold text-stone-900">
+            User Management
+          </h1>
+          <p className="text-sm text-stone-600">
+            Manage admin users and permissions
+          </p>
         </div>
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
@@ -190,7 +225,9 @@ export default function UsersPage() {
                   <Input
                     id="firstName"
                     value={formData.firstName}
-                    onChange={(e) => handleInputChange("firstName", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("firstName", e.target.value)
+                    }
                     required
                   />
                 </div>
@@ -199,7 +236,9 @@ export default function UsersPage() {
                   <Input
                     id="lastName"
                     value={formData.lastName}
-                    onChange={(e) => handleInputChange("lastName", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("lastName", e.target.value)
+                    }
                     required
                   />
                 </div>
@@ -218,7 +257,10 @@ export default function UsersPage() {
 
               <div>
                 <Label htmlFor="role">Role</Label>
-                <Select value={formData.role} onValueChange={(value) => handleInputChange("role", value)}>
+                <Select
+                  value={formData.role}
+                  onValueChange={(value) => handleInputChange("role", value)}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -234,13 +276,21 @@ export default function UsersPage() {
                 <Label>Permissions</Label>
                 <div className="grid grid-cols-2 gap-2 mt-2">
                   {availablePermissions.map((permission) => (
-                    <div key={permission.id} className="flex items-center space-x-2">
+                    <div
+                      key={permission.id}
+                      className="flex items-center space-x-2"
+                    >
                       <Checkbox
                         id={`permission-${permission.id}`}
                         checked={formData.permissions.includes(permission.id)}
-                        onCheckedChange={(checked) => handlePermissionChange(permission.id, !!checked)}
+                        onCheckedChange={(checked) =>
+                          handlePermissionChange(permission.id, !!checked)
+                        }
                       />
-                      <label htmlFor={`permission-${permission.id}`} className="text-sm">
+                      <label
+                        htmlFor={`permission-${permission.id}`}
+                        className="text-sm"
+                      >
                         {permission.label}
                       </label>
                     </div>
@@ -252,13 +302,19 @@ export default function UsersPage() {
                 <Switch
                   id="isActive"
                   checked={formData.isActive}
-                  onCheckedChange={(checked) => handleInputChange("isActive", checked)}
+                  onCheckedChange={(checked) =>
+                    handleInputChange("isActive", checked)
+                  }
                 />
                 <Label htmlFor="isActive">Active Account</Label>
               </div>
 
               <div className="flex items-center justify-end space-x-2 pt-4">
-                <Button type="button" variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsCreateDialogOpen(false)}
+                >
                   Cancel
                 </Button>
                 <Button type="submit" disabled={isLoading}>
@@ -304,7 +360,9 @@ export default function UsersPage() {
       {/* Users Table */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg font-medium">Users ({filteredUsers.length})</CardTitle>
+          <CardTitle className="text-lg font-medium">
+            Users ({filteredUsers.length})
+          </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           {filteredUsers.length > 0 ? (
@@ -312,17 +370,32 @@ export default function UsersPage() {
               <table className="w-full">
                 <thead className="border-b border-stone-200">
                   <tr>
-                    <th className="text-left p-4 font-medium text-sm text-stone-700">User</th>
-                    <th className="text-left p-4 font-medium text-sm text-stone-700">Role</th>
-                    <th className="text-left p-4 font-medium text-sm text-stone-700">Permissions</th>
-                    <th className="text-left p-4 font-medium text-sm text-stone-700">Status</th>
-                    <th className="text-left p-4 font-medium text-sm text-stone-700">Last Login</th>
-                    <th className="text-left p-4 font-medium text-sm text-stone-700">Actions</th>
+                    <th className="text-left p-4 font-medium text-sm text-stone-700">
+                      User
+                    </th>
+                    <th className="text-left p-4 font-medium text-sm text-stone-700">
+                      Role
+                    </th>
+                    <th className="text-left p-4 font-medium text-sm text-stone-700">
+                      Permissions
+                    </th>
+                    <th className="text-left p-4 font-medium text-sm text-stone-700">
+                      Status
+                    </th>
+                    <th className="text-left p-4 font-medium text-sm text-stone-700">
+                      Last Login
+                    </th>
+                    <th className="text-left p-4 font-medium text-sm text-stone-700">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredUsers.map((user) => (
-                    <tr key={user.id} className="border-b border-stone-100 hover:bg-stone-50">
+                    <tr
+                      key={user.id}
+                      className="border-b border-stone-100 hover:bg-stone-50"
+                    >
                       <td className="p-4">
                         <div className="flex items-center space-x-3">
                           <div className="w-10 h-10 bg-stone-200 rounded-full flex items-center justify-center">
@@ -335,7 +408,9 @@ export default function UsersPage() {
                             <p className="text-sm font-medium text-stone-900">
                               {user.firstName} {user.lastName}
                             </p>
-                            <p className="text-xs text-stone-500">{user.email}</p>
+                            <p className="text-xs text-stone-500">
+                              {user.email}
+                            </p>
                           </div>
                         </div>
                       </td>
@@ -348,32 +423,49 @@ export default function UsersPage() {
                             </Badge>
                           ) : (
                             user.permissions.slice(0, 2).map((permission) => (
-                              <Badge key={permission} variant="outline" className="text-xs">
+                              <Badge
+                                key={permission}
+                                variant="outline"
+                                className="text-xs"
+                              >
                                 {permission}
                               </Badge>
                             ))
                           )}
-                          {user.permissions.length > 2 && user.permissions[0] !== "all" && (
-                            <Badge variant="outline" className="text-xs">
-                              +{user.permissions.length - 2}
-                            </Badge>
-                          )}
+                          {user.permissions.length > 2 &&
+                            user.permissions[0] !== "all" && (
+                              <Badge variant="outline" className="text-xs">
+                                +{user.permissions.length - 2}
+                              </Badge>
+                            )}
                         </div>
                       </td>
                       <td className="p-4">
-                        <Badge className={user.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                        <Badge
+                          className={
+                            user.isActive
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }
+                        >
                           {user.isActive ? "Active" : "Inactive"}
                         </Badge>
                       </td>
                       <td className="p-4">
                         <span className="text-sm text-stone-600">
-                          {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : "Never"}
+                          {user.lastLogin
+                            ? new Date(user.lastLogin).toLocaleDateString()
+                            : "Never"}
                         </span>
                       </td>
                       <td className="p-4">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0"
+                            >
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
@@ -386,7 +478,9 @@ export default function UsersPage() {
                               <Key className="h-4 w-4 mr-2" />
                               Reset Password
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleToggleStatus(user.id)}>
+                            <DropdownMenuItem
+                              onClick={() => handleToggleStatus(user.id)}
+                            >
                               {user.isActive ? (
                                 <>
                                   <UserX className="h-4 w-4 mr-2" />
@@ -410,12 +504,19 @@ export default function UsersPage() {
           ) : (
             <div className="text-center py-12">
               <Shield className="h-12 w-12 text-stone-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-stone-900 mb-2">No users found</h3>
+              <h3 className="text-lg font-medium text-stone-900 mb-2">
+                No users found
+              </h3>
               <p className="text-sm text-stone-500 mb-6">
-                {searchQuery || roleFilter !== "all" ? "Try adjusting your filters" : "Add users to manage your store"}
+                {searchQuery || roleFilter !== "all"
+                  ? "Try adjusting your filters"
+                  : "Add users to manage your store"}
               </p>
               {!searchQuery && roleFilter === "all" && (
-                <Button onClick={() => setIsCreateDialogOpen(true)} className="bg-stone-800 hover:bg-stone-700">
+                <Button
+                  onClick={() => setIsCreateDialogOpen(true)}
+                  className="bg-stone-800 hover:bg-stone-700"
+                >
                   <UserPlus className="h-4 w-4 mr-2" />
                   Add User
                 </Button>
@@ -428,16 +529,21 @@ export default function UsersPage() {
       {/* Role Descriptions */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg font-medium">Role Descriptions</CardTitle>
+          <CardTitle className="text-lg font-medium">
+            Role Descriptions
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 border rounded-lg">
               <div className="flex items-center space-x-2 mb-2">
-                <Badge className="bg-purple-100 text-purple-800">Super Admin</Badge>
+                <Badge className="bg-purple-100 text-purple-800">
+                  Super Admin
+                </Badge>
               </div>
               <p className="text-sm text-stone-600">
-                Full access to all features and settings. Can manage users and assign roles.
+                Full access to all features and settings. Can manage users and
+                assign roles.
               </p>
             </div>
             <div className="p-4 border rounded-lg">
@@ -445,7 +551,8 @@ export default function UsersPage() {
                 <Badge className="bg-blue-100 text-blue-800">Admin</Badge>
               </div>
               <p className="text-sm text-stone-600">
-                Access to most features except user management and critical system settings.
+                Access to most features except user management and critical
+                system settings.
               </p>
             </div>
             <div className="p-4 border rounded-lg">
@@ -453,7 +560,8 @@ export default function UsersPage() {
                 <Badge className="bg-green-100 text-green-800">Support</Badge>
               </div>
               <p className="text-sm text-stone-600">
-                Can view and manage orders and customers. Limited access to other features.
+                Can view and manage orders and customers. Limited access to
+                other features.
               </p>
             </div>
             <div className="p-4 border rounded-lg">
@@ -461,12 +569,13 @@ export default function UsersPage() {
                 <Badge className="bg-amber-100 text-amber-800">Editor</Badge>
               </div>
               <p className="text-sm text-stone-600">
-                Can manage products and content. No access to orders or customer data.
+                Can manage products and content. No access to orders or customer
+                data.
               </p>
             </div>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

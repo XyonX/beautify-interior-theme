@@ -2,7 +2,7 @@ import localFont from "next/font/local";
 import "../globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-
+import { ToastProvider } from "@/components/toast-provider";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -110,7 +110,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <head>
         {/* Mobile Viewport Optimization */}
         <meta
@@ -137,9 +137,13 @@ export default function RootLayout({ children }) {
         />
       </head>
 
-      <body className="min-h-screen bg-white">
+      <body className="flex flex-col min-h-screen">
         <Header />
-        <main className="h-full w-full">{children}</main>
+        <main className="h-full w-full  flex-grow ">{children}</main>
+        <ToastProvider />
+        {/* <main className="flex-grow container mx-auto px-4 py-4">
+          {children}
+        </main> */}
         <Footer />
       </body>
     </html>
