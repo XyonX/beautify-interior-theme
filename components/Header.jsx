@@ -49,7 +49,7 @@ export function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMobileMenuOpen]);
 
-  // Prevent body scroll when menu is open
+  // Prevent body scroll when menu is ope
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = "hidden";

@@ -97,7 +97,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Customer Service */}
+          {/* Customer Servic */}
           <div className="space-y-3">
             <h4 className="text-sm font-medium text-white">Customer Service</h4>
             <ul className="space-y-1.5">
