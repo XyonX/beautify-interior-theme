@@ -4,8 +4,6 @@ import { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

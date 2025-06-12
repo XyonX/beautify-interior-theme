@@ -1,5 +1,3 @@
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProductGridSkeleton } from "@/components/skeletons/product-grid-skeleton";
 
