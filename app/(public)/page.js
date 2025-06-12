@@ -6,7 +6,7 @@ import { CategorySection } from "@/components/category-section";
 import { FeaturedProducts } from "@/components/featured-products";
 import { TrendingSection } from "@/components/trending-section";
 import { DealsSection } from "@/components/deals-section";
-import { Newsletter } from "@/components/newsletter";
+import { Newsletter } from "@/components/Newsletter";
 import { HeroSkeleton } from "@/components/skeletons/hero-skeleton";
 import { CategorySkeleton } from "@/components/skeletons/category-skeleton";
 import { FeaturedProductsSkeleton } from "@/components/skeletons/featured-products-skeleton";
