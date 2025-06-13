@@ -132,9 +132,7 @@ export default function AdminLoginPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-xs text-stone-500">
-              Demo credentials: admin@beautifyinterior.com / admin123
-            </p>
+            <p className="text-xs text-stone-500">admin@beautifyinterior.com</p>
           </div>
         </CardContent>
       </Card>
