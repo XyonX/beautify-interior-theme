@@ -5,106 +5,150 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, Heart } from "lucide-react";
 
-const featuredProducts = [
-  {
-    id: 1,
-    name: "Moroccan Pendant Light",
-    price: 749,
-    originalPrice: 999,
-    rating: 4.8,
-    reviews: 124,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Lighting",
-    isNew: false,
-    isSale: true,
-  },
-  {
-    id: 2,
-    name: "Handwoven Macrame Wall Hanging",
-    price: 379,
-    originalPrice: null,
-    rating: 4.9,
-    reviews: 89,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Wall Art",
-    isNew: true,
-    isSale: false,
-  },
-  {
-    id: 3,
-    name: "Ceramic Vase Set",
-    price: 289,
-    originalPrice: 419,
-    rating: 4.7,
-    reviews: 156,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Decor",
-    isNew: false,
-    isSale: true,
-  },
-  {
-    id: 4,
-    name: "Boho Table Lamp",
-    price: 569,
-    originalPrice: null,
-    rating: 4.6,
-    reviews: 78,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Lighting",
-    isNew: true,
-    isSale: false,
-  },
-  {
-    id: 5,
-    name: "Handmade Wooden Bowl",
-    price: 239,
-    originalPrice: 329,
-    rating: 4.8,
-    reviews: 203,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Crafts",
-    isNew: false,
-    isSale: true,
-  },
-  {
-    id: 6,
-    name: "Velvet Throw Pillow",
-    price: 209,
-    originalPrice: null,
-    rating: 4.5,
-    reviews: 92,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Textiles",
-    isNew: false,
-    isSale: false,
-  },
-  {
-    id: 7,
-    name: "Geometric Wall Shelf",
-    price: 499,
-    originalPrice: null,
-    rating: 4.7,
-    reviews: 67,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Decor",
-    isNew: true,
-    isSale: false,
-  },
-  {
-    id: 8,
-    name: "Minimalist Desk Lamp",
-    price: 419,
-    originalPrice: 579,
-    rating: 4.6,
-    reviews: 112,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Lighting",
-    isNew: false,
-    isSale: true,
-  },
-];
+// const featuredProducts = [
+//   {
+//     id: 1,
+//     name: "Moroccan Pendant Light",
+//     price: 749,
+//     originalPrice: 999,
+//     rating: 4.8,
+//     reviews: 124,
+//     image: "/placeholder.svg?height=300&width=300",
+//     category: "Lighting",
+//     isNew: false,
+//     isSale: true,
+//   },
+//   {
+//     id: 2,
+//     name: "Handwoven Macrame Wall Hanging",
+//     price: 379,
+//     originalPrice: null,
+//     rating: 4.9,
+//     reviews: 89,
+//     image: "/placeholder.svg?height=300&width=300",
+//     category: "Wall Art",
+//     isNew: true,
+//     isSale: false,
+//   },
+//   {
+//     id: 3,
+//     name: "Ceramic Vase Set",
+//     price: 289,
+//     originalPrice: 419,
+//     rating: 4.7,
+//     reviews: 156,
+//     image: "/placeholder.svg?height=300&width=300",
+//     category: "Decor",
+//     isNew: false,
+//     isSale: true,
+//   },
+//   {
+//     id: 4,
+//     name: "Boho Table Lamp",
+//     price: 569,
+//     originalPrice: null,
+//     rating: 4.6,
+//     reviews: 78,
+//     image: "/placeholder.svg?height=300&width=300",
+//     category: "Lighting",
+//     isNew: true,
+//     isSale: false,
+//   },
+//   {
+//     id: 5,
+//     name: "Handmade Wooden Bowl",
+//     price: 239,
+//     originalPrice: 329,
+//     rating: 4.8,
+//     reviews: 203,
+//     image: "/placeholder.svg?height=300&width=300",
+//     category: "Crafts",
+//     isNew: false,
+//     isSale: true,
+//   },
+//   {
+//     id: 6,
+//     name: "Velvet Throw Pillow",
+//     price: 209,
+//     originalPrice: null,
+//     rating: 4.5,
+//     reviews: 92,
+//     image: "/placeholder.svg?height=300&width=300",
+//     category: "Textiles",
+//     isNew: false,
+//     isSale: false,
+//   },
+//   {
+//     id: 7,
+//     name: "Geometric Wall Shelf",
+//     price: 499,
+//     originalPrice: null,
+//     rating: 4.7,
+//     reviews: 67,
+//     image: "/placeholder.svg?height=300&width=300",
+//     category: "Decor",
+//     isNew: true,
+//     isSale: false,
+//   },
+//   {
+//     id: 8,
+//     name: "Minimalist Desk Lamp",
+//     price: 419,
+//     originalPrice: 579,
+//     rating: 4.6,
+//     reviews: 112,
+//     image: "/placeholder.svg?height=300&width=300",
+//     category: "Lighting",
+//     isNew: false,
+//     isSale: true,
+//   },
+// ];
 
-export function FeaturedProducts() {
+// Fetch data server-side
+// Fetch featured products
+async function fetchFeaturedProducts() {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products`,
+      {
+        cache: "no-store", // Ensure fresh data
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch products");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
+}
+async function fetchCategories() {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories`,
+      {
+        cache: "no-store", // Ensure fresh data
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch categories");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return [];
+  }
+}
+
+export async function FeaturedProducts() {
+  // Fetch products and categories in parallel
+  const [featuredProducts, categories] = await Promise.all([
+    fetchFeaturedProducts(),
+    fetchCategories(),
+  ]);
+
+  console.log(featuredProducts);
   return (
     <section className="py-10 bg-stone-50">
       <div className="container mx-auto px-4">
@@ -123,7 +167,10 @@ export function FeaturedProducts() {
               <Card className="group hover:shadow-md transition-all duration-300 border-stone-100 bg-white rounded-sm h-full">
                 <div className="relative aspect-square overflow-hidden">
                   <Image
-                    src={product.image || "/placeholder.svg"}
+                    src={
+                      `${process.env.NEXT_PUBLIC_CDN_URL}${product.thumbnail}` ||
+                      "/placeholder.svg"
+                    }
                     alt={product.name}
                     width={300}
                     height={300}
@@ -160,7 +207,7 @@ export function FeaturedProducts() {
                     <div className="flex items-center">
                       <Star className="h-3 w-3 fill-stone-800 text-stone-800" />
                       <span className="text-xs text-stone-600 ml-1">
-                        {product.rating}
+                        {product.averageRating}
                       </span>
                     </div>
                   </div>
@@ -169,9 +216,9 @@ export function FeaturedProducts() {
                       <span className="text-xs font-medium text-stone-800">
                         ₹{product.price.toLocaleString("en-IN")}
                       </span>
-                      {product.originalPrice && (
+                      {product.compareAtPrice && (
                         <span className="text-xs text-stone-500 line-through">
-                          ₹{product.originalPrice.toLocaleString("en-IN")}
+                          ₹{product.compareAtPrice.toLocaleString("en-IN")}
                         </span>
                       )}
                     </div>

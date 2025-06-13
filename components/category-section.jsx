@@ -2,52 +2,71 @@ import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 
-const categories = [
-  {
-    id: 1,
-    name: "Lighting",
-    image: "/lighting.png",
-    link: "/categories/lighting",
-    count: "250+ items",
-  },
-  {
-    id: 2,
-    name: "Home Decor",
-    image: "/homedecor.jpg",
-    link: "/categories/decor",
-    count: "180+ items",
-  },
-  {
-    id: 3,
-    name: "Handmade Crafts",
-    image: "/handcrafted.webp",
-    link: "/categories/crafts",
-    count: "120+ items",
-  },
-  {
-    id: 4,
-    name: "Wall Art",
-    image: "/walldecor.jpg",
-    link: "/categories/wall-art",
-    count: "90+ items",
-  },
-  {
-    id: 5,
-    name: "Textiles",
-    image: "/textile.jpg",
-    link: "/categories/textiles",
-    count: "160+ items",
-  },
-  {
-    id: 6,
-    name: "Plants & Planters",
-    image: "/plantdecor.png",
-    link: "/categories/plants",
-    count: "75+ items",
-  },
-];
+// const categories = [
+//   {
+//     id: 1,
+//     name: "Lighting",
+//     image: "/lighting.png",
+//     link: "/categories/lighting",
+//     count: "250+ items",
+//   },
+//   {
+//     id: 2,
+//     name: "Home Decor",
+//     image: "/homedecor.jpg",
+//     link: "/categories/decor",
+//     count: "180+ items",
+//   },
+//   {
+//     id: 3,
+//     name: "Handmade Crafts",
+//     image: "/handcrafted.webp",
+//     link: "/categories/crafts",
+//     count: "120+ items",
+//   },
+//   {
+//     id: 4,
+//     name: "Wall Art",
+//     image: "/walldecor.jpg",
+//     link: "/categories/wall-art",
+//     count: "90+ items",
+//   },
+//   {
+//     id: 5,
+//     name: "Textiles",
+//     image: "/textile.jpg",
+//     link: "/categories/textiles",
+//     count: "160+ items",
+//   },
+//   {
+//     id: 6,
+//     name: "Plants & Planters",
+//     image: "/plantdecor.png",
+//     link: "/categories/plants",
+//     count: "75+ items",
+//   },
+// ];
+async function fetchCategories() {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories`,
+      {
+        cache: "no-store", // Ensure fresh data
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch categories");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return [];
+  }
+}
 
-export function CategorySection() {
+export async function CategorySection() {
+  let categories = await fetchCategories();
+  categories = categories.sort(() => 0.5 - Math.random()).slice(0, 6);
   return (
     <section className="py-10 bg-white">
       <div className="container mx-auto px-4">
@@ -62,11 +81,14 @@ export function CategorySection() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {categories.map((category) => (
-            <Link key={category.id} href={category.link}>
+            <Link key={category.id} href="">
               <Card className="group hover:shadow-md transition-all duration-300 border-stone-100 overflow-hidden rounded-sm h-full">
                 <div className="relative aspect-square overflow-hidden">
                   <Image
-                    src={category.image || "/placeholder.svg"}
+                    src={
+                      `${process.env.NEXT_PUBLIC_CDN_URL}${category.image}` ||
+                      "/placeholder.svg"
+                    }
                     alt={category.name}
                     width={300}
                     height={300}

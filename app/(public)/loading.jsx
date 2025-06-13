@@ -9,17 +9,13 @@ import { Newsletter } from "@/components/Newsletter";
 
 export default function Loading() {
   return (
-    <div className="flex flex-col min-h-screen bg-white">
-      <Header />
-      <main className="flex-grow">
-        <HeroSkeleton />
-        <CategorySkeleton />
-        <FeaturedProductsSkeleton />
-        <TrendingSkeleton />
-        <DealsSkeleton />
-        <Newsletter />
-      </main>
-      <Footer />
-    </div>
+    <main className="flex-grow">
+      <HeroSkeleton />
+      <CategorySkeleton />
+      <FeaturedProductsSkeleton />
+      <TrendingSkeleton />
+      <DealsSkeleton />
+      <Newsletter />
+    </main>
   );
 }
