@@ -9,13 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Star,
   Heart,
   Share2,
@@ -27,51 +20,9 @@ import {
 } from "lucide-react";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 
-export default function ProductDetailPage() {
+export default async function ProductDetailPage({ params }) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [selectedVariant, setSelectedVariant] = useState("gold");
-
-  const product = {
-    id: 1,
-    name: "Moroccan Pendant Light",
-    price: 7499,
-    originalPrice: 9999,
-    rating: 4.8,
-    reviews: 124,
-    category: "Lighting",
-    sku: "MPL-001-GLD",
-    inStock: true,
-    stockCount: 15,
-    images: [
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
-    ],
-    variants: [
-      { id: "gold", name: "Gold", price: 7499 },
-      { id: "silver", name: "Silver", price: 7899 },
-      { id: "bronze", name: "Bronze", price: 7299 },
-    ],
-    description:
-      "Transform your space with this stunning Moroccan-inspired pendant light. Handcrafted with intricate metalwork and featuring beautiful geometric patterns, this piece adds warmth and elegance to any room.",
-    features: [
-      "Handcrafted metal construction",
-      "Intricate geometric patterns",
-      "Adjustable hanging height",
-      "Compatible with LED bulbs",
-      "Easy installation with included hardware",
-    ],
-    specifications: {
-      Dimensions: '12" W x 16" H',
-      Material: "Metal with antique finish",
-      "Bulb Type": "E26 (not included)",
-      "Max Wattage": "60W",
-      "Cord Length": "6 feet",
-      Weight: "3.2 lbs",
-    },
-  };
 
   const relatedProducts = [
     {
@@ -104,6 +55,24 @@ export default function ProductDetailPage() {
     },
   ];
 
+  const fetchProduct = async (id) => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/${id}`,
+        { cache: "no-store" }
+      );
+      if (!res.ok) {
+        throw new Error("Failed to fetch products");
+      }
+      return await res.json();
+    } catch (error) {
+      console.error("Error in fetching product: ", error);
+      return {};
+    }
+  };
+  const { id } = params;
+  const product = await fetchProduct(id);
+
   return (
     <main className="container mx-auto px-4 py-4">
       {/* Breadcrumb */}
@@ -122,8 +91,11 @@ export default function ProductDetailPage() {
           </li>
           <li>/</li>
           <li>
-            <Link href="/categories/lighting" className="hover:text-stone-900">
-              Lighting
+            <Link
+              href={`/categories/${product.category?.slug}`}
+              className="hover:text-stone-900"
+            >
+              {product.category?.name}
             </Link>
           </li>
           <li>/</li>
@@ -136,15 +108,18 @@ export default function ProductDetailPage() {
         <div className="space-y-3">
           <div className="aspect-square overflow-hidden rounded-sm bg-white border border-stone-100">
             <Image
-              src={product.images[selectedImage] || "/placeholder.svg"}
-              alt={product.name}
+              src={`${process.env.NEXT_PUBLIC_CDN_URL}${
+                product.detailedImages?.[selectedImage]?.url ||
+                "/placeholder.svg"
+              }`}
+              alt={product.thumbnail?.alt_text || "Product image"}
               width={600}
               height={600}
               className="w-full h-full object-cover"
             />
           </div>
           <div className="grid grid-cols-4 gap-3">
-            {product.images.map((image, index) => (
+            {product.detailedImages?.map((image, index) => (
               <button
                 key={index}
                 onClick={() => setSelectedImage(index)}
@@ -155,8 +130,11 @@ export default function ProductDetailPage() {
                 }`}
               >
                 <Image
-                  src={image || "/placeholder.svg"}
-                  alt={`${product.name} ${index + 1}`}
+                  src={
+                    `${process.env.NEXT_PUBLIC_CDN_URL}${image.url}` ||
+                    "/placeholder.svg"
+                  }
+                  alt={image.alt_text || "Product image"}
                   width={150}
                   height={150}
                   className="w-full h-full object-cover"
@@ -169,9 +147,15 @@ export default function ProductDetailPage() {
         {/* Product Details */}
         <div className="space-y-4">
           <div>
-            <Badge className="bg-accent1-100 text-accent1-800 mb-2 text-xs rounded-sm">
-              Sale
-            </Badge>
+            {product.on_sale ? (
+              <Badge className="bg-accent1-100 text-accent1-800 mb-2 text-xs rounded-sm">
+                Sale
+              </Badge>
+            ) : product.is_new ? (
+              <Badge className="bg-accent1-100 text-accent1-800 mb-2 text-xs rounded-sm">
+                New
+              </Badge>
+            ) : null}
             <h1 className="text-xl font-medium text-stone-800 mb-1">
               {product.name}
             </h1>
@@ -181,54 +165,32 @@ export default function ProductDetailPage() {
               <div className="flex items-center">
                 <Star className="h-3 w-3 fill-accent2-500 text-accent2-500" />
                 <span className="text-xs text-stone-600 ml-1">
-                  {product.rating} ({product.reviews} reviews)
+                  {product.average_rating} ({product.review_count} reviews)
                 </span>
               </div>
             </div>
 
             <div className="flex items-center gap-2 mb-4">
               <span className="text-lg font-medium text-stone-800">
-                ₹{product.price.toLocaleString("en-IN")}
+                ₹{product.price?.toLocaleString("en-IN")}
               </span>
-              <span className="text-sm text-stone-500 line-through">
-                ₹{product.originalPrice.toLocaleString("en-IN")}
-              </span>
-              <Badge className="bg-accent1-600 text-white text-xs rounded-sm">
-                Save ₹
-                {(product.originalPrice - product.price).toLocaleString(
-                  "en-IN"
-                )}
-              </Badge>
+              {product.compare_at_price > product.price && (
+                <>
+                  <span className="text-sm text-stone-500 line-through">
+                    ₹{product.compare_at_price?.toLocaleString("en-IN")}
+                  </span>
+                  <Badge className="bg-accent1-600 text-white text-xs rounded-sm">
+                    Save ₹
+                    {(product.compare_at_price - product.price).toLocaleString(
+                      "en-IN"
+                    )}
+                  </Badge>
+                </>
+              )}
             </div>
           </div>
 
           <div className="space-y-4">
-            {/* Variant Selection */}
-            <div>
-              <label className="block text-xs font-medium text-stone-800 mb-1">
-                Finish
-              </label>
-              <Select
-                value={selectedVariant}
-                onValueChange={setSelectedVariant}
-              >
-                <SelectTrigger className="w-full h-8 text-xs rounded-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {product.variants.map((variant) => (
-                    <SelectItem
-                      key={variant.id}
-                      value={variant.id}
-                      className="text-xs"
-                    >
-                      {variant.name} - ₹{variant.price.toLocaleString("en-IN")}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
             {/* Quantity */}
             <div>
               <label className="block text-xs font-medium text-stone-800 mb-1">
@@ -249,14 +211,17 @@ export default function ProductDetailPage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setQuantity(quantity + 1)}
+                  onClick={() =>
+                    setQuantity(Math.min(product.quantity || 0, quantity + 1))
+                  }
                   className="h-8 w-8 p-0"
+                  disabled={quantity >= (product.quantity || 0)}
                 >
                   <Plus className="h-3 w-3" />
                 </Button>
               </div>
               <p className="text-xs text-stone-600 mt-1">
-                {product.stockCount} items in stock
+                {product.quantity} items in stock
               </p>
             </div>
 
@@ -266,18 +231,13 @@ export default function ProductDetailPage() {
                 product={{
                   id: product.id,
                   name: product.name,
-                  price:
-                    product.variants.find((v) => v.id === selectedVariant)
-                      ?.price || product.price,
-                  image: product.images[0],
-                  variant: product.variants.find(
-                    (v) => v.id === selectedVariant
-                  )?.name,
+                  price: product.price,
+                  image: product.thumbnail?.url,
                 }}
                 quantity={quantity}
                 className="flex-1 bg-accent2-600 hover:bg-accent2-700 h-8 text-xs rounded-sm"
                 size="sm"
-                disabled={!product.inStock}
+                disabled={product.quantity <= 0}
               />
               <Button
                 size="sm"
@@ -300,7 +260,7 @@ export default function ProductDetailPage() {
                 size="sm"
                 variant="outline"
                 className="w-full border-stone-800 text-stone-800 hover:bg-stone-50 h-8 text-xs rounded-sm"
-                disabled={!product.inStock}
+                disabled={product.quantity <= 0}
               >
                 Buy Now
               </Button>
@@ -345,7 +305,7 @@ export default function ProductDetailPage() {
               value="reviews"
               className="text-xs rounded-sm data-[state=active]:bg-accent2-600 data-[state=active]:text-white"
             >
-              Reviews ({product.reviews})
+              Reviews ({product.review_count})
             </TabsTrigger>
           </TabsList>
 
@@ -356,16 +316,11 @@ export default function ProductDetailPage() {
                   {product.description}
                 </p>
                 <h4 className="text-xs font-medium text-stone-800 mb-2">
-                  Key Features:
+                  Product Highlights:
                 </h4>
-                <ul className="space-y-1.5">
-                  {product.features.map((feature, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 bg-accent2-600 rounded-full mt-1.5 flex-shrink-0" />
-                      <span className="text-xs text-stone-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+                <p className="text-xs text-stone-700">
+                  {product.short_description}
+                </p>
               </CardContent>
             </Card>
           </TabsContent>
@@ -374,19 +329,23 @@ export default function ProductDetailPage() {
             <Card className="rounded-sm">
               <CardContent className="p-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {Object.entries(product.specifications).map(
-                    ([key, value]) => (
-                      <div
-                        key={key}
-                        className="flex justify-between py-1.5 border-b border-stone-100"
-                      >
-                        <span className="text-xs font-medium text-stone-800">
-                          {key}:
-                        </span>
-                        <span className="text-xs text-stone-600">{value}</span>
-                      </div>
-                    )
-                  )}
+                  <div className="flex justify-between py-1.5 border-b border-stone-100">
+                    <span className="text-xs font-medium text-stone-800">
+                      Dimensions:
+                    </span>
+                    <span className="text-xs text-stone-600">
+                      {product.dimensions?.length} x {product.dimensions?.width}{" "}
+                      x {product.dimensions?.height} {product.dimensions?.unit}
+                    </span>
+                  </div>
+                  <div className="flex justify-between py-1.5 border-b border-stone-100">
+                    <span className="text-xs font-medium text-stone-800">
+                      Weight:
+                    </span>
+                    <span className="text-xs text-stone-600">
+                      {product.weight} kg
+                    </span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -400,8 +359,8 @@ export default function ProductDetailPage() {
                     Reviews section would be implemented here
                   </p>
                   <p className="text-xs text-stone-500 mt-1">
-                    Average rating: {product.rating}/5 from {product.reviews}{" "}
-                    reviews
+                    Average rating: {product.average_rating}/5 from{" "}
+                    {product.review_count} reviews
                   </p>
                 </div>
               </CardContent>

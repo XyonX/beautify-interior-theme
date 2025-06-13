@@ -171,14 +171,14 @@ export default function ProductsPage() {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
 
-  useEffect(() => {
-    // Simulate loading delay
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+  // useEffect(() => {
+  //   // Simulate loading delay
+  //   const timer = setTimeout(() => {
+  //     setIsLoading(false);
+  //   }, 2000);
 
-    return () => clearTimeout(timer);
-  }, []);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   const handleCategoryChange = (category, checked) => {
     if (checked) {
