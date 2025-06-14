@@ -13,6 +13,7 @@ import { FeaturedProductsSkeleton } from "@/components/skeletons/featured-produc
 import { TrendingSkeleton } from "@/components/skeletons/trending-skeleton";
 import { DealsSkeleton } from "@/components/skeletons/deals-skeleton";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import Clarity from "@/components/Clarity";
 
 // export default function Home() {
 //   return (
@@ -29,46 +30,47 @@ import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 export default function HomePage() {
   const [loadingStates, setLoadingStates] = useState({
-    hero: true,
-    categories: true,
-    featured: true,
-    trending: true,
-    deals: true,
+    hero: false,
+    categories: false,
+    featured: false,
+    trending: false,
+    deals: false,
   });
 
-  useEffect(() => {
-    // Simulate progressive loading
-    const timers = [
-      setTimeout(() => {
-        setLoadingStates((prev) => ({ ...prev, hero: false }));
-      }, 1500),
+  // useEffect(() => {
+  //   // Simulate progressive loading
+  //   const timers = [
+  //     setTimeout(() => {
+  //       setLoadingStates((prev) => ({ ...prev, hero: false }));
+  //     }, 1500),
 
-      setTimeout(() => {
-        setLoadingStates((prev) => ({ ...prev, categories: false }));
-      }, 2000),
+  //     setTimeout(() => {
+  //       setLoadingStates((prev) => ({ ...prev, categories: false }));
+  //     }, 2000),
 
-      setTimeout(() => {
-        setLoadingStates((prev) => ({ ...prev, featured: false }));
-      }, 2500),
+  //     setTimeout(() => {
+  //       setLoadingStates((prev) => ({ ...prev, featured: false }));
+  //     }, 2500),
 
-      setTimeout(() => {
-        setLoadingStates((prev) => ({ ...prev, trending: false }));
-      }, 3000),
+  //     setTimeout(() => {
+  //       setLoadingStates((prev) => ({ ...prev, trending: false }));
+  //     }, 3000),
 
-      setTimeout(() => {
-        setLoadingStates((prev) => ({ ...prev, deals: false }));
-      }, 3500),
-    ];
+  //     setTimeout(() => {
+  //       setLoadingStates((prev) => ({ ...prev, deals: false }));
+  //     }, 3500),
+  //   ];
 
-    return () => {
-      timers.forEach((timer) => clearTimeout(timer));
-    };
-  }, []);
+  //   return () => {
+  //     timers.forEach((timer) => clearTimeout(timer));
+  //   };
+  // }, []);
 
   return (
     <main className="flex-grow">
       {/* Google analytics */}
       <GoogleAnalytics />
+      <Clarity />
 
       {/* Hero Section */}
       {loadingStates.hero ? <HeroSkeleton /> : <HeroSection />}
