@@ -12,6 +12,7 @@ import { CategorySkeleton } from "@/components/skeletons/category-skeleton";
 import { FeaturedProductsSkeleton } from "@/components/skeletons/featured-products-skeleton";
 import { TrendingSkeleton } from "@/components/skeletons/trending-skeleton";
 import { DealsSkeleton } from "@/components/skeletons/deals-skeleton";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 // export default function Home() {
 //   return (
@@ -66,6 +67,9 @@ export default function HomePage() {
 
   return (
     <main className="flex-grow">
+      {/* Google analytics */}
+      <GoogleAnalytics />
+
       {/* Hero Section */}
       {loadingStates.hero ? <HeroSkeleton /> : <HeroSection />}
 
