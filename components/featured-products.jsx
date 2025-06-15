@@ -5,105 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, Heart } from "lucide-react";
 
-// const featuredProducts = [
-//   {
-//     id: 1,
-//     name: "Moroccan Pendant Light",
-//     price: 749,
-//     originalPrice: 999,
-//     rating: 4.8,
-//     reviews: 124,
-//     image: "/placeholder.svg?height=300&width=300",
-//     category: "Lighting",
-//     isNew: false,
-//     isSale: true,
-//   },
-//   {
-//     id: 2,
-//     name: "Handwoven Macrame Wall Hanging",
-//     price: 379,
-//     originalPrice: null,
-//     rating: 4.9,
-//     reviews: 89,
-//     image: "/placeholder.svg?height=300&width=300",
-//     category: "Wall Art",
-//     isNew: true,
-//     isSale: false,
-//   },
-//   {
-//     id: 3,
-//     name: "Ceramic Vase Set",
-//     price: 289,
-//     originalPrice: 419,
-//     rating: 4.7,
-//     reviews: 156,
-//     image: "/placeholder.svg?height=300&width=300",
-//     category: "Decor",
-//     isNew: false,
-//     isSale: true,
-//   },
-//   {
-//     id: 4,
-//     name: "Boho Table Lamp",
-//     price: 569,
-//     originalPrice: null,
-//     rating: 4.6,
-//     reviews: 78,
-//     image: "/placeholder.svg?height=300&width=300",
-//     category: "Lighting",
-//     isNew: true,
-//     isSale: false,
-//   },
-//   {
-//     id: 5,
-//     name: "Handmade Wooden Bowl",
-//     price: 239,
-//     originalPrice: 329,
-//     rating: 4.8,
-//     reviews: 203,
-//     image: "/placeholder.svg?height=300&width=300",
-//     category: "Crafts",
-//     isNew: false,
-//     isSale: true,
-//   },
-//   {
-//     id: 6,
-//     name: "Velvet Throw Pillow",
-//     price: 209,
-//     originalPrice: null,
-//     rating: 4.5,
-//     reviews: 92,
-//     image: "/placeholder.svg?height=300&width=300",
-//     category: "Textiles",
-//     isNew: false,
-//     isSale: false,
-//   },
-//   {
-//     id: 7,
-//     name: "Geometric Wall Shelf",
-//     price: 499,
-//     originalPrice: null,
-//     rating: 4.7,
-//     reviews: 67,
-//     image: "/placeholder.svg?height=300&width=300",
-//     category: "Decor",
-//     isNew: true,
-//     isSale: false,
-//   },
-//   {
-//     id: 8,
-//     name: "Minimalist Desk Lamp",
-//     price: 419,
-//     originalPrice: 579,
-//     rating: 4.6,
-//     reviews: 112,
-//     image: "/placeholder.svg?height=300&width=300",
-//     category: "Lighting",
-//     isNew: false,
-//     isSale: true,
-//   },
-// ];
-
 // Fetch data server-side
 // Fetch featured products
 async function fetchFeaturedProducts() {
@@ -143,10 +44,12 @@ async function fetchCategories() {
 
 export async function FeaturedProducts() {
   // Fetch products and categories in parallel
-  const [featuredProducts, categories] = await Promise.all([
-    fetchFeaturedProducts(),
-    fetchCategories(),
-  ]);
+  // const [featuredProducts, categories] = await Promise.all([
+  //   fetchFeaturedProducts(),
+  //   fetchCategories(),
+  // ]);
+
+  const featuredProducts = await fetchFeaturedProducts();
 
   console.log(featuredProducts);
   return (
@@ -198,7 +101,7 @@ export async function FeaturedProducts() {
                 </div>
                 <CardContent className="p-3">
                   <p className="text-xs text-stone-500 mb-1">
-                    {product.category}
+                    {product.category.name}
                   </p>
                   <h3 className="text-xs font-medium text-stone-800 mb-1 truncate group-hover:text-stone-900 transition-colors">
                     {product.name}

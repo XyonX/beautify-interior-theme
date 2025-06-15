@@ -3,42 +3,74 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-const trendingProducts = [
-  {
-    id: 1,
-    name: "Minimalist Ceramic Vase",
-    price: 329,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Decor",
-    trending: "#1",
-  },
-  {
-    id: 2,
-    name: "Scandinavian Floor Lamp",
-    price: 1899,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Lighting",
-    trending: "#2",
-  },
-  {
-    id: 3,
-    name: "Handwoven Basket Set",
-    price: 379,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Storage",
-    trending: "#3",
-  },
-  {
-    id: 4,
-    name: "Abstract Wall Art",
-    price: 669,
-    image: "/placeholder.svg?height=300&width=300",
-    category: "Wall Art",
-    trending: "#4",
-  },
-];
+// const trendingProducts = [
+//   {
+//     id: 1,
+//     name: "Minimalist Ceramic Vase",
+//     price: 329,
+//     image: "/placeholder.svg?height=300&width=300",
+//     category: "Decor",
+//     trending: "#1",
+//   },
+//   {
+//     id: 2,
+//     name: "Scandinavian Floor Lamp",
+//     price: 1899,
+//     image: "/placeholder.svg?height=300&width=300",
+//     category: "Lighting",
+//     trending: "#2",
+//   },
+//   {
+//     id: 3,
+//     name: "Handwoven Basket Set",
+//     price: 379,
+//     image: "/placeholder.svg?height=300&width=300",
+//     category: "Storage",
+//     trending: "#3",
+//   },
+//   {
+//     id: 4,
+//     name: "Abstract Wall Art",
+//     price: 669,
+//     image: "/placeholder.svg?height=300&width=300",
+//     category: "Wall Art",
+//     trending: "#4",
+//   },
+// ];
 
-export function TrendingSection() {
+async function fetchFeaturedProducts() {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products`,
+      {
+        cache: "no-store", // Ensure fresh data
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch products");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
+}
+
+export async function TrendingSection() {
+  const trendingProducts = (await fetchFeaturedProducts()).slice(0, 4);
+
+  // // Get a single random product
+  // const randomProduct =
+  //   trendingProducts[Math.floor(Math.random() * trendingProducts.length)];
+
+  // // OR, get multiple random products (e.g., 3 items)
+  // const getRandomItems = (arr, count) => {
+  //   const shuffled = [...arr].sort(() => 0.5 - Math.random());
+  //   return shuffled.slice(0, count);
+  // };
+
+  // trendingProducts = getRandomItems(trendingProducts, 3);
+
   return (
     <section className="py-10 bg-stone-100">
       <div className="container mx-auto px-4">
@@ -57,7 +89,10 @@ export function TrendingSection() {
               <Card className="group hover:shadow-md transition-all duration-300 border-stone-100 bg-white rounded-sm h-full">
                 <div className="relative aspect-square overflow-hidden">
                   <Image
-                    src={product.image || "/placeholder.svg"}
+                    src={
+                      `${process.env.NEXT_PUBLIC_CDN_URL}${product.thumbnail}` ||
+                      "/placeholder.svg"
+                    }
                     alt={product.name}
                     width={300}
                     height={300}
@@ -80,7 +115,7 @@ export function TrendingSection() {
                 </div>
                 <CardContent className="p-3">
                   <p className="text-xs text-stone-500 mb-1">
-                    {product.category}
+                    {product.category.name}
                   </p>
                   <h3 className="text-xs font-medium text-stone-800 mb-1 truncate group-hover:text-stone-900 transition-colors">
                     {product.name}

@@ -1,6 +1,4 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import { Suspense } from "react";
 import { HeroSection } from "@/components/hero-section";
 import { CategorySection } from "@/components/category-section";
 import { FeaturedProducts } from "@/components/featured-products";
@@ -15,83 +13,27 @@ import { DealsSkeleton } from "@/components/skeletons/deals-skeleton";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import Clarity from "@/components/Clarity";
 
-// export default function Home() {
-//   return (
-//     <div>
-//       <HeroSection />
-//       <CategorySection />
-//       <DealsSection />
-//       <FeaturedProducts />
-//       <TrendingSection />
-//       <Newsletter />
-//     </div>
-//   );
-// }
-
 export default function HomePage() {
-  const [loadingStates, setLoadingStates] = useState({
-    hero: false,
-    categories: false,
-    featured: false,
-    trending: false,
-    deals: false,
-  });
-
-  // useEffect(() => {
-  //   // Simulate progressive loading
-  //   const timers = [
-  //     setTimeout(() => {
-  //       setLoadingStates((prev) => ({ ...prev, hero: false }));
-  //     }, 1500),
-
-  //     setTimeout(() => {
-  //       setLoadingStates((prev) => ({ ...prev, categories: false }));
-  //     }, 2000),
-
-  //     setTimeout(() => {
-  //       setLoadingStates((prev) => ({ ...prev, featured: false }));
-  //     }, 2500),
-
-  //     setTimeout(() => {
-  //       setLoadingStates((prev) => ({ ...prev, trending: false }));
-  //     }, 3000),
-
-  //     setTimeout(() => {
-  //       setLoadingStates((prev) => ({ ...prev, deals: false }));
-  //     }, 3500),
-  //   ];
-
-  //   return () => {
-  //     timers.forEach((timer) => clearTimeout(timer));
-  //   };
-  // }, []);
-
   return (
     <main className="flex-grow">
-      {/* Google analytics */}
       <GoogleAnalytics />
       <Clarity />
-
-      {/* Hero Section */}
-      {loadingStates.hero ? <HeroSkeleton /> : <HeroSection />}
-
-      {/* Categories Section */}
-      {loadingStates.categories ? <CategorySkeleton /> : <CategorySection />}
-
-      {/* Featured Products Section */}
-      {loadingStates.featured ? (
-        <FeaturedProductsSkeleton />
-      ) : (
+      <Suspense fallback={<HeroSkeleton />}>
+        <HeroSection />
+      </Suspense>
+      <Suspense fallback={<CategorySkeleton />}>
+        <CategorySection />
+      </Suspense>
+      <Suspense fallback={<FeaturedProductsSkeleton />}>
         <FeaturedProducts />
-      )}
+      </Suspense>
+      <Suspense fallback={<DealsSkeleton />}>
+        <DealsSection />
+      </Suspense>
 
-      {/* Trending Section */}
-      {loadingStates.trending ? <TrendingSkeleton /> : <TrendingSection />}
-
-      {/* Deals Section */}
-      {loadingStates.deals ? <DealsSkeleton /> : <DealsSection />}
-
-      {/* Newsletter - Always visible */}
+      <Suspense fallback={<TrendingSkeleton />}>
+        <TrendingSection />
+      </Suspense>
       <Newsletter />
     </main>
   );

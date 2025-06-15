@@ -2,50 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 
-// const categories = [
-//   {
-//     id: 1,
-//     name: "Lighting",
-//     image: "/lighting.png",
-//     link: "/categories/lighting",
-//     count: "250+ items",
-//   },
-//   {
-//     id: 2,
-//     name: "Home Decor",
-//     image: "/homedecor.jpg",
-//     link: "/categories/decor",
-//     count: "180+ items",
-//   },
-//   {
-//     id: 3,
-//     name: "Handmade Crafts",
-//     image: "/handcrafted.webp",
-//     link: "/categories/crafts",
-//     count: "120+ items",
-//   },
-//   {
-//     id: 4,
-//     name: "Wall Art",
-//     image: "/walldecor.jpg",
-//     link: "/categories/wall-art",
-//     count: "90+ items",
-//   },
-//   {
-//     id: 5,
-//     name: "Textiles",
-//     image: "/textile.jpg",
-//     link: "/categories/textiles",
-//     count: "160+ items",
-//   },
-//   {
-//     id: 6,
-//     name: "Plants & Planters",
-//     image: "/plantdecor.png",
-//     link: "/categories/plants",
-//     count: "75+ items",
-//   },
-// ];
 async function fetchCategories() {
   try {
     const response = await fetch(

@@ -13,8 +13,8 @@ export default function Loading() {
       <HeroSkeleton />
       <CategorySkeleton />
       <FeaturedProductsSkeleton />
-      <TrendingSkeleton />
       <DealsSkeleton />
+      <TrendingSkeleton />
       <Newsletter />
     </main>
   );
