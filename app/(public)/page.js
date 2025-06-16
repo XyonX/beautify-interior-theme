@@ -10,14 +10,10 @@ import { CategorySkeleton } from "@/components/skeletons/category-skeleton";
 import { FeaturedProductsSkeleton } from "@/components/skeletons/featured-products-skeleton";
 import { TrendingSkeleton } from "@/components/skeletons/trending-skeleton";
 import { DealsSkeleton } from "@/components/skeletons/deals-skeleton";
-import GoogleAnalytics from "@/components/GoogleAnalytics";
-import Clarity from "@/components/Clarity";
 
 export default function HomePage() {
   return (
     <main className="flex-grow">
-      <GoogleAnalytics />
-      <Clarity />
       <Suspense fallback={<HeroSkeleton />}>
         <HeroSection />
       </Suspense>

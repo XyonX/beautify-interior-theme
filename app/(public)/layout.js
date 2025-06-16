@@ -3,6 +3,8 @@ import "../globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ToastProvider } from "@/components/toast-provider";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
+import Clarity from "@/components/Clarity";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -165,6 +167,8 @@ export default function RootLayout({ children }) {
       </head>
 
       <body className="flex flex-col min-h-screen">
+        <GoogleAnalytics />
+        <Clarity />
         <Header />
         <main className="h-full w-full  flex-grow ">{children}</main>
         <ToastProvider />

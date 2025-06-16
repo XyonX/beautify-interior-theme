@@ -784,3 +784,16 @@ export default function CheckoutPage() {
     </main>
   );
 }
+
+// import { ProtectedPage } from "./protected-page"
+
+// export default function CheckoutPage() {
+//   // ... existing state and logic ...
+
+//   return (
+//     <ProtectedPage title="Checkout" description="Complete your purchase">
+//       {/* Move all the existing checkout content here, removing the Header, main wrapper, and Footer */}
+//       <div className="max-w-6xl mx-auto">{/* existing checkout content */}</div>
+//     </ProtectedPage>
+//   )
+// }
