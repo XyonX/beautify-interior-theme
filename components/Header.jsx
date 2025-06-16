@@ -19,9 +19,9 @@ export function Header() {
 
   const navigationLinks = [
     { href: "/categories/lighting", label: "Lighting" },
-    { href: "/categories/decor", label: "Home Decor" },
-    { href: "/categories/crafts", label: "Handmade Crafts" },
-    { href: "/categories/furniture", label: "Furniture" },
+    { href: "/categories/wall-decor", label: "Wall Decor" },
+    { href: "/categories/handmade-crafts", label: "Handmade Crafts" },
+    { href: "/categories/idols-and-figurines", label: "Idols & Figurines" },
     { href: "/categories/textiles", label: "Textiles" },
     { href: "/sale", label: "Sale" },
   ];

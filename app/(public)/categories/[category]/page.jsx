@@ -18,95 +18,116 @@ import { formatPrice } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProductGridSkeleton } from "@/components/skeletons/product-grid-skeleton";
 
-const categoryData = {
-  lighting: {
-    name: "Lighting",
-    description:
-      "Illuminate your space with our curated collection of aesthetic lighting",
-    products: [
-      {
-        id: 1,
-        name: "Moroccan Pendant Light",
-        price: 7499,
-        originalPrice: 9999,
-        rating: 4.8,
-        reviews: 124,
-        image: "/placeholder.svg?height=300&width=300",
-        isNew: false,
-        isSale: true,
-      },
-      {
-        id: 4,
-        name: "Boho Table Lamp",
-        price: 5699,
-        originalPrice: null,
-        rating: 4.6,
-        reviews: 78,
-        image: "/placeholder.svg?height=300&width=300",
-        isNew: true,
-        isSale: false,
-      },
-      {
-        id: 8,
-        name: "Minimalist Desk Lamp",
-        price: 4199,
-        originalPrice: 5899,
-        rating: 4.6,
-        reviews: 112,
-        image: "/placeholder.svg?height=300&width=300",
-        isNew: false,
-        isSale: true,
-      },
-    ],
-  },
-  decor: {
-    name: "Home Decor",
-    description: "Beautiful pieces to transform your living space",
-    products: [
-      {
-        id: 3,
-        name: "Ceramic Vase Set",
-        price: 2899,
-        originalPrice: 4199,
-        rating: 4.7,
-        reviews: 156,
-        image: "/placeholder.svg?height=300&width=300",
-        isNew: false,
-        isSale: true,
-      },
-      {
-        id: 7,
-        name: "Geometric Wall Shelf",
-        price: 4999,
-        originalPrice: null,
-        rating: 4.7,
-        reviews: 67,
-        image: "/placeholder.svg?height=300&width=300",
-        isNew: true,
-        isSale: false,
-      },
-    ],
-  },
-};
-
 export default function CategoryPage({ params }) {
-  const [isLoading, setIsLoading] = useState(true);
+  // console.log("Param for categry ", params);
+  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState("featured");
-  const category = categoryData[params.category];
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const limit = 20; // Number of products per page
 
   useEffect(() => {
-    // Simulate loading delay
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1800);
+    const loadData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        // Fetch all categories
+        const categoriesData = await fetchCategories();
+        setCategories(categoriesData);
 
-    return () => clearTimeout(timer);
-  }, []);
+        // Find the current category based on the slug from params
+        const currentCategory = categoriesData.find(
+          (cat) => cat.slug === params.category
+        );
+
+        if (!currentCategory) {
+          setCategory(null);
+          setProducts([]);
+          setTotalProducts(0);
+          setIsLoading(false);
+          return;
+        }
+        setCategory(currentCategory);
+        console.log("current category: ", currentCategory);
+        // Fetch products for the current category
+        const { sortBy: sortField, sortOrder } = getSortParams(sortBy);
+        const productsData = await fetchProducts({
+          categoryId: currentCategory.id,
+          page: currentPage,
+          limit,
+          sortBy: sortField,
+          sortOrder,
+        });
+        setProducts(productsData.products || productsData);
+        setTotalProducts(productsData.total || productsData.length);
+      } catch (err) {
+        setError("Failed to load data");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadData();
+  }, [params.category, currentPage, sortBy]);
+
+  // Map frontend sort options to backend sort fields and orders
+  const getSortParams = (option) => {
+    switch (option) {
+      case "featured":
+        return { sortBy: "sales_count", sortOrder: "DESC" };
+      case "price-low":
+        return { sortBy: "price", sortOrder: "ASC" };
+      case "price-high":
+        return { sortBy: "price", sortOrder: "DESC" };
+      case "newest":
+        return { sortBy: "created_at", sortOrder: "DESC" };
+      case "rating":
+        return { sortBy: "average_rating", sortOrder: "DESC" };
+      default:
+        return { sortBy: "created_at", sortOrder: "DESC" };
+    }
+  };
+
+  // Fetch categories from the backend
+  async function fetchCategories() {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories`,
+        { cache: "no-store" }
+      );
+      if (!response.ok) throw new Error("Failed to fetch categories");
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      return [];
+    }
+  }
+
+  // Fetch products from the backend with options
+  async function fetchProducts(options) {
+    const queryParams = new URLSearchParams(options).toString();
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products?${queryParams}`,
+        { cache: "no-store" }
+      );
+      if (!response.ok) throw new Error("Failed to fetch products");
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      return { products: [], total: 0 };
+    }
+  }
 
   if (isLoading) {
     return (
       <main className="flex-grow container mx-auto px-4 py-4">
-        {/* Breadcrumb skeleton */}
         <div className="mb-4">
           <div className="flex items-center space-x-2 text-xs">
             <Skeleton className="w-12 h-3" />
@@ -116,24 +137,17 @@ export default function CategoryPage({ params }) {
             <Skeleton className="w-20 h-3" />
           </div>
         </div>
-
-        {/* Category Header skeleton */}
         <div className="mb-6">
           <Skeleton className="w-32 h-5 mb-1" />
           <Skeleton className="w-64 h-3 mb-4" />
-
           <div className="flex justify-between items-center">
             <Skeleton className="w-28 h-3" />
             <Skeleton className="w-40 h-8" />
           </div>
         </div>
-
-        {/* Products Grid skeleton */}
         <div className="mb-8">
           <ProductGridSkeleton count={6} />
         </div>
-
-        {/* View All Products Link skeleton */}
         <div className="text-center">
           <Skeleton className="w-32 h-8 mx-auto rounded-sm" />
         </div>
@@ -158,9 +172,12 @@ export default function CategoryPage({ params }) {
     );
   }
 
+  const numberOfPages = Math.ceil(totalProducts / limit);
+  const start = (currentPage - 1) * limit + 1;
+  const end = Math.min(currentPage * limit, totalProducts);
+
   return (
     <main className="flex-grow container mx-auto px-4 py-4">
-      {/* Breadcrumb */}
       <nav className="mb-4">
         <ol className="flex items-center space-x-2 text-xs text-stone-600">
           <li>
@@ -178,17 +195,14 @@ export default function CategoryPage({ params }) {
           <li className="text-stone-900 font-medium">{category.name}</li>
         </ol>
       </nav>
-
-      {/* Category Header */}
       <div className="mb-6">
         <h1 className="text-lg font-medium text-stone-800 mb-1">
           {category.name}
         </h1>
         <p className="text-xs text-stone-600 mb-4">{category.description}</p>
-
         <div className="flex justify-between items-center">
           <p className="text-xs text-stone-600">
-            Showing {category.products.length} products
+            Showing {start}-{end} of {totalProducts} products
           </p>
           <Select value={sortBy} onValueChange={setSortBy}>
             <SelectTrigger className="w-40 h-8 text-xs rounded-sm">
@@ -204,15 +218,16 @@ export default function CategoryPage({ params }) {
           </Select>
         </div>
       </div>
-
-      {/* Products Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
-        {category.products.map((product) => (
-          <Link key={product.id} href={`/products/${product.id}`}>
+        {products.map((product) => (
+          <Link key={product.id} href={`/products/${product.slug}`}>
             <Card className="group hover:shadow-md transition-all duration-300 border-stone-100 bg-white rounded-sm h-full">
               <div className="relative aspect-square overflow-hidden">
                 <Image
-                  src={product.image || "/placeholder.svg"}
+                  src={
+                    `${process.env.NEXT_PUBLIC_CDN_URL}${product.thumbnail}` ||
+                    "/placeholder.svg"
+                  }
                   alt={product.name}
                   width={300}
                   height={300}
@@ -224,7 +239,7 @@ export default function CategoryPage({ params }) {
                       New
                     </Badge>
                   )}
-                  {product.isSale && (
+                  {product.onSale && (
                     <Badge className="bg-accent1-600 text-white text-xs px-1.5 py-0.5 rounded-sm">
                       Sale
                     </Badge>
@@ -246,7 +261,7 @@ export default function CategoryPage({ params }) {
                   <div className="flex items-center">
                     <Star className="h-3 w-3 fill-accent2-600 text-accent2-600" />
                     <span className="text-xs text-stone-600 ml-1">
-                      {product.rating}
+                      {product.averageRating}
                     </span>
                   </div>
                 </div>
@@ -255,9 +270,9 @@ export default function CategoryPage({ params }) {
                     <span className="text-xs font-medium text-stone-800">
                       {formatPrice(product.price)}
                     </span>
-                    {product.originalPrice && (
+                    {product.compareAtPrice && (
                       <span className="text-xs text-accent1-600 line-through">
-                        {formatPrice(product.originalPrice)}
+                        {formatPrice(product.compareAtPrice)}
                       </span>
                     )}
                   </div>
@@ -267,9 +282,19 @@ export default function CategoryPage({ params }) {
           </Link>
         ))}
       </div>
-
-      {/* View All Products Link */}
-      <div className="text-center">
+      <div className="flex justify-center space-x-2 mt-8">
+        {Array.from({ length: numberOfPages }, (_, i) => i + 1).map((page) => (
+          <Button
+            key={page}
+            variant={currentPage === page ? "default" : "outline"}
+            onClick={() => setCurrentPage(page)}
+            className="text-xs px-3 py-1"
+          >
+            {page}
+          </Button>
+        ))}
+      </div>
+      <div className="text-center mt-8">
         <Link href="/products">
           <Button
             variant="outline"
