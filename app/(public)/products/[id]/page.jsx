@@ -17,6 +17,7 @@ import {
   RotateCcw,
   Plus,
   Minus,
+  MessageCircle,
 } from "lucide-react";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 
@@ -54,6 +55,18 @@ export default async function ProductDetailPage({ params }) {
       rating: 4.8,
     },
   ];
+
+  const handleWhatsAppChat = () => {
+    const message = `Hi! I'm interested in the ${
+      product.name
+    }, priced at ₹${product?.price.toLocaleString(
+      "en-IN"
+    )}. Can you help me with more details and purchase?`;
+    const whatsappUrl = `https://wa.me/919883608843?text=${encodeURIComponent(
+      message
+    )}`;
+    window.open(whatsappUrl, "_blank");
+  };
 
   const fetchProduct = async (id) => {
     try {
@@ -224,47 +237,73 @@ export default async function ProductDetailPage({ params }) {
                 {product.quantity} items in stock
               </p>
             </div>
+            {/* Action Buttons */}
+            <div className="space-y-2">
+              {/* Add to Cart */}
+              <div className="flex gap-2 mb-2">
+                <AddToCartButton
+                  product={{
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.thumbnail?.url,
+                  }}
+                  quantity={quantity}
+                  className="flex-1 bg-accent2-600 hover:bg-accent2-700 h-8 text-xs rounded-sm"
+                  size="sm"
+                  disabled={product.quantity <= 0}
+                />
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-stone-200 h-8 w-8 p-0 rounded-sm"
+                >
+                  <Heart className="h-3 w-3 text-accent1-600" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-stone-200 h-8 w-8 p-0 rounded-sm"
+                >
+                  <Share2 className="h-3 w-3" />
+                </Button>
+              </div>
 
-            {/* Add to Cart */}
-            <div className="flex gap-2">
-              <AddToCartButton
-                product={{
-                  id: product.id,
-                  name: product.name,
-                  price: product.price,
-                  image: product.thumbnail?.url,
-                }}
-                quantity={quantity}
-                className="flex-1 bg-accent2-600 hover:bg-accent2-700 h-8 text-xs rounded-sm"
-                size="sm"
-                disabled={product.quantity <= 0}
-              />
-              <Button
-                size="sm"
-                variant="outline"
-                className="border-stone-200 h-8 w-8 p-0 rounded-sm"
+              <Link href="/checkout">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="w-full border-stone-800 text-stone-800 hover:bg-stone-50 h-8 text-xs rounded-sm"
+                  disabled={product.quantity <= 0}
+                >
+                  Buy Now
+                </Button>
+              </Link>
+              {/* WhatsApp Chat & Buy */}
+              <a
+                href={`https://wa.me/+919883608843?text=${encodeURIComponent(
+                  `Hi! I'm interested in the ${
+                    product.name || "this product"
+                  }, priced at ₹${
+                    product.price
+                      ? product.price.toLocaleString("en-IN")
+                      : "N/A"
+                  }. Can you help me with more details and purchase?`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block" // Ensures proper button sizing
               >
-                <Heart className="h-3 w-3 text-accent1-600" />
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                className="border-stone-200 h-8 w-8 p-0 rounded-sm"
-              >
-                <Share2 className="h-3 w-3" />
-              </Button>
+                <Button
+                  size="sm"
+                  className="w-full bg-accent3-600 hover:bg-accent3-700 text-white h-8 text-xs"
+                  disabled={product.quantity <= 0}
+                >
+                  <MessageCircle className="h-3 w-3 mr-1" />
+                  Chat & Buy on WhatsApp
+                </Button>
+              </a>
             </div>
-
-            <Link href="/checkout">
-              <Button
-                size="sm"
-                variant="outline"
-                className="w-full border-stone-800 text-stone-800 hover:bg-stone-50 h-8 text-xs rounded-sm"
-                disabled={product.quantity <= 0}
-              >
-                Buy Now
-              </Button>
-            </Link>
           </div>
 
           {/* Features */}
