@@ -69,12 +69,12 @@ export default async function ProductDetailPage({ params }) {
             </Link>
           </li>
           <li>/</li>
-          <li>
+          {/* <li>
             <Link href="/products" className="hover:text-stone-900">
               Products
             </Link>
           </li>
-          <li>/</li>
+          <li>/</li> */}
           <li>
             <Link
               href={`/categories/${product.category?.slug}`}

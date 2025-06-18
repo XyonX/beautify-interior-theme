@@ -18,6 +18,7 @@ const geistMono = localFont({
 
 export const metadata = {
   title: "Beautify Interior | Handcrafted Home Decor & Interior Accents",
+  metadataBase: new URL("https://beautifyinterior.com"),
   description:
     "Discover handcrafted home decor, aesthetic lights, and artisan-crafted interior pieces at Beautify Interior. Transform your living space with unique, elegant, and cozy accents that speak your style.",
   keywords: [

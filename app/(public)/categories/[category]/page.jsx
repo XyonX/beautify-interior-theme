@@ -493,7 +493,7 @@ export default async function CategoryPage({ params, searchParams }) {
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
         {products.map((product) => (
-          <Link key={product.id} href={`/products/${product.slug}`}>
+          <Link key={product.id} href={`/products/${product.id}`}>
             <Card className="group hover:shadow-md transition-all duration-300 border-stone-100 bg-white rounded-sm h-full">
               <div className="relative aspect-square overflow-hidden">
                 <Image
