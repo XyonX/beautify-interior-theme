@@ -24,23 +24,6 @@ async function fetchFeaturedProducts() {
     return [];
   }
 }
-async function fetchCategories() {
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/categories`,
-      {
-        cache: "no-store", // Ensure fresh data
-      }
-    );
-    if (!response.ok) {
-      throw new Error("Failed to fetch categories");
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    return [];
-  }
-}
 
 export async function FeaturedProducts() {
   // Fetch products and categories in parallel

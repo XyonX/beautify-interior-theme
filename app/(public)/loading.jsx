@@ -1,5 +1,3 @@
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { HeroSkeleton } from "@/components/skeletons/hero-skeleton";
 import { CategorySkeleton } from "@/components/skeletons/category-skeleton";
 import { FeaturedProductsSkeleton } from "@/components/skeletons/featured-products-skeleton";
