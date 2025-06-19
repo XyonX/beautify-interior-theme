@@ -10,7 +10,7 @@ const slides = [
     id: 1,
     image: "/slide_1.jpg",
     alt: "Transform Your Space with Beautiful Home Decor",
-    link: "/categories/decor",
+    link: "/categories/seasonal-decor",
     title: "Transform Your Space",
     subtitle: "Beautiful Home Decor Collection",
   },
@@ -26,9 +26,19 @@ const slides = [
     id: 3,
     image: "/slide_3.jpg",
     alt: "Unique Artisan Pieces",
-    link: "/sale?collection=artisan",
+    // link: "/sale?collection=artisan",
+    link: "/categories/wall-decor",
     title: "Artisan Collection",
     subtitle: "Handcrafted with Love",
+  },
+  {
+    id: 4,
+    image:
+      "https://cdn.beautifyinterior.com/site-data/home-deocor-slide-chill-place.png",
+    alt: "Relaxed rustic lounge area with earthy tones and greenery",
+    link: "/categories/walldecor",
+    title: "Elevate Everyday Living",
+    subtitle: "Natural & Cozy Home Decor Styles",
   },
 ];
 

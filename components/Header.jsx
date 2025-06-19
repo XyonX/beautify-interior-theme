@@ -26,7 +26,7 @@ export function Header() {
   const [cartCount] = useState(3);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const { Logout } = useAuthStore();
+  const { logout } = useAuthStore();
 
   const navigationLinks = [
     { href: "/categories/lighting", label: "Lighting" },
@@ -152,7 +152,12 @@ export function Header() {
                   <DropdownMenuItem>
                     <Link href="/wishlist">Wishlist</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>Sign Out</DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={handleLogout}
+                  >
+                    Sign Out
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
