@@ -67,7 +67,7 @@ export default function AccountPage() {
     city: "",
     state: "",
     zipCode: "",
-    country: "United States",
+    country: "India",
     phone: "",
     isDefault: false,
   });
@@ -144,9 +144,9 @@ export default function AccountPage() {
       city: "",
       state: "",
       zipCode: "",
-      country: "United States",
+      country: "India",
       phone: "",
-      isDefault: false,
+      isDefault: true,
     });
   };
 
