@@ -1,7 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { Search, ShoppingCart, User, Heart, Menu, X } from "lucide-react";
+import {
+  Search,
+  ShoppingCart,
+  User,
+  Heart,
+  Menu,
+  X,
+  LogOut,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,10 +20,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
+import { useAuthStore } from "@/lib/auth-store";
 
 export function Header() {
   const [cartCount] = useState(3);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const { Logout } = useAuthStore();
 
   const navigationLinks = [
     { href: "/categories/lighting", label: "Lighting" },
@@ -64,6 +75,12 @@ export function Header() {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    closeMobileMenu();
+    logout();
+    router.push("/");
   };
 
   return (
@@ -335,8 +352,8 @@ export function Header() {
                     </Link>
                   ))}
                   <button
-                    onClick={closeMobileMenu}
-                    className={`block w-full text-left py-3 px-4 text-sm text-stone-700 hover:text-stone-900 hover:bg-gradient-to-r hover:from-stone-50 hover:to-stone-100/50 rounded-lg transition-all duration-200 hover:translate-x-1 hover:shadow-sm border border-transparent hover:border-stone-100 ${
+                    onClick={handleLogout}
+                    className={`cursor-pointer block w-full text-left py-3 px-4 text-sm text-stone-700 hover:text-stone-900 hover:bg-gradient-to-r hover:from-stone-50 hover:to-stone-100/50 rounded-lg transition-all duration-200 hover:translate-x-1 hover:shadow-sm border border-transparent hover:border-stone-100 ${
                       isMobileMenuOpen
                         ? "opacity-100 translate-y-0"
                         : "opacity-0 translate-y-4"
