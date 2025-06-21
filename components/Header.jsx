@@ -10,6 +10,7 @@ import {
   X,
   ChevronDown,
   LogOut,
+  Store,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,7 +28,7 @@ export function Header() {
   const [cartCount] = useState(3);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const { logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const categoryLinks = [
     {
       href: "/categories/lighting",
@@ -360,11 +361,11 @@ export function Header() {
               <Input
                 type="search"
                 placeholder="Search products..."
-                className="w-full pl-4 pr-10 py-1.5 border-stone-200 focus:border-stone-400 focus:ring-stone-400 text-xs rounded-sm"
+                className="w-full pl-4 pr-10 py-1.5 border-stone-200 focus:border-stone-400 focus:ring-stone-400 text-xs rounded-lg"
               />
               <Button
                 size="sm"
-                className="absolute right-1 top-1 bg-stone-800 hover:bg-stone-700 rounded-sm h-6 w-6 p-0"
+                className="absolute right-1 top-1 bg-stone-800 hover:bg-stone-700 rounded-md h-6 w-6 p-0"
               >
                 <Search className="h-3.5 w-3.5" />
               </Button>
@@ -388,7 +389,7 @@ export function Header() {
 
         {/* Mobile Menu with enhanced animations */}
         <div
-          className={`mobile-menu fixed right-0 top-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl transition-all duration-500 ease-out ${
+          className={`mobile-menu fixed right-0 top-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl transition-all duration-500 ease-out rounded-l-xl ${
             isMobileMenuOpen
               ? "translate-x-0 opacity-100"
               : "translate-x-full opacity-0"
@@ -401,7 +402,7 @@ export function Header() {
             {/* Header with enhanced styling */}
             <div className="flex items-center justify-between p-4 border-b border-stone-100 bg-gradient-to-r from-white to-stone-50/30">
               <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 bg-stone-800 rounded-sm flex items-center justify-center">
+                <div className="w-6 h-6 bg-stone-800 flex items-center justify-center rounded-md">
                   <span className="text-white font-medium text-xs">BI</span>
                 </div>
                 <h2 className="text-sm font-medium text-stone-800">Menu</h2>
@@ -418,6 +419,16 @@ export function Header() {
 
             {/* Menu Content with staggered animations */}
             <div className="flex-1 overflow-y-auto">
+              {/* Become a Seller - Mobile */}
+              {/* <div className="p-4 border-b border-stone-100">
+                <Link href="/become-seller" onClick={closeMobileMenu}>
+                  <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white text-sm rounded-lg transition-all duration-200 hover:shadow-md">
+                    <Store className="h-4 w-4 mr-2" />
+                    Become a Seller
+                  </Button>
+                </Link>
+              </div> */}
+
               {/* Categories with staggered entrance */}
               <div className="p-4">
                 <h3
@@ -430,7 +441,7 @@ export function Header() {
                   Categories
                 </h3>
                 <nav className="space-y-1">
-                  {navigationLinks.map((link, index) => (
+                  {categoryLinks.map((link, index) => (
                     <Link
                       key={link.href}
                       href={link.href}
@@ -445,7 +456,10 @@ export function Header() {
                       }}
                     >
                       <span className="flex items-center justify-between">
-                        {link.label}
+                        <span className="flex items-center">
+                          <span className="mr-2">{link.icon}</span>
+                          {link.label}
+                        </span>
                         <span className="text-stone-400 transition-transform duration-200 group-hover:translate-x-1">
                           →
                         </span>
@@ -464,49 +478,99 @@ export function Header() {
                       : "opacity-0 translate-y-4"
                   }`}
                 >
-                  Account
+                  {user ? "Account" : "Get Started"}
                 </h3>
                 <nav className="space-y-1">
-                  {accountLinks.map((link, index) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={closeMobileMenu}
-                      className={`block py-3 px-4 text-sm text-stone-700 hover:text-stone-900 hover:bg-gradient-to-r hover:from-stone-50 hover:to-stone-100/50 rounded-lg transition-all duration-200 hover:translate-x-1 hover:shadow-sm border border-transparent hover:border-stone-100 ${
-                        isMobileMenuOpen
-                          ? "opacity-100 translate-y-0"
-                          : "opacity-0 translate-y-4"
-                      }`}
-                      style={{
-                        transitionDelay: `${350 + index * 50}ms`,
-                      }}
-                    >
-                      <span className="flex items-center justify-between">
-                        {link.label}
-                        <span className="text-stone-400 transition-transform duration-200 group-hover:translate-x-1">
-                          →
+                  {user ? (
+                    <>
+                      {accountLinks.map((link, index) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          onClick={closeMobileMenu}
+                          className={`block py-3 px-4 text-sm text-stone-700 hover:text-stone-900 hover:bg-gradient-to-r hover:from-stone-50 hover:to-stone-100/50 rounded-lg transition-all duration-200 hover:translate-x-1 hover:shadow-sm border border-transparent hover:border-stone-100 ${
+                            isMobileMenuOpen
+                              ? "opacity-100 translate-y-0"
+                              : "opacity-0 translate-y-4"
+                          }`}
+                          style={{
+                            transitionDelay: `${350 + index * 50}ms`,
+                          }}
+                        >
+                          <span className="flex items-center justify-between">
+                            {link.label}
+                            <span className="text-stone-400 transition-transform duration-200 group-hover:translate-x-1">
+                              →
+                            </span>
+                          </span>
+                        </Link>
+                      ))}
+                      <button
+                        onClick={() => {
+                          logout();
+                          closeMobileMenu();
+                        }}
+                        className={`block w-full text-left py-3 px-4 text-sm text-stone-700 hover:text-stone-900 hover:bg-gradient-to-r hover:from-stone-50 hover:to-stone-100/50 rounded-lg transition-all duration-200 hover:translate-x-1 hover:shadow-sm border border-transparent hover:border-stone-100 ${
+                          isMobileMenuOpen
+                            ? "opacity-100 translate-y-0"
+                            : "opacity-0 translate-y-4"
+                        }`}
+                        style={{
+                          transitionDelay: `${
+                            350 + accountLinks.length * 50
+                          }ms`,
+                        }}
+                      >
+                        <span className="flex items-center justify-between">
+                          Sign Out
+                          <span className="text-stone-400 transition-transform duration-200 group-hover:translate-x-1">
+                            →
+                          </span>
                         </span>
-                      </span>
-                    </Link>
-                  ))}
-                  <button
-                    onClick={handleLogout}
-                    className={`cursor-pointer block w-full text-left py-3 px-4 text-sm text-stone-700 hover:text-stone-900 hover:bg-gradient-to-r hover:from-stone-50 hover:to-stone-100/50 rounded-lg transition-all duration-200 hover:translate-x-1 hover:shadow-sm border border-transparent hover:border-stone-100 ${
-                      isMobileMenuOpen
-                        ? "opacity-100 translate-y-0"
-                        : "opacity-0 translate-y-4"
-                    }`}
-                    style={{
-                      transitionDelay: `${350 + accountLinks.length * 50}ms`,
-                    }}
-                  >
-                    <span className="flex items-center justify-between">
-                      Sign Out
-                      <span className="text-stone-400 transition-transform duration-200 group-hover:translate-x-1">
-                        →
-                      </span>
-                    </span>
-                  </button>
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        href="/auth/login"
+                        onClick={closeMobileMenu}
+                        className={`block py-3 px-4 text-sm text-stone-700 hover:text-stone-900 hover:bg-gradient-to-r hover:from-stone-50 hover:to-stone-100/50 rounded-lg transition-all duration-200 hover:translate-x-1 hover:shadow-sm border border-transparent hover:border-stone-100 ${
+                          isMobileMenuOpen
+                            ? "opacity-100 translate-y-0"
+                            : "opacity-0 translate-y-4"
+                        }`}
+                        style={{
+                          transitionDelay: "350ms",
+                        }}
+                      >
+                        <span className="flex items-center justify-between">
+                          Sign In
+                          <span className="text-stone-400 transition-transform duration-200 group-hover:translate-x-1">
+                            →
+                          </span>
+                        </span>
+                      </Link>
+                      <Link
+                        href="/auth/register"
+                        onClick={closeMobileMenu}
+                        className={`block py-3 px-4 text-sm text-stone-700 hover:text-stone-900 hover:bg-gradient-to-r hover:from-stone-50 hover:to-stone-100/50 rounded-lg transition-all duration-200 hover:translate-x-1 hover:shadow-sm border border-transparent hover:border-stone-100 ${
+                          isMobileMenuOpen
+                            ? "opacity-100 translate-y-0"
+                            : "opacity-0 translate-y-4"
+                        }`}
+                        style={{
+                          transitionDelay: "400ms",
+                        }}
+                      >
+                        <span className="flex items-center justify-between">
+                          Create Account
+                          <span className="text-stone-400 transition-transform duration-200 group-hover:translate-x-1">
+                            →
+                          </span>
+                        </span>
+                      </Link>
+                    </>
+                  )}
                 </nav>
               </div>
 
@@ -523,6 +587,7 @@ export function Header() {
                 </h3>
                 <nav className="space-y-1">
                   {[
+                    { href: "/products", label: "Shop All" },
                     { href: "/about", label: "About Us" },
                     { href: "/contact", label: "Contact" },
                     { href: "/shipping", label: "Shipping Info" },
@@ -563,7 +628,7 @@ export function Header() {
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs text-stone-600">
-                  © 2025 BeautifyInterior
+                  © 2024 BeautifyInterior
                 </span>
                 <div className="flex items-center gap-2">
                   <Link href="/wishlist" onClick={closeMobileMenu}>
@@ -575,15 +640,27 @@ export function Header() {
                       <Heart className="h-4 w-4" />
                     </Button>
                   </Link>
-                  <Link href="/account" onClick={closeMobileMenu}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 w-8 p-0 rounded-full hover:bg-stone-100 transition-all duration-200 hover:scale-105"
-                    >
-                      <User className="h-4 w-4" />
-                    </Button>
-                  </Link>
+                  {user ? (
+                    <Link href="/account" onClick={closeMobileMenu}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0 rounded-full hover:bg-stone-100 transition-all duration-200 hover:scale-105"
+                      >
+                        <User className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Link href="/auth/login" onClick={closeMobileMenu}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0 rounded-full hover:bg-stone-100 transition-all duration-200 hover:scale-105"
+                      >
+                        <User className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
