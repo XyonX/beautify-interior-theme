@@ -22,14 +22,24 @@ const slides = [
     title: "Premium Lighting",
     subtitle: "Illuminate Your Home",
   },
+  // {
+  //   id: 3,
+  //   image: "/slide_3.jpg",
+  //   alt: "Unique Artisan Pieces",
+  //   link: "/categories/wall-decor",
+  //   title: "Artisan Collection",
+  //   subtitle: "Handcrafted with Love",
+  // },
   {
-    id: 3,
-    image: "/slide_3.jpg",
-    alt: "Unique Artisan Pieces",
-    link: "/categories/wall-decor",
-    title: "Artisan Collection",
-    subtitle: "Handcrafted with Love",
+    id: 2,
+    image:
+      "https://cdn.beautifyinterior.com/site-data/Timeless-Charm-Optimized.png",
+    alt: "Elegant Vintage Double-Sided Station Wall Clock",
+    link: "https://beautifyinterior.com/products/0f3c054a-64e1-47fe-b12c-5350e5d478d7",
+    title: "Add a Touch of Vintage",
+    subtitle: "Classic Double-Sided Station Clock – 1747 London Design",
   },
+
   {
     id: 4,
     image:
