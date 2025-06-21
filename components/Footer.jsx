@@ -8,9 +8,23 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-xs">
           {/* Company Info */}
           <div className="space-y-3">
-            <div className="flex items-center space-x-2">
+            {/* <div className="flex items-center space-x-2">
               <div className="w-6 h-6 bg-stone-800 rounded-sm flex items-center justify-center">
                 <span className="text-white font-medium text-xs">BI</span>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium text-white">
+                  BeautifyInterior
+                </h3>
+              </div>
+            </div> */}
+            <div className="flex items-center space-x-2">
+              <div className="w-6 h-6  ">
+                <img
+                  src="/BI.svg"
+                  alt="Logo"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
                 <h3 className="text-sm font-medium text-white">
@@ -74,14 +88,14 @@ export function Footer() {
                   Furniture
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="/sale"
                   className="text-stone-400 hover:text-white transition-colors"
                 >
                   Sale
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
 

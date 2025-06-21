@@ -8,36 +8,36 @@ import { Star, Truck, Shield, RotateCcw } from "lucide-react";
 import { ProductImages } from "@/components/product-images";
 import { ProductActions } from "@/components/product-actions";
 
-const relatedProducts = [
-  {
-    id: 2,
-    name: "Boho Table Lamp",
-    price: 5699,
-    image: "/placeholder.svg?height=200&width=200",
-    rating: 4.6,
-  },
-  {
-    id: 3,
-    name: "Ceramic Pendant Light",
-    price: 4599,
-    image: "/placeholder.svg?height=200&width=200",
-    rating: 4.7,
-  },
-  {
-    id: 4,
-    name: "Woven Ceiling Light",
-    price: 6599,
-    image: "/placeholder.svg?height=200&width=200",
-    rating: 4.5,
-  },
-  {
-    id: 5,
-    name: "Modern Floor Lamp",
-    price: 10799,
-    image: "/placeholder.svg?height=200&width=200",
-    rating: 4.8,
-  },
-];
+// const relatedProducts = [
+//   {
+//     id: 2,
+//     name: "Boho Table Lamp",
+//     price: 5699,
+//     image: "/placeholder.svg?height=200&width=200",
+//     rating: 4.6,
+//   },
+//   {
+//     id: 3,
+//     name: "Ceramic Pendant Light",
+//     price: 4599,
+//     image: "/placeholder.svg?height=200&width=200",
+//     rating: 4.7,
+//   },
+//   {
+//     id: 4,
+//     name: "Woven Ceiling Light",
+//     price: 6599,
+//     image: "/placeholder.svg?height=200&width=200",
+//     rating: 4.5,
+//   },
+//   {
+//     id: 5,
+//     name: "Modern Floor Lamp",
+//     price: 10799,
+//     image: "/placeholder.svg?height=200&width=200",
+//     rating: 4.8,
+//   },
+// ];
 
 async function fetchProduct(id) {
   try {
@@ -53,9 +53,25 @@ async function fetchProduct(id) {
   }
 }
 
+async function fetchRelatedProducts(id) {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/${id}/similar`,
+      { cache: "no-store" }
+    );
+    if (!res.ok) throw new Error("Failed to fetch related products");
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching related products:", error);
+    return [];
+  }
+}
+
 export default async function ProductDetailPage({ params }) {
   const { id } = params;
   const product = await fetchProduct(id);
+
+  const relatedProducts = await fetchRelatedProducts(id);
 
   if (!product) return <div>Product not found</div>;
 

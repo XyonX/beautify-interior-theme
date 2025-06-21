@@ -148,7 +148,7 @@ export function Header() {
     { href: "/categories/handmade-crafts", label: "Handmade Crafts" },
     { href: "/categories/idols-and-figurines", label: "Idols & Figurines" },
     { href: "/categories/textiles", label: "Textiles" },
-    { href: "/sale", label: "Sale" },
+    // { href: "/sale", label: "Sale" },
   ];
 
   const accountLinks = [
@@ -367,12 +367,12 @@ export function Header() {
                   </Link>
                 ))}
 
-                <Link
+                {/* <Link
                   href="/sale"
                   className="text-orange-600 hover:text-orange-700 text-xs font-medium transition-colors"
                 >
                   Sale
-                </Link>
+                </Link> */}
               </div>
             </div>
           </nav>
@@ -424,8 +424,12 @@ export function Header() {
             {/* Header with enhanced styling */}
             <div className="flex items-center justify-between p-4 border-b border-stone-100 bg-gradient-to-r from-white to-stone-50/30">
               <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 bg-stone-800 flex items-center justify-center rounded-md">
-                  <span className="text-white font-medium text-xs">BI</span>
+                <div className="w-8 h-8  ">
+                  <img
+                    src="/BI.svg"
+                    alt="Logo"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
                 <h2 className="text-sm font-medium text-stone-800">Menu</h2>
               </div>
@@ -650,7 +654,7 @@ export function Header() {
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs text-stone-600">
-                  © 2024 BeautifyInterior
+                  © 2025 BeautifyInterior
                 </span>
                 <div className="flex items-center gap-2">
                   <Link href="/wishlist" onClick={closeMobileMenu}>

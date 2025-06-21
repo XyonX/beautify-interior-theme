@@ -33,7 +33,7 @@ const slides = [
   {
     id: 2,
     image:
-      "https://cdn.beautifyinterior.com/site-data/Timeless-Charm-Optimized.png",
+      "https://cdn.beautifyinterior.com/site-data/timeless_optimized_v2.png",
     alt: "Elegant Vintage Double-Sided Station Wall Clock",
     link: "https://beautifyinterior.com/products/0f3c054a-64e1-47fe-b12c-5350e5d478d7",
     title: "Add a Touch of Vintage",
@@ -92,12 +92,12 @@ export function HeroSection() {
                   priority={index === 0}
                 />
                 <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="absolute bottom-8 left-8 text-white">
+                {/* <div className="absolute bottom-8 left-8 text-white">
                   <h2 className="text-2xl font-bold mb-1 drop-shadow-md">
                     {slide.title}
                   </h2>
                   <p className="text-sm drop-shadow-md">{slide.subtitle}</p>
-                </div>
+                </div> */}
               </div>
             </Link>
           ))}
