@@ -1,4 +1,3 @@
-import localFont from "next/font/local";
 import "../globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -6,16 +5,6 @@ import { ToastProvider } from "@/components/toast-provider";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import Clarity from "@/components/Clarity";
 import { EngagementManager } from "@/components/engagement/engagement-manager";
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
 
 export const metadata = {
   title: "Beautify Interior | Handcrafted Home Decor & Interior Accents",

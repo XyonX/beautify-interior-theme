@@ -24,7 +24,7 @@ export default function CartPage() {
   const [isApplyingPromo, setIsApplyingPromo] = useState(false);
 
   const subtotal = getTotalPrice();
-  const shipping = subtotal > 8299 ? 0 : 829; // Free shipping over ₹8299, otherwise ₹829
+  const shipping = subtotal > 500 ? 0 : 150;
   const tax = subtotal * 0.18; // 18% GST for India
   const total = subtotal + shipping + tax;
 
@@ -232,7 +232,10 @@ export default function CartPage() {
                     className="flex items-center gap-3 p-3 border border-stone-100 rounded-sm"
                   >
                     <Image
-                      src={item.image || "/placeholder.svg"}
+                      src={
+                        `${process.env.NEXT_PUBLIC_CDN_URL}${item.image}` ||
+                        "/placeholder.svg"
+                      }
                       alt={item.name}
                       width={60}
                       height={60}
@@ -382,7 +385,7 @@ export default function CartPage() {
                 <div className="space-y-2 pt-3 border-t border-stone-100">
                   <div className="flex items-center gap-1.5 text-xs text-stone-600">
                     <Truck className="h-3 w-3 text-accent3-600" />
-                    <span>Free shipping on orders over ₹8,299</span>
+                    <span>Free shipping on orders over ₹500</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-stone-600">
                     <Shield className="h-3 w-3 text-accent3-600" />

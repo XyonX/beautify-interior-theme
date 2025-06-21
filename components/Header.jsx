@@ -23,10 +23,14 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
 import { useAuthStore } from "@/lib/auth-store";
+import { useSessionStore } from "@/lib/session-store";
 import { useRouter } from "next/navigation";
+import { useCartStore } from "@/lib/cart-store";
 
 export function Header() {
-  const [cartCount] = useState(3);
+  // const user = useAuthStore((s) => s.user);
+
+  const cartCount = useCartStore((s) => s.getTotalItems());
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
 
@@ -121,6 +125,22 @@ export function Header() {
         "Handcrafted Creations – Unique, artisan-made decor blending tradition with modern elegance. Perfect for gifting or personal charm.",
     },
   ];
+
+  const setUserId = useCartStore((s) => s.setUserId);
+  const sessionId = useSessionStore((state) => state.sessionId);
+  const setSessionId = useSessionStore((state) => state.setSessionId);
+
+  useEffect(() => {
+    setUserId(user?.id || null); // Sync Zustand cart with backend if logged in
+  }, [user]);
+
+  useEffect(() => {
+    if (!sessionId) {
+      const newSessionId = crypto.randomUUID();
+      setSessionId(newSessionId);
+    }
+    console.log("Current session id: ", sessionId);
+  }, [sessionId, setSessionId]);
 
   const navigationLinks = [
     { href: "/categories/lighting", label: "Lighting" },
