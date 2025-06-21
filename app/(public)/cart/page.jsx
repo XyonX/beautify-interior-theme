@@ -25,7 +25,8 @@ export default function CartPage() {
 
   const subtotal = getTotalPrice();
   const shipping = subtotal > 500 ? 0 : 150;
-  const tax = subtotal * 0.18; // 18% GST for India
+  // const tax = subtotal * 0.18; // 18% GST for India
+  const tax = 0; // 18% GST for India
   const total = subtotal + shipping + tax;
 
   const handleQuantityUpdate = (id, newQuantity, maxQuantity = 10) => {

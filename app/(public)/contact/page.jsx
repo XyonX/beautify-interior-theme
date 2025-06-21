@@ -74,9 +74,9 @@ export default function ContactPage() {
                 <div>
                   <p className="text-xs font-medium text-stone-800">Address</p>
                   <p className="text-xs text-stone-600">
-                    123 Design Street
+                    109, netaji nagar,vip nagar
                     <br />
-                    Creative City, CC 12345
+                    kolkata,700100
                   </p>
                 </div>
               </div>
@@ -84,7 +84,7 @@ export default function ContactPage() {
                 <Phone className="h-4 w-4 text-stone-800 mt-0.5" />
                 <div>
                   <p className="text-xs font-medium text-stone-800">Phone</p>
-                  <p className="text-xs text-stone-600">+1 (555) 123-4567</p>
+                  <p className="text-xs text-stone-600">+91 988-360-8843</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -92,7 +92,7 @@ export default function ContactPage() {
                 <div>
                   <p className="text-xs font-medium text-stone-800">Email</p>
                   <p className="text-xs text-stone-600">
-                    hello@beautifyinterior.com
+                    beautifyinterior@gmail.com
                   </p>
                 </div>
               </div>
@@ -122,8 +122,10 @@ export default function ContactPage() {
                   What is your return policy?
                 </p>
                 <p className="text-xs text-stone-600">
-                  We offer a 30-day return policy for all items in original
-                  condition.
+                  We do not accept general returns. However, if your item
+                  arrives damaged or incorrect, you can request a refund within
+                  48 hours of delivery by providing clear photos and order
+                  details.
                 </p>
               </div>
               <div>
@@ -131,7 +133,8 @@ export default function ContactPage() {
                   Do you offer international shipping?
                 </p>
                 <p className="text-xs text-stone-600">
-                  Yes, we ship worldwide. Shipping costs vary by location.
+                  Yes, we ship worldwide. International delivery may take 15–30
+                  business days depending on the destination.
                 </p>
               </div>
               <div>
@@ -139,8 +142,8 @@ export default function ContactPage() {
                   How can I track my order?
                 </p>
                 <p className="text-xs text-stone-600">
-                  You'll receive a tracking number via email once your order
-                  ships.
+                  A tracking number will be sent to your email once your order
+                  is shipped. You can use this to monitor the delivery status.
                 </p>
               </div>
             </CardContent>

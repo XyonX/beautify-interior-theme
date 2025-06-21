@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RotateCcw, AlertCircle, CheckCircle, XCircle } from "lucide-react";
 
@@ -7,10 +6,10 @@ export default function ReturnsPage() {
     <main className="container mx-auto px-4 py-8">
       <div className="mb-6">
         <h1 className="text-lg font-medium text-stone-800 mb-1">
-          Returns & Exchanges
+          Returns & Refund Policy
         </h1>
         <p className="text-xs text-stone-600">
-          Our hassle-free return and exchange policy
+          Know how we handle damaged items and refund eligibility.
         </p>
       </div>
 
@@ -25,28 +24,29 @@ export default function ReturnsPage() {
           <CardContent className="p-4 space-y-3">
             <div>
               <h3 className="text-xs font-medium text-stone-800 mb-1">
-                30-Day Return Window
+                No General Returns
               </h3>
               <p className="text-xs text-stone-600 mb-2">
-                You have 30 days from the delivery date to return items for a
-                full refund.
+                We currently do not support general returns or change-of-mind
+                cancellations.
               </p>
             </div>
             <div>
               <h3 className="text-xs font-medium text-stone-800 mb-1">
-                Original Condition
+                Damaged or Incorrect Items
               </h3>
               <p className="text-xs text-stone-600 mb-2">
-                Items must be in original condition with all tags and packaging
-                intact.
+                If your item arrives damaged or incorrect, notify us within 48
+                hours of delivery with clear photos. Approved cases are eligible
+                for refund or replacement.
               </p>
             </div>
             <div>
               <h3 className="text-xs font-medium text-stone-800 mb-1">
-                Return Shipping
+                Time Window
               </h3>
               <p className="text-xs text-stone-600">
-                We provide prepaid return labels for your convenience.
+                Claims must be made within 48 hours of receiving the product.
               </p>
             </div>
           </CardContent>
@@ -56,24 +56,27 @@ export default function ReturnsPage() {
           <CardHeader className="p-4">
             <CardTitle className="text-sm flex items-center gap-2">
               <AlertCircle className="h-4 w-4" />
-              Exchange Policy
+              Refund Process
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 space-y-3">
             <div>
               <h3 className="text-xs font-medium text-stone-800 mb-1">
-                Size & Color Exchanges
+                Valid Cases Only
               </h3>
               <p className="text-xs text-stone-600 mb-2">
-                Free exchanges for different sizes or colors within 30 days.
+                Refunds are granted only for valid, approved cases (damaged or
+                wrong product). No refunds for delays within estimated
+                timelines.
               </p>
             </div>
             <div>
               <h3 className="text-xs font-medium text-stone-800 mb-1">
-                Defective Items
+                No Exchanges
               </h3>
               <p className="text-xs text-stone-600 mb-2">
-                Immediate replacement or full refund for any defective items.
+                We do not currently support product exchanges. Please review
+                product details carefully before ordering.
               </p>
             </div>
             <div>
@@ -81,7 +84,7 @@ export default function ReturnsPage() {
                 Processing Time
               </h3>
               <p className="text-xs text-stone-600">
-                Exchanges are processed within 3-5 business days of receipt.
+                Refunds are processed within 5–7 business days after approval.
               </p>
             </div>
           </CardContent>
@@ -90,7 +93,7 @@ export default function ReturnsPage() {
 
       <Card className="rounded-sm border-stone-100 mb-6">
         <CardHeader className="p-4">
-          <CardTitle className="text-sm">Return Process</CardTitle>
+          <CardTitle className="text-sm">How to Report an Issue</CardTitle>
         </CardHeader>
         <CardContent className="p-4">
           <div className="grid md:grid-cols-4 gap-4">
@@ -99,10 +102,11 @@ export default function ReturnsPage() {
                 1
               </div>
               <h3 className="text-xs font-medium text-stone-800 mb-1">
-                Initiate Return
+                Contact Us
               </h3>
               <p className="text-xs text-stone-600">
-                Contact us or use your account to start a return
+                Email us within 48 hours of delivery with order details and
+                photos.
               </p>
             </div>
             <div className="text-center">
@@ -110,10 +114,10 @@ export default function ReturnsPage() {
                 2
               </div>
               <h3 className="text-xs font-medium text-stone-800 mb-1">
-                Pack Items
+                Provide Evidence
               </h3>
               <p className="text-xs text-stone-600">
-                Pack items in original packaging with return label
+                Attach clear images of the product showing the issue.
               </p>
             </div>
             <div className="text-center">
@@ -121,10 +125,10 @@ export default function ReturnsPage() {
                 3
               </div>
               <h3 className="text-xs font-medium text-stone-800 mb-1">
-                Ship Back
+                Review & Approval
               </h3>
               <p className="text-xs text-stone-600">
-                Drop off at any carrier location or schedule pickup
+                Our team will verify your request and confirm eligibility.
               </p>
             </div>
             <div className="text-center">
@@ -132,10 +136,10 @@ export default function ReturnsPage() {
                 4
               </div>
               <h3 className="text-xs font-medium text-stone-800 mb-1">
-                Get Refund
+                Refund Issued
               </h3>
               <p className="text-xs text-stone-600">
-                Receive refund within 5-7 business days
+                Approved refunds will be processed within 5–7 business days.
               </p>
             </div>
           </div>
@@ -147,12 +151,12 @@ export default function ReturnsPage() {
           <CardContent className="p-4 text-center">
             <CheckCircle className="h-6 w-6 text-green-600 mx-auto mb-2" />
             <h3 className="text-xs font-medium text-green-800 mb-1">
-              Returnable Items
+              Eligible for Refund
             </h3>
             <ul className="text-xs text-green-700 space-y-1">
-              <li>• Unused items with tags</li>
-              <li>• Items in original packaging</li>
-              <li>• Non-personalized items</li>
+              <li>• Damaged items (reported within 48 hours)</li>
+              <li>• Incorrect product received</li>
+              <li>• Proof provided via photos</li>
             </ul>
           </CardContent>
         </Card>
@@ -161,12 +165,12 @@ export default function ReturnsPage() {
           <CardContent className="p-4 text-center">
             <XCircle className="h-6 w-6 text-red-600 mx-auto mb-2" />
             <h3 className="text-xs font-medium text-red-800 mb-1">
-              Non-Returnable Items
+              Not Eligible for Refund
             </h3>
             <ul className="text-xs text-red-700 space-y-1">
-              <li>• Custom/personalized items</li>
-              <li>• Items damaged by misuse</li>
-              <li>• Items without original packaging</li>
+              <li>• Buyer’s remorse / changed mind</li>
+              <li>• Delays within shipping window</li>
+              <li>• Claims made after 48 hours</li>
             </ul>
           </CardContent>
         </Card>
@@ -178,9 +182,9 @@ export default function ReturnsPage() {
               Need Help?
             </h3>
             <p className="text-xs text-stone-600 mb-2">
-              Contact our customer service team
+              Reach our support team with your order ID and issue.
             </p>
-            <p className="text-xs text-stone-600">hello@beautifyinterior.com</p>
+            <p className="text-xs text-stone-600">beautifyinterior@gmail.com</p>
           </CardContent>
         </Card>
       </div>

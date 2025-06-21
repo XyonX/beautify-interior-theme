@@ -24,28 +24,16 @@ export function Footer() {
             </p>
             <div className="flex space-x-3">
               <Link
-                href="#"
+                href="https://www.facebook.com/people/Beautify-Interior/61577328230098/"
                 className="text-stone-400 hover:text-white transition-colors"
               >
                 <Facebook className="h-4 w-4" />
               </Link>
               <Link
-                href="#"
+                href="https://www.instagram.com/beautifyinterior07/"
                 className="text-stone-400 hover:text-white transition-colors"
               >
                 <Instagram className="h-4 w-4" />
-              </Link>
-              <Link
-                href="#"
-                className="text-stone-400 hover:text-white transition-colors"
-              >
-                <Twitter className="h-4 w-4" />
-              </Link>
-              <Link
-                href="#"
-                className="text-stone-400 hover:text-white transition-colors"
-              >
-                <Youtube className="h-4 w-4" />
               </Link>
             </div>
           </div>
