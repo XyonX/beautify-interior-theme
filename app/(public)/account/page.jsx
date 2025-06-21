@@ -69,7 +69,7 @@ export default function AccountPage() {
     zipCode: "",
     country: "India",
     phone: "",
-    isDefault: false,
+    isDefault: true,
   });
 
   // Get addresses safely with fallback to empty array

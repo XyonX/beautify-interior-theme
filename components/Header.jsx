@@ -23,10 +23,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
 import { useAuthStore } from "@/lib/auth-store";
+import { useRouter } from "next/navigation";
 
 export function Header() {
   const [cartCount] = useState(3);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const router = useRouter();
 
   const { user, logout } = useAuthStore();
   const categoryLinks = [
