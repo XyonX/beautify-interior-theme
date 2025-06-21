@@ -10,6 +10,8 @@ import { CategorySkeleton } from "@/components/skeletons/category-skeleton";
 import { FeaturedProductsSkeleton } from "@/components/skeletons/featured-products-skeleton";
 import { TrendingSkeleton } from "@/components/skeletons/trending-skeleton";
 import { DealsSkeleton } from "@/components/skeletons/deals-skeleton";
+import { FocusCategorySkeleton } from "@/components/skeletons/focus-category-skeleton";
+import { FocusCategory } from "@/components/focus-category";
 
 export default function HomePage() {
   return (
@@ -22,14 +24,17 @@ export default function HomePage() {
       </Suspense>
       <Suspense fallback={<FeaturedProductsSkeleton />}>
         <FeaturedProducts />
+        <Suspense fallback={<FocusCategorySkeleton />}>
+          <FocusCategory />
+        </Suspense>
+      </Suspense>
+      <Suspense fallback={<TrendingSkeleton />}>
+        <TrendingSection />
       </Suspense>
       <Suspense fallback={<DealsSkeleton />}>
         <DealsSection />
       </Suspense>
 
-      <Suspense fallback={<TrendingSkeleton />}>
-        <TrendingSection />
-      </Suspense>
       <Newsletter />
     </main>
   );

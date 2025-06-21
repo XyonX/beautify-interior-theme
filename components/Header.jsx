@@ -8,6 +8,7 @@ import {
   Heart,
   Menu,
   X,
+  ChevronDown,
   LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,96 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const { logout } = useAuthStore();
+  const categoryLinks = [
+    {
+      href: "/categories/lighting",
+      label: "Lighting",
+      icon: "💡",
+      image: "/categories/thumbnails/2bb48961-2757-4656-ab70-832479f68c64.png",
+      description:
+        "Set the mood with our curated collection of aesthetic lamps, string lights, statement fixtures, and ambient lighting solutions for every room",
+    },
+    {
+      href: "/categories/showpieces",
+      label: "Showpieces",
+      icon: "🪄",
+      image: "/categories/thumbnails/5fbc3486-05e6-4052-90ec-0ad757f90d2e.jpg",
+      description:
+        "Unique and eye-catching decorative items to enhance the aesthetic appeal of your home. Includes handcrafted planters, bowls, trays, and more.",
+    },
+    {
+      href: "/categories/plants",
+      label: "Plants & Planters",
+      icon: "🪴",
+      image: "/categories/thumbnails/840ef6f4-7393-4227-9c23-a8a2b9bea57b.jpg",
+      description:
+        "Bring nature indoors with a selection of indoor plants and handcrafted planters. Perfect for adding a touch of greenery to your home.",
+    },
+    {
+      href: "/categories/boho-art",
+      label: "Boho Art",
+      icon: "🧶",
+      image: "/categories/thumbnails/9c0a9a8e-2387-4136-87a2-33a7aebfa1cb.webp",
+      description:
+        "Embrace the bohemian spirit with our eclectic decor collection. Features macramé, boho cushions, baskets, and natural fiber items.",
+    },
+    {
+      href: "/categories/seasonal-decor",
+      label: "Seasonal Decor",
+      icon: "🎊",
+      image: "/categories/thumbnails/22e2cf73-9f16-4fba-b865-bfe8c3fda9bc.jpg",
+      description:
+        "Celebrate India's festivals with our vibrant decor collection! From Diwali diyas to Holi colors, Navratri garlands, and Durga Puja decorations.",
+    },
+    {
+      href: "/categories/idols-and-figurines",
+      label: "Idols & Figurines",
+      icon: "🕉️",
+      image: "/categories/thumbnails/ba5a6fe6-d232-4f4a-84be-a50258694dce.jpg",
+      description:
+        "Elegant, handcrafted idols and decor figurines to bring peace, culture, and charm to your home.",
+    },
+    {
+      href: "/categories/wall-decor",
+      label: "Wall Decor",
+      icon: "🖼️",
+      image: "/categories/thumbnails/5fca6e7f-40c9-42ed-8805-6009d8754155.jpg",
+      description:
+        "Transform your walls with our diverse collection of wall decor. Features canvas prints, metal art, clocks, and tapestries.",
+    },
+    {
+      href: "/categories/clocks",
+      label: "Clocks",
+      icon: "⏰",
+      image: "/categories/thumbnails/c03f8bae-23ca-435b-b115-c03217159701.jpg",
+      description:
+        "A variety of decorative and functional clocks to add a touch of timekeeping elegance to your home. Features brass, copper, painted, and antique-style clocks.",
+    },
+    {
+      href: "/categories/textiles",
+      label: "Textiles",
+      icon: "🧵",
+      image: "/categories/thumbnails/008f4272-58b9-449e-9a65-1317d5c7683c.jpg",
+      description:
+        "Soften your space with luxurious textiles. Features curtains, bed linens, tablecloths, throws, and decorative pillows.",
+    },
+    {
+      href: "/categories/metal-decor",
+      label: "Metal Decor",
+      icon: "🛠️",
+      image: "/categories/thumbnails/449e26ce-a74a-42f2-a10c-8072d4c5dbf5.jpeg",
+      description:
+        "A collection of metal decor items that add a touch of elegance and durability to your home. Features sculptures, wall art, candle holders, and planters.",
+    },
+    {
+      href: "/categories/handmade-crafts",
+      label: "Handmade Crafts",
+      icon: "🎨",
+      image: "/categories/thumbnails/6a386e46-d9f8-438c-8acc-286ba96c2152.webp",
+      description:
+        "Handcrafted Creations – Unique, artisan-made decor blending tradition with modern elegance. Perfect for gifting or personal charm.",
+    },
+  ];
 
   const navigationLinks = [
     { href: "/categories/lighting", label: "Lighting" },
@@ -205,10 +296,45 @@ export function Header() {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="mt-2 border-t border-stone-100 pt-2 hidden md:block">
+          <nav className="mt-3 border-t border-stone-100 pt-3 hidden md:block">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-6">
-                {navigationLinks.map((link) => (
+                {/* Categories Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="text-stone-700 hover:text-stone-900 text-xs font-medium transition-colors flex items-center"
+                    >
+                      Categories
+                      <ChevronDown className="h-3 w-3 ml-1" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56 rounded-lg">
+                    {categoryLinks.map((category) => (
+                      <DropdownMenuItem key={category.href} asChild>
+                        <Link
+                          href={category.href}
+                          className="flex items-center text-xs"
+                        >
+                          <span className="mr-2">{category.icon}</span>
+                          {category.label}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Shop All Link */}
+                <Link
+                  href="/products"
+                  className="text-stone-700 hover:text-stone-900 text-xs font-medium transition-colors"
+                >
+                  Shop All
+                </Link>
+
+                {/* Other Navigation Links */}
+                {navigationLinks.slice(0, 4).map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
@@ -217,6 +343,13 @@ export function Header() {
                     {link.label}
                   </Link>
                 ))}
+
+                <Link
+                  href="/sale"
+                  className="text-orange-600 hover:text-orange-700 text-xs font-medium transition-colors"
+                >
+                  Sale
+                </Link>
               </div>
             </div>
           </nav>
