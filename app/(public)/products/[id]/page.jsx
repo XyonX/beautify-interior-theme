@@ -259,7 +259,7 @@ export default async function ProductDetailPage({ params }) {
             >
               <div className="relative aspect-square overflow-hidden">
                 <Image
-                  src={product.image}
+                  src={`${process.env.NEXT_PUBLIC_CDN_URL}${product.thumbnail}`}
                   alt={product.name}
                   width={200}
                   height={200}
@@ -277,7 +277,7 @@ export default async function ProductDetailPage({ params }) {
                   <div className="flex items-center">
                     <Star className="h-3 w-3 fill-accent2-500 text-accent2-500" />
                     <span className="text-xs text-stone-600 ml-1">
-                      {product.rating}
+                      {product.average_rating}
                     </span>
                   </div>
                 </div>

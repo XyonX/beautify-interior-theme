@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
   Plus,
   Search,
   MoreHorizontal,
@@ -31,15 +40,76 @@ import {
   AlertTriangle,
   Filter,
 } from "lucide-react";
-import { mockProducts, mockCategories } from "@/lib/mock-data";
-import { useEffect } from "react";
+
+// Utility function to convert snake_case to camelCase
+function snakeToCamel(obj) {
+  if (Array.isArray(obj)) {
+    return obj.map(snakeToCamel);
+  } else if (obj !== null && typeof obj === "object") {
+    return Object.keys(obj).reduce((acc, key) => {
+      const camelKey = key.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+      acc[camelKey] = snakeToCamel(obj[key]);
+      return acc;
+    }, {});
+  }
+  return obj;
+}
+
+// Utility function to convert camelCase to snake_case
+function camelToSnake(obj) {
+  if (Array.isArray(obj)) {
+    return obj.map(camelToSnake);
+  } else if (obj !== null && typeof obj === "object") {
+    return Object.keys(obj).reduce((acc, key) => {
+      const snakeKey = key.replace(/([A-Z])/g, "_$1").toLowerCase();
+      acc[snakeKey] = camelToSnake(obj[key]);
+      return acc;
+    }, {});
+  }
+  return obj;
+}
+
 export default function AdminProductsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    shortDescription: "",
+    description: "",
+    price: "",
+    compareAtPrice: "",
+    quantity: "",
+    categoryId: "",
+    tags: "",
+    vendor: "",
+  });
 
-  // Fetch categories from backend on mount
+  // Fetch products from backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const backendUrl =
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+        if (!backendUrl) {
+          throw new Error("NEXT_PUBLIC_BACKEND_URL is not defined");
+        }
+        const response = await fetch(`${backendUrl}/api/products`);
+        if (!response.ok) throw new Error("Failed to fetch products");
+        const data = await response.json();
+        setProducts(data.map(snakeToCamel));
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  // Fetch categories from backend
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -48,35 +118,10 @@ export default function AdminProductsPage() {
         if (!backendUrl) {
           throw new Error("NEXT_PUBLIC_BACKEND_URL is not defined");
         }
-
-        const response = await fetch(`${backendUrl}/api/products`);
-        if (!response.ok) throw new Error("Failed to fetch products");
-        const data = await response.json();
-        setProducts(data);
-      } catch (error) {
-        console.error("Error fetching Products:", error);
-      }
-    };
-    fetchCategories();
-  }, []);
-
-  const [categories, setCategories] = useState([]);
-
-  // Fetch categories from backend on mount
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const backendUrl =
-          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
-        if (!backendUrl) {
-          throw new Error("BACKEND_URL is not defined");
-        }
-
         const response = await fetch(`${backendUrl}/api/categories`);
         if (!response.ok) throw new Error("Failed to fetch categories");
         const data = await response.json();
-        setCategories(data);
-        console.log("Found categories: ", categories);
+        setCategories(data.map(snakeToCamel));
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -84,7 +129,25 @@ export default function AdminProductsPage() {
     fetchCategories();
   }, []);
 
-  const filteredProducts = (products || []).filter((product) => {
+  // Initialize form data when a product is selected for editing
+  useEffect(() => {
+    if (selectedProduct) {
+      setFormData({
+        name: selectedProduct.name || "",
+        shortDescription: selectedProduct.shortDescription || "",
+        description: selectedProduct.description || "",
+        price: selectedProduct.price || "",
+        compareAtPrice: selectedProduct.compareAtPrice || "",
+        quantity: selectedProduct.quantity || "",
+        categoryId: selectedProduct.categoryId || "",
+        tags: selectedProduct.tags ? selectedProduct.tags.join(", ") : "",
+        vendor: selectedProduct.vendor || "",
+      });
+    }
+  }, [selectedProduct]);
+
+  // Filter products based on search, status, and category
+  const filteredProducts = products.filter((product) => {
     const matchesSearch =
       (product?.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
       (product?.sku || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -95,24 +158,119 @@ export default function AdminProductsPage() {
       statusFilter === "all" || product?.status === statusFilter;
     const matchesCategory =
       categoryFilter === "all" || product?.categoryId === categoryFilter;
-
     return matchesSearch && matchesStatus && matchesCategory;
   });
 
-  const handleDeleteProduct = (productId) => {
+  // Delete product by calling backend
+  const handleDeleteProduct = async (productId) => {
     if (confirm("Are you sure you want to delete this product?")) {
-      setProducts(products.filter((p) => p.id !== productId));
+      try {
+        const backendUrl =
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+        const response = await fetch(
+          `${backendUrl}/api/products/${productId}`,
+          {
+            method: "DELETE",
+          }
+        );
+        if (!response.ok) throw new Error("Failed to delete product");
+        setProducts(products.filter((p) => p.id !== productId));
+      } catch (error) {
+        console.error("Error deleting product:", error);
+        alert("Failed to delete product");
+      }
     }
   };
 
-  const handleToggleStatus = (productId) => {
-    setProducts(
-      products.map((p) =>
-        p.id === productId
-          ? { ...p, status: p.status === "active" ? "draft" : "active" }
-          : p
-      )
-    );
+  // Toggle product status by calling backend
+  const handleToggleStatus = async (productId) => {
+    const product = products.find((p) => p.id === productId);
+    const newStatus = product.status === "active" ? "draft" : "active";
+    try {
+      const backendUrl =
+        process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+      const response = await fetch(`${backendUrl}/api/products/${productId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (!response.ok) throw new Error("Failed to update product status");
+      setProducts(
+        products.map((p) =>
+          p.id === productId ? { ...p, status: newStatus } : p
+        )
+      );
+    } catch (error) {
+      console.error("Error updating product status:", error);
+      alert("Failed to update product status");
+    }
+  };
+
+  // Open edit modal with selected product
+  const handleOpenEditModal = (product) => {
+    setSelectedProduct(product);
+    setIsEditModalOpen(true);
+  };
+
+  // Handle form input changes
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handle form submission
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.price || !formData.categoryId) {
+      alert("Name, price, and category are required.");
+      return;
+    }
+    try {
+      const backendUrl =
+        process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+      const payload = {
+        name: formData.name,
+        short_description: formData.shortDescription,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        compare_at_price: formData.compareAtPrice
+          ? parseFloat(formData.compareAtPrice)
+          : null,
+        quantity: formData.quantity ? parseInt(formData.quantity) : null,
+        category_id: formData.categoryId,
+        tags: formData.tags
+          ? formData.tags.split(",").map((tag) => tag.trim())
+          : [],
+        vendor: formData.vendor || null,
+      };
+      const response = await fetch(
+        `${backendUrl}/api/products/${selectedProduct.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(camelToSnake(payload)),
+        }
+      );
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to update product");
+      }
+      const updatedProduct = await response.json();
+      setProducts(
+        products.map((p) =>
+          p.id === selectedProduct.id ? snakeToCamel(updatedProduct) : p
+        )
+      );
+      setIsEditModalOpen(false);
+      setSelectedProduct(null);
+    } catch (error) {
+      console.error("Error updating product:", error);
+      alert(error.message || "Failed to update product");
+    }
   };
 
   const getStatusColor = (status) => {
@@ -163,7 +321,7 @@ export default function AdminProductsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-stone-600">Total Products</p>
-                <p className="text-2xl font-bold">{(products || []).length}</p>
+                <p className="text-2xl font-bold">{products.length}</p>
               </div>
               <Package className="h-8 w-8 text-stone-400" />
             </div>
@@ -175,10 +333,7 @@ export default function AdminProductsPage() {
               <div>
                 <p className="text-sm text-stone-600">Active Products</p>
                 <p className="text-2xl font-bold">
-                  {
-                    (products || []).filter((p) => p?.status === "active")
-                      .length
-                  }
+                  {products.filter((p) => p?.status === "active").length}
                 </p>
               </div>
               <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
@@ -194,7 +349,7 @@ export default function AdminProductsPage() {
                 <p className="text-sm text-stone-600">Low Stock</p>
                 <p className="text-2xl font-bold">
                   {
-                    (products || []).filter(
+                    products.filter(
                       (p) =>
                         p?.trackQuantity &&
                         (p?.quantity || 0) <= (p?.lowStockThreshold || 0)
@@ -213,7 +368,7 @@ export default function AdminProductsPage() {
                 <p className="text-sm text-stone-600">Out of Stock</p>
                 <p className="text-2xl font-bold">
                   {
-                    (products || []).filter(
+                    products.filter(
                       (p) => p?.trackQuantity && (p?.quantity || 0) === 0
                     ).length
                   }
@@ -259,9 +414,9 @@ export default function AdminProductsPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Categories</SelectItem>
-                {mockCategories.map((category) => (
+                {categories.map((category) => (
                   <SelectItem key={category.id} value={category.id}>
-                    {category.name}
+                    {category?.name || "Uncategorized"}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -273,6 +428,135 @@ export default function AdminProductsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Edit Product Modal */}
+      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Edit Product</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleFormSubmit} className="space-y-4">
+            <div className="grid gap-4">
+              <div>
+                <Label htmlFor="name">Product Name *</Label>
+                <Input
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleFormChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="shortDescription">Short Description</Label>
+                <Textarea
+                  id="shortDescription"
+                  name="shortDescription"
+                  value={formData.shortDescription}
+                  onChange={handleFormChange}
+                  rows={2}
+                />
+              </div>
+              <div>
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleFormChange}
+                  rows={4}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="price">Price (₹) *</Label>
+                  <Input
+                    id="price"
+                    name="price"
+                    type="number"
+                    step="0.01"
+                    value={formData.price}
+                    onChange={handleFormChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="compareAtPrice">Compare At Price (₹)</Label>
+                  <Input
+                    id="compareAtPrice"
+                    name="compareAtPrice"
+                    type="number"
+                    step="0.01"
+                    value={formData.compareAtPrice}
+                    onChange={handleFormChange}
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="quantity">Quantity</Label>
+                <Input
+                  id="quantity"
+                  name="quantity"
+                  type="number"
+                  value={formData.quantity}
+                  onChange={handleFormChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="categoryId">Category *</Label>
+                <Select
+                  name="categoryId"
+                  value={formData.categoryId}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, categoryId: value }))
+                  }
+                  required
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category?.name || "Uncategorized"}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="tags">Tags (comma-separated)</Label>
+                <Input
+                  id="tags"
+                  name="tags"
+                  value={formData.tags}
+                  onChange={handleFormChange}
+                  placeholder="e.g., electronics, sale"
+                />
+              </div>
+              <div>
+                <Label htmlFor="vendor">Vendor</Label>
+                <Input
+                  id="vendor"
+                  name="vendor"
+                  value={formData.vendor}
+                  onChange={handleFormChange}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsEditModalOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit">Save Changes</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {/* Products Table */}
       <Card>
@@ -328,7 +612,7 @@ export default function AdminProductsPage() {
                                 <Image
                                   src={
                                     `${process.env.NEXT_PUBLIC_CDN_URL}${product.thumbnail}` ||
-                                    "/placeholder.svg"
+                                    "/placeholder.png"
                                   }
                                   alt={product.name}
                                   width={48}
@@ -376,7 +660,7 @@ export default function AdminProductsPage() {
                         </td>
                         <td className="p-4">
                           <span className="text-sm text-stone-700">
-                            {category?.name.toLowerCase() || "Uncategorized"}
+                            {category?.name || "Uncategorized"}
                           </span>
                         </td>
                         <td className="p-4">
@@ -440,7 +724,9 @@ export default function AdminProductsPage() {
                                 <Eye className="h-4 w-4 mr-2" />
                                 View Details
                               </DropdownMenuItem>
-                              <DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleOpenEditModal(product)}
+                              >
                                 <Edit className="h-4 w-4 mr-2" />
                                 Edit Product
                               </DropdownMenuItem>
