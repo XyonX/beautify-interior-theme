@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,10 @@ export default function CartPage() {
     removeItem,
     getTotalPrice,
   } = useCartStore();
+  useEffect(() => {
+    console.log("In Cart login items : ");
+    console.log(cartItems);
+  }, []);
   const { addToast } = useToastStore();
 
   const [promoCode, setPromoCode] = useState("");
@@ -234,7 +238,7 @@ export default function CartPage() {
                   >
                     <Image
                       src={
-                        `${process.env.NEXT_PUBLIC_CDN_URL}${item.image}` ||
+                        `${process.env.NEXT_PUBLIC_CDN_URL}${item.image_url}` ||
                         "/placeholder.svg"
                       }
                       alt={item.name}
@@ -259,7 +263,7 @@ export default function CartPage() {
                             size="sm"
                             onClick={() =>
                               handleQuantityUpdate(
-                                item.id,
+                                item.cart_item_id,
                                 item.quantity - 1,
                                 item.maxQuantity
                               )
@@ -276,7 +280,7 @@ export default function CartPage() {
                             size="sm"
                             onClick={() =>
                               handleQuantityUpdate(
-                                item.id,
+                                item.cart_item_id,
                                 item.quantity + 1,
                                 item.maxQuantity
                               )
@@ -289,7 +293,9 @@ export default function CartPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleRemoveItem(item.id, item.name)}
+                          onClick={() =>
+                            handleRemoveItem(item.cart_item_id, item.name)
+                          }
                           className="text-accent1-600 hover:text-accent1-700 hover:bg-accent1-50 text-xs h-6 p-0 px-1"
                         >
                           <X className="h-3 w-3 mr-1" />

@@ -114,7 +114,7 @@ export function NewsletterCapture({ engagement }) {
   if (isDismissed) return null;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-30 bg-stone-900 text-white p-3 shadow-lg">
+    <div className="fixed top-0 left-0 right-0 z-[999] bg-stone-900 text-white p-3 shadow-lg">
       <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-accent1 flex items-center justify-center">

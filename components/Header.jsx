@@ -31,6 +31,7 @@ export function Header() {
   // const user = useAuthStore((s) => s.user);
 
   const cartCount = useCartStore((s) => s.getTotalItems());
+  // const cartCount = 1;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
 
@@ -126,13 +127,17 @@ export function Header() {
     },
   ];
 
-  const setUserId = useCartStore((s) => s.setUserId);
+  const { init, clear } = useCartStore();
   const sessionId = useSessionStore((state) => state.sessionId);
   const setSessionId = useSessionStore((state) => state.setSessionId);
 
   useEffect(() => {
-    setUserId(user?.id || null); // Sync Zustand cart with backend if logged in
-  }, [user]);
+    if (user) {
+      init(user.id); // Fetch cart on login
+    } else {
+      clear(); // Clear cart on logout
+    }
+  }, [user, init, clear]);
 
   useEffect(() => {
     if (!sessionId) {
