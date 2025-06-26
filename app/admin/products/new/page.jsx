@@ -17,7 +17,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Upload, X, Plus, ImageIcon } from "lucide-react";
-import { mockCategories } from "@/lib/mock-data";
+import RichTextEditor from "@/components/admin/rich-text-editor.jsx";
 
 // interface ImagePreview {
 //   id: string
@@ -304,7 +304,11 @@ export default function NewProductPage() {
     );
   };
 
+  // const handleInputChange = (field, value) => {
+  //   setFormData((prev) => ({ ...prev, [field]: value }));
+  // };
   const handleInputChange = (field, value) => {
+    console.log(`Updating field: ${field} with value:`, value);
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -522,14 +526,11 @@ export default function NewProductPage() {
 
                 <div>
                   <Label htmlFor="description">Description *</Label>
-                  <Textarea
-                    id="description"
-                    value={formData.description}
-                    onChange={(e) =>
-                      handleInputChange("description", e.target.value)
-                    }
-                    placeholder="Detailed product description"
-                    rows={4}
+                  <RichTextEditor
+                    content={formData.description}
+                    onChange={(html) => handleInputChange("description", html)}
+                    placeholder="Enter detailed product description"
+                    className="min-h-[300px]"
                     required
                   />
                 </div>

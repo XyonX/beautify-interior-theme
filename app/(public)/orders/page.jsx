@@ -132,14 +132,18 @@ export default function OrdersPage() {
       setError("");
 
       // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      // await new Promise((resolve) => setTimeout(resolve, 800));
 
       // In a real app:
-      // const response = await fetch(`/api/users/${user.id}/orders`);
-      // const data = await response.json();
-      // setOrders(data);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/orders/user/${user.id}`,
+        { credentials: "include" }
+      );
+      const data = await response.json();
+      setOrders(data);
+      console.log("data", data);
 
-      setOrders(mockOrders);
+      // setOrders(mockOrders);
     } catch (err) {
       setError("Failed to load orders. Please try again later.");
       console.error("Order fetch error:", err);
@@ -181,7 +185,7 @@ export default function OrdersPage() {
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
-      currency: "USD",
+      currency: "INR",
     }).format(amount);
   };
 
@@ -365,12 +369,12 @@ export default function OrdersPage() {
                       Shipping Address
                     </h3>
                     <div className="text-stone-600">
-                      <p>{order.shippingAddress.name}</p>
-                      <p>{order.shippingAddress.address}</p>
+                      <p>{order.shipping_address.name}</p>
+                      <p>{order.shipping_address.address}</p>
                       <p>
-                        {order.shippingAddress.city},{" "}
-                        {order.shippingAddress.state}{" "}
-                        {order.shippingAddress.zip}
+                        {order.shipping_address.city},{" "}
+                        {order.shipping_address.state}{" "}
+                        {order.shipping_address.zip}
                       </p>
                     </div>
                   </div>

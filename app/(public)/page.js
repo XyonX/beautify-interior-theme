@@ -12,6 +12,7 @@ import { TrendingSkeleton } from "@/components/skeletons/trending-skeleton";
 import { DealsSkeleton } from "@/components/skeletons/deals-skeleton";
 import { FocusCategorySkeleton } from "@/components/skeletons/focus-category-skeleton";
 import { FocusCategory } from "@/components/focus-category";
+import { InteractiveProductExplorer } from "@/components/interactive-product-explorer";
 
 export default function HomePage() {
   return (
@@ -21,6 +22,10 @@ export default function HomePage() {
       </Suspense>
       <Suspense fallback={<CategorySkeleton />}>
         <CategorySection />
+      </Suspense>
+      <InteractiveProductExplorer />
+      <Suspense fallback={<TrendingSkeleton />}>
+        <TrendingSection />
       </Suspense>
       <Suspense fallback={<FeaturedProductsSkeleton />}>
         <FeaturedProducts />

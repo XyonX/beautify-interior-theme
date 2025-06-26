@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,6 +9,54 @@ import { Textarea } from "@/components/ui/textarea";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 
 export default function ContactPage() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+
+  const [submitting, setSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState("");
+
+  const handleSubmit = async () => {
+    if (!firstName || !lastName || !email || !subject || !message) {
+      setFeedback("All fields are required.");
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      const name = `${firstName} ${lastName}`;
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contact`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, email, subject, message }),
+        }
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to submit form.");
+      }
+
+      setFeedback("Your message has been sent successfully!");
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setSubject("");
+      setMessage("");
+    } catch (error) {
+      console.error("Form submission error:", error);
+      setFeedback("Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="mb-6">
@@ -25,13 +76,23 @@ export default function ContactPage() {
                 <Label htmlFor="firstName" className="text-xs">
                   First Name
                 </Label>
-                <Input id="firstName" className="h-8 text-xs rounded-sm" />
+                <Input
+                  id="firstName"
+                  className="h-8 text-xs rounded-sm"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
               </div>
               <div>
                 <Label htmlFor="lastName" className="text-xs">
                   Last Name
                 </Label>
-                <Input id="lastName" className="h-8 text-xs rounded-sm" />
+                <Input
+                  id="lastName"
+                  className="h-8 text-xs rounded-sm"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
               </div>
             </div>
             <div>
@@ -42,22 +103,40 @@ export default function ContactPage() {
                 id="email"
                 type="email"
                 className="h-8 text-xs rounded-sm"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
               <Label htmlFor="subject" className="text-xs">
                 Subject
               </Label>
-              <Input id="subject" className="h-8 text-xs rounded-sm" />
+              <Input
+                id="subject"
+                className="h-8 text-xs rounded-sm"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+              />
             </div>
             <div>
               <Label htmlFor="message" className="text-xs">
                 Message
               </Label>
-              <Textarea id="message" rows={4} className="text-xs rounded-sm" />
+              <Textarea
+                id="message"
+                rows={4}
+                className="text-xs rounded-sm"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
             </div>
-            <Button className="w-full bg-stone-800 hover:bg-stone-700 h-8 text-xs rounded-sm">
-              Send Message
+            {feedback && <p className="text-xs text-red-600">{feedback}</p>}
+            <Button
+              className="w-full bg-stone-800 hover:bg-stone-700 h-8 text-xs rounded-sm"
+              onClick={handleSubmit}
+              disabled={submitting}
+            >
+              {submitting ? "Sending..." : "Send Message"}
             </Button>
           </CardContent>
         </Card>

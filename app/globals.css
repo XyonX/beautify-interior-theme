@@ -88,6 +88,29 @@
   h6 {
     @apply font-sans;
   }
+
+  /* Price typography */
+  .price-large {
+    @apply text-lg font-semibold text-neutral-900;
+  }
+  .price-medium {
+    @apply text-base font-semibold text-neutral-900;
+  }
+  .price-small {
+    @apply text-sm font-semibold text-neutral-900;
+  }
+  .price-strike {
+    @apply text-sm text-neutral-500 line-through;
+  }
+
+  /* Button enhancements */
+  .btn-primary {
+    @apply bg-amazon-orange hover:bg-amazon-orange-dark text-white font-medium px-4 py-2 transition-colors duration-200 shadow-button;
+  }
+
+  .btn-secondary {
+    @apply bg-white hover:bg-neutral-50 text-neutral-900 font-medium px-4 py-2 border border-neutral-300 transition-colors duration-200 shadow-button;
+  }
 }
 
 /* Toast animations */

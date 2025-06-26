@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -16,50 +17,90 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
 
 export default function OrderConfirmationPage() {
   const searchParams = useSearchParams();
-  const orderNumber = searchParams.get("order");
+  const orderId = searchParams.get("order");
   const [orderData, setOrderData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (orderNumber) {
-      const orders = JSON.parse(localStorage.getItem("orders") || "[]");
-      const order = orders.find((o) => o.orderNumber === orderNumber);
-      setOrderData(order);
-    }
-  }, [orderNumber]);
+    const fetchOrder = async () => {
+      try {
+        if (!orderId) {
+          setError("Order ID is missing");
+          setLoading(false);
+          return;
+        }
+
+        const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/orders/${orderId}`;
+        const response = await fetch(url, {
+          method: "GET",
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error("Order not found");
+        }
+
+        const data = await response.json();
+        setOrderData(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrder();
+  }, [orderId]);
 
   const handleDownloadReceipt = () => {
-    // In a real app, this would generate and download a PDF receipt
     alert("Receipt download would be implemented here");
   };
 
   const handleShareOrder = () => {
+    if (!orderData) return;
+
+    const url = window.location.href;
+    const orderNumber = orderData.order_number;
+
     if (navigator.share) {
       navigator.share({
         title: "My BeautifyInterior Order",
         text: `I just ordered from BeautifyInterior! Order #${orderNumber}`,
-        url: window.location.href,
+        url,
       });
     } else {
-      navigator.clipboard.writeText(window.location.href);
+      navigator.clipboard.writeText(url);
       alert("Order link copied to clipboard!");
     }
   };
 
-  if (!orderData) {
+  if (loading) {
     return (
       <main className="container mx-auto px-4 py-8">
         <div className="text-center">
           <h1 className="text-lg font-medium text-stone-800 mb-2">
-            Order not found
+            Loading order...
+          </h1>
+        </div>
+      </main>
+    );
+  }
+
+  if (error || !orderData) {
+    return (
+      <main className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <h1 className="text-lg font-medium text-stone-800 mb-2">
+            {error || "Order not found"}
           </h1>
           <p className="text-xs text-stone-600 mb-6">
             We couldn't find the order you're looking for.
           </p>
-          <Link href="/account">
+          <Link href="/orders">
             <Button className="bg-stone-800 hover:bg-stone-700 text-xs rounded-sm">
               View All Orders
             </Button>
@@ -70,14 +111,16 @@ export default function OrderConfirmationPage() {
   }
 
   const estimatedDelivery = new Date();
-  estimatedDelivery.setDate(
-    estimatedDelivery.getDate() +
-      (orderData.shippingMethod === "standard"
-        ? 7
-        : orderData.shippingMethod === "express"
-        ? 3
-        : 1)
-  );
+  estimatedDelivery.setDate(estimatedDelivery.getDate() + 10);
+
+  // Helper function to format amounts (convert cents to dollars)
+  const formatAmount = (amount) => {
+    if (typeof amount === "number") {
+      return (amount / 100).toFixed(2);
+    }
+    // Handle string amounts if needed
+    return (parseFloat(amount) / 100).toFixed(2);
+  };
 
   return (
     <main className="container mx-auto px-4 py-6">
@@ -96,7 +139,7 @@ export default function OrderConfirmationPage() {
         <div className="bg-stone-50 p-4 rounded-sm inline-block">
           <p className="text-xs font-medium text-stone-800">Order Number</p>
           <p className="text-lg font-mono text-stone-600">
-            {orderData.orderNumber}
+            {orderData.order_number}
           </p>
         </div>
       </div>
@@ -120,7 +163,11 @@ export default function OrderConfirmationPage() {
                     className="flex items-center gap-3 p-3 border border-stone-100 rounded-sm"
                   >
                     <Image
-                      src={item.image || "/placeholder.svg"}
+                      src={
+                        item.image
+                          ? `${process.env.NEXT_PUBLIC_CDN_URL}${item.image}`
+                          : "/placeholder.svg"
+                      }
                       alt={item.name}
                       width={60}
                       height={60}
@@ -141,10 +188,11 @@ export default function OrderConfirmationPage() {
                     </div>
                     <div className="text-right">
                       <p className="text-xs font-medium text-stone-800">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        $
+                        {formatAmount(item.total || item.price * item.quantity)}
                       </p>
                       <p className="text-xs text-stone-500">
-                        ${item.price.toFixed(2)} each
+                        ${formatAmount(item.price)} each
                       </p>
                     </div>
                   </div>
@@ -169,17 +217,17 @@ export default function OrderConfirmationPage() {
                   </h4>
                   <div className="text-xs text-stone-600 space-y-1">
                     <p>
-                      {orderData.shippingInfo.firstName}{" "}
-                      {orderData.shippingInfo.lastName}
+                      {orderData.shipping_address.first_name}{" "}
+                      {orderData.shipping_address.last_name}
                     </p>
-                    <p>{orderData.shippingInfo.address}</p>
+                    <p>{orderData.shipping_address.address}</p>
                     <p>
-                      {orderData.shippingInfo.city},{" "}
-                      {orderData.shippingInfo.state}{" "}
-                      {orderData.shippingInfo.zipCode}
+                      {orderData.shipping_address.city},{" "}
+                      {orderData.shipping_address.state}{" "}
+                      {orderData.shipping_address.zip_code}
                     </p>
-                    {orderData.shippingInfo.phone && (
-                      <p>Phone: {orderData.shippingInfo.phone}</p>
+                    {orderData.shipping_address.phone && (
+                      <p>Phone: {orderData.shipping_address.phone}</p>
                     )}
                   </div>
                 </div>
@@ -188,9 +236,7 @@ export default function OrderConfirmationPage() {
                     Shipping Method
                   </h4>
                   <div className="text-xs text-stone-600 space-y-1">
-                    <p className="capitalize">
-                      {orderData.shippingMethod} Shipping
-                    </p>
+                    <p className="capitalize">Standard Shipping</p>
                     <p className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
                       Estimated delivery:{" "}
@@ -217,10 +263,11 @@ export default function OrderConfirmationPage() {
                     Payment Method
                   </h4>
                   <div className="text-xs text-stone-600 space-y-1">
-                    <p className="capitalize">{orderData.paymentMethod}</p>
-                    {orderData.cardInfo && (
-                      <p>{orderData.cardInfo.cardNumber}</p>
-                    )}
+                    <p className="capitalize">
+                      {orderData.payment_method === "cod"
+                        ? "Cash on Delivery"
+                        : orderData.payment_method}
+                    </p>
                   </div>
                 </div>
                 <div>
@@ -248,42 +295,25 @@ export default function OrderConfirmationPage() {
                 <div className="flex justify-between">
                   <span className="text-xs text-stone-600">Subtotal</span>
                   <span className="text-xs font-medium">
-                    $
-                    {(
-                      orderData.total -
-                      orderData.total * 0.08 -
-                      (orderData.shippingMethod === "standard"
-                        ? orderData.total > 99
-                          ? 0
-                          : 9.99
-                        : orderData.shippingMethod === "express"
-                        ? 19.99
-                        : 39.99)
-                    ).toFixed(2)}
+                    ${formatAmount(orderData.totals.subtotal)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-xs text-stone-600">Shipping</span>
                   <span className="text-xs font-medium">
-                    {orderData.shippingMethod === "standard"
-                      ? orderData.total > 99
-                        ? "Free"
-                        : "$9.99"
-                      : orderData.shippingMethod === "express"
-                      ? "$19.99"
-                      : "$39.99"}
+                    ${formatAmount(orderData.totals.shipping)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-xs text-stone-600">Tax</span>
                   <span className="text-xs font-medium">
-                    ${(orderData.total * 0.08).toFixed(2)}
+                    ${formatAmount(orderData.totals.tax)}
                   </span>
                 </div>
                 <Separator />
                 <div className="flex justify-between text-sm font-medium">
                   <span>Total</span>
-                  <span>${orderData.total.toFixed(2)}</span>
+                  <span>${formatAmount(orderData.totals.total)}</span>
                 </div>
               </div>
             </CardContent>
@@ -344,7 +374,7 @@ export default function OrderConfirmationPage() {
               <CardTitle className="text-sm">Order Actions</CardTitle>
             </CardHeader>
             <CardContent className="p-4 space-y-2">
-              <Link href={`/order-tracking?order=${orderData.orderNumber}`}>
+              <Link href={`/order-tracking?order=${orderData.id}`}>
                 <Button className="w-full bg-stone-800 hover:bg-stone-700 text-xs rounded-sm h-8">
                   <MapPin className="h-3 w-3 mr-1" />
                   Track Order
