@@ -8,74 +8,70 @@ const deals = [
     id: 1,
     title: "Summer Sale",
     description: "Up to 40% off on selected items",
-    image: "/dec2.jpg",
+    image:
+      "https://images.unsplash.com/photo-1615873968403-89e068629265?q=80&w=2232&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     link: "/sale/summer",
-    color: "bg-stone-100",
   },
   {
     id: 2,
     title: "New Arrivals",
     description: "Check out our latest collection",
-    image: "/dec3.jpg",
+    image:
+      "https://images.unsplash.com/photo-1615876234886-fd9a39fda97f?q=80&w=2232&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     link: "/new-arrivals",
-    color: "bg-stone-200",
   },
   {
     id: 3,
     title: "Limited Edition",
     description: "Handcrafted pieces by local artisans",
-    image: "/dec5.jpg",
+    image:
+      "https://images.unsplash.com/photo-1616137303871-05ce745f9cdb?q=80&w=2232&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     link: "/limited-edition",
-    color: "bg-stone-300",
   },
 ];
 
 export function DealsSection() {
   return (
-    <section className="py-10 bg-white">
+    <section className="py-12 bg-stone-50">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-8">
-          <h2 className="text-xl font-medium text-stone-800 mb-2">
+        <div className="text-center mb-10">
+          <h2 className="text-xl font-medium text-stone-800 mb-3">
             Special Offers
           </h2>
-          <p className="text-stone-600 text-sm max-w-2xl mx-auto">
+          <p className="text-stone-600 max-w-2xl mx-auto">
             Exclusive deals you don't want to miss
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {deals.map((deal) => (
             <Link key={deal.id} href={deal.link}>
-              <Card
-                className={`group hover:shadow-md transition-all duration-300 border-stone-100 overflow-hidden rounded-sm h-full ${deal.color}`}
-              >
-                <div className="flex flex-col h-full">
-                  <div className="relative h-32 overflow-hidden">
-                    <Image
-                      src={deal.image || "/placeholder.svg"}
-                      alt={deal.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                  <CardContent className="p-4 flex flex-col justify-between flex-grow">
-                    <div>
-                      <h3 className="text-sm font-medium text-stone-800 mb-1">
-                        {deal.title}
-                      </h3>
-                      <p className="text-xs text-stone-600 mb-3">
-                        {deal.description}
-                      </p>
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="border-stone-800 text-stone-800 hover:bg-stone-200 rounded-sm text-xs w-full"
-                    >
-                      Shop Now
-                    </Button>
-                  </CardContent>
+              <Card className="group hover:shadow-lg transition-all duration-300 border-stone-100 overflow-hidden rounded-lg h-full bg-white">
+                <div className="relative h-48 overflow-hidden">
+                  <Image
+                    src={deal.image || "/placeholder.svg"}
+                    alt={deal.title}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+
+                  {/* Subtle overlay for visual appeal */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-stone-900/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
+
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-medium text-stone-800 group-hover:text-stone-900 transition-colors duration-200 mb-2">
+                    {deal.title}
+                  </h3>
+                  <p className="text-stone-600 mb-4">{deal.description}</p>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="border-stone-200 text-stone-700 hover:bg-stone-50 rounded-lg w-full bg-transparent"
+                  >
+                    Shop Now
+                  </Button>
+                </CardContent>
               </Card>
             </Link>
           ))}

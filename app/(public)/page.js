@@ -27,15 +27,7 @@ export default function HomePage() {
       <Suspense fallback={<TrendingSkeleton />}>
         <TrendingSection />
       </Suspense>
-      <Suspense fallback={<FeaturedProductsSkeleton />}>
-        <FeaturedProducts />
-        <Suspense fallback={<FocusCategorySkeleton />}>
-          <FocusCategory />
-        </Suspense>
-      </Suspense>
-      <Suspense fallback={<TrendingSkeleton />}>
-        <TrendingSection />
-      </Suspense>
+
       <Suspense fallback={<DealsSkeleton />}>
         <DealsSection />
       </Suspense>

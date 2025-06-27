@@ -73,8 +73,10 @@ export function AddToCartButton({
       disabled={disabled || isAdded}
       size={size}
       className={`transition-all duration-200 ${
-        isAdded ? "bg-accent3-600 hover:bg-accent3-700" : ""
-      } ${className}`}
+        isAdded
+          ? "bg-accent3-600 hover:bg-accent3-700"
+          : "bg-stone-800 hover:bg-stone-700"
+      } text-white ${className}`}
     >
       {isAdded ? (
         <>

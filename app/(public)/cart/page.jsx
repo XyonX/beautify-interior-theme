@@ -383,7 +383,7 @@ export default function CartPage() {
                 <Link href="/checkout" onClick={handleProceedToCheckout}>
                   <Button
                     size="sm"
-                    className="w-full bg-accent2-600 hover:bg-accent2-700 mt-4 h-8 text-xs rounded-sm"
+                    className="w-full bg-stone-800 hover:bg-stone-600 mt-4 h-8 text-xs rounded-sm"
                   >
                     Proceed to Checkout
                   </Button>
