@@ -36,6 +36,7 @@ import { AddToCartButton } from "./add-to-cart-button";
 
 const EnhancedProductAction = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
+  console.log("Product in action: ", product);
   // Determine if fast delivery is available
   // const fastDeliveryAvailable = product.is_featured || product.quantity > 10
   // Determine if fast delivery is available
@@ -254,7 +255,7 @@ const EnhancedProductAction = ({ product }) => {
         <div className="grid grid-cols-2 gap-2 sm:gap-3">
           <AddToCartButton
             product={{
-              id: Number.parseInt(product.id),
+              id: product.id,
               name: product.name,
               price: product.price,
               image: product.images?.[0]?.url || "/placeholder.svg",

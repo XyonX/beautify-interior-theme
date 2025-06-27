@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/lib/cart-store";
 import { useToastStore } from "@/lib/toast-store";
 import { ShoppingCart, Check } from "lucide-react";
+import { useAuthStore } from "@/lib/auth-store";
+import { useRouter } from "next/navigation";
 
 export function AddToCartButton({
   product,
@@ -18,16 +20,36 @@ export function AddToCartButton({
   const addItem = useCartStore((state) => state.addItem);
   const { items } = useCartStore();
   const { addToast } = useToastStore();
+  const { user } = useAuthStore();
+  const router = useRouter();
 
-  const handleAddToCart = async (e) => {
+  const handleAddToCart = (e) => {
+    console.log("Procut revceived: ", product);
     e.preventDefault();
     e.stopPropagation();
 
+    // Check if user is logged in
+    if (!user) {
+      addToast({
+        type: "warning",
+        title: "Sign In Required",
+        message: "Please sign in to add items to your cart.",
+        duration: 4000,
+      });
+      router.push(
+        `/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`
+      );
+      return;
+    }
+
     try {
+      // Check if product already exists in cart
       const existingItem = items.find((item) => item.id === product.id);
+
       const currentQuantity = existingItem ? existingItem.quantity : 0;
       const newTotalQuantity = currentQuantity + quantity;
 
+      // Validate quantity limits
       if (newTotalQuantity > maxQuantity) {
         addToast({
           type: "warning",
@@ -38,11 +60,23 @@ export function AddToCartButton({
         return;
       }
 
-      await addItem({
+      // Check available stock using product.quantity
+      if (newTotalQuantity > product.quantity) {
+        addToast({
+          type: "error",
+          title: "Insufficient Stock",
+          message: `Only ${product.quantity} units of ${product.name} are available.`,
+          duration: 5000,
+        });
+        return;
+      }
+
+      addItem({
         id: product.id,
         name: product.name,
         price: product.price,
         image: product.image,
+        variant: product.variant,
         quantity,
         maxQuantity,
       });
