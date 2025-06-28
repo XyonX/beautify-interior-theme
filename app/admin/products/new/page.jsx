@@ -441,72 +441,51 @@ export default function NewProductPage() {
         setFormData((prev) => ({ ...prev, sku }));
       }
 
+      // Create FormData for files and product data
       const formDataToSend = new FormData();
       
-      // Required fields
-      formDataToSend.append("name", formData.name.trim());
-      formDataToSend.append("description", formData.description.trim());
-      formDataToSend.append("shortDescription", formData.shortDescription.trim());
-      formDataToSend.append("sku", formData.sku);
-      formDataToSend.append("price", formData.price);
-      formDataToSend.append("categoryId", formData.categoryId);
-
-      // Optional fields with proper handling
-      formDataToSend.append("compareAtPrice", formData.compareAtPrice || "");
-      formDataToSend.append("costPrice", formData.costPrice || "");
-      formDataToSend.append("trackQuantity", formData.trackQuantity ? "true" : "false");
-      formDataToSend.append(
-        "quantity",
-        formData.quantity !== undefined ? formData.quantity : 0
-      );
-      formDataToSend.append(
-        "lowStockThreshold",
-        formData.lowStockThreshold !== undefined
-          ? formData.lowStockThreshold
-          : 5
-      );
-      formDataToSend.append("weight", formData.weight || "");
-      formDataToSend.append("length", formData.dimensions.length || 0);
-      formDataToSend.append("width", formData.dimensions.width || 0);
-      formDataToSend.append("height", formData.dimensions.height || 0);
-      formDataToSend.append("unit", formData.dimensions.unit || "cm");
-      formDataToSend.append("status", formData.status || "draft");
-      formDataToSend.append("visibility", formData.visibility || "visible");
-
-      // Handle arrays properly - send empty strings for empty arrays
-      formDataToSend.append("tags", formData.tags && formData.tags.length > 0 ? formData.tags.join(',') : "");
-      formDataToSend.append("attributes", formData.attributes && formData.attributes.length > 0 ? 
-        formData.attributes.map(attr => `${attr.name}:${attr.value}`).join(',') : "");
+      // Add product data as JSON string (excluding files)
+      const productPayload = {
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        shortDescription: formData.shortDescription.trim(),
+        sku: formData.sku,
+        price: parseFloat(formData.price),
+        categoryId: formData.categoryId,
+        compareAtPrice: formData.compareAtPrice ? parseFloat(formData.compareAtPrice) : null,
+        costPrice: formData.costPrice ? parseFloat(formData.costPrice) : null,
+        trackQuantity: formData.trackQuantity,
+        quantity: formData.quantity || 0,
+        lowStockThreshold: formData.lowStockThreshold || 5,
+        weight: formData.weight ? parseFloat(formData.weight) : null,
+        length: formData.dimensions.length || 0,
+        width: formData.dimensions.width || 0,
+        height: formData.dimensions.height || 0,
+        unit: formData.dimensions.unit || "cm",
+        status: formData.status || "draft",
+        visibility: formData.visibility || "visible",
+        tags: formData.tags || [],
+        attributes: formData.attributes || [],
+        seo_title: formData.seoTitle || "",
+        seo_description: formData.seoDescription || "",
+        vendor: formData.vendor || "",
+        is_featured: formData.isFeatured || false,
+        is_new: formData.isNew || false,
+        on_sale: formData.onSale || false,
+      };
       
-      formDataToSend.append("seo_title", formData.seoTitle || "");
-      formDataToSend.append("seo_description", formData.seoDescription || "");
-      formDataToSend.append("vendor", formData.vendor || "");
-      formDataToSend.append("is_featured", formData.isFeatured ? "true" : "false");
-      formDataToSend.append("is_new", formData.isNew ? "true" : "false");
-      formDataToSend.append("on_sale", formData.onSale ? "true" : "false");
-
-      // Handle files
+      formDataToSend.append("productData", JSON.stringify(productPayload));
+      
+      // Add images as separate FormData fields (keep original structure)
       formDataToSend.append("thumbnail", formData.thumbnail);
-
       formData.images.forEach((image, index) => {
         formDataToSend.append("detailedImages", image);
       });
 
-      // Debug FormData contents
-      console.log("FormData contents:");
-      for (const [key, value] of formDataToSend.entries()) {
-        console.log(`FormData: ${key} =`, value, `(type: ${typeof value})`);
-      }
-
-      // Additional debugging for arrays and special fields
+      // Debug payload
+      console.log("Product payload:", productPayload);
       console.log("Tags array:", formData.tags);
       console.log("Attributes array:", formData.attributes);
-      console.log("Boolean fields:", {
-        trackQuantity: formData.trackQuantity,
-        isFeatured: formData.isFeatured,
-        isNew: formData.isNew,
-        onSale: formData.onSale
-      });
 
       // Send data to the backend
       const backendUrl =

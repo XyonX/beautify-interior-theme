@@ -25,6 +25,7 @@ import {
   shippingReturns,
   supportGuarantee,
 } from "@/lib/policy-data";
+import { sanitizeHtml } from "@/lib/utils";
 import { EnhancedProductGallery } from "@/components/enhanced-product-gallery";
 import EnhancedProductAction from "@/components/enhanced-product-action";
 import RelatedProducts from "@/components/related-products";
@@ -161,9 +162,10 @@ export default async function ProductDetailPage({ params }) {
                     <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
                       Product Description
                     </h4>
-                    <p className="text-gray-700 mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base lg:text-lg">
-                      {product.description}
-                    </p>
+                    <div 
+                      className="prose-custom"
+                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.description) }}
+                    />
                     {product.short_description && (
                       <p className="text-gray-600 text-sm sm:text-base">
                         {product.short_description}
