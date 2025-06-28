@@ -35,11 +35,24 @@ export default function RichTextEditor({
   const [showImageDialog, setShowImageDialog] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
 
+  console.log("RichTextEditor props:", { content, placeholder, className });
+
   useEffect(() => {
+    console.log("RichTextEditor useEffect - content changed:", content);
     if (editorRef.current && content !== editorRef.current.innerHTML) {
+      console.log("RichTextEditor: Setting content from props:", content);
       editorRef.current.innerHTML = content;
     }
   }, [content]);
+
+  // Initialize editor when component mounts
+  useEffect(() => {
+    console.log("RichTextEditor: Component mounted, initializing editor");
+    if (editorRef.current) {
+      console.log("RichTextEditor: Editor ref found, setting initial content:", content);
+      editorRef.current.innerHTML = content || "";
+    }
+  }, []);
 
   useEffect(() => {
     const updateActiveStates = () => {
@@ -69,13 +82,17 @@ export default function RichTextEditor({
     document.execCommand(command, false, value);
     editorRef.current?.focus();
     if (editorRef.current) {
-      onChange(editorRef.current.innerHTML);
+      const htmlContent = editorRef.current.innerHTML;
+      console.log(`RichTextEditor execCommand ${command}:`, htmlContent);
+      onChange(htmlContent || "");
     }
   };
 
   const handleInput = () => {
     if (editorRef.current) {
-      onChange(editorRef.current.innerHTML);
+      const htmlContent = editorRef.current.innerHTML;
+      console.log("RichTextEditor content changed:", htmlContent);
+      onChange(htmlContent || "");
     }
   };
 
@@ -106,7 +123,7 @@ export default function RichTextEditor({
         const tempDiv = document.createElement("div");
         tempDiv.innerHTML = cleanHtml;
 
-        // Check if there’s content to insert
+        // Check if there's content to insert
         if (tempDiv.firstChild) {
           const fragment = document.createDocumentFragment();
           let lastNode;
@@ -331,6 +348,17 @@ export default function RichTextEditor({
         className="min-h-[200px] p-4 focus:outline-none prose prose-stone max-w-none rich-text-content"
         onInput={handleInput}
         onPaste={handlePaste}
+        onKeyDown={(e) => {
+          console.log("RichTextEditor: Key pressed:", e.key);
+          // Trigger onChange after a short delay to ensure content is updated
+          setTimeout(() => {
+            if (editorRef.current) {
+              const htmlContent = editorRef.current.innerHTML;
+              console.log("RichTextEditor: Content after key press:", htmlContent);
+              onChange(htmlContent || "");
+            }
+          }, 10);
+        }}
         data-placeholder={placeholder}
         style={{
           wordBreak: "break-word",

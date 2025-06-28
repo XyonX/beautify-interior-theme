@@ -19,6 +19,27 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Upload, X, Plus, ImageIcon } from "lucide-react";
 import RichTextEditor from "@/components/admin/rich-text-editor.jsx";
 
+// Component to display description status
+const DescriptionStatus = ({ description }) => {
+  const getTextContent = (html) => {
+    if (!html) return "";
+    // Use a simple regex to strip HTML tags for character counting
+    return html.replace(/<[^>]*>/g, '').trim();
+  };
+
+  const textContent = getTextContent(description);
+  const charCount = textContent.length;
+
+  return (
+    <span className={charCount === 0 ? "text-red-500" : "text-green-600"}>
+      {charCount === 0 
+        ? "Description is required" 
+        : `${charCount} characters`
+      }
+    </span>
+  );
+};
+
 // interface ImagePreview {
 //   id: string
 //   file: File
@@ -297,19 +318,30 @@ export default function NewProductPage() {
   const formatFileSize = (bytes) => {
     if (bytes === 0) return "0 Bytes";
     const k = 1024;
-    const sizes = ["Bytes", "KB", "MB"];
+    const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return (
-      Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
-    );
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
-  // const handleInputChange = (field, value) => {
-  //   setFormData((prev) => ({ ...prev, [field]: value }));
-  // };
+  // Helper function to clean HTML content
+  const cleanHtmlContent = (html) => {
+    if (!html) return "";
+    // Use regex to check if there's meaningful text content
+    const textContent = html.replace(/<[^>]*>/g, '').trim();
+    return textContent ? html : "";
+  };
+
   const handleInputChange = (field, value) => {
     console.log(`Updating field: ${field} with value:`, value);
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    
+    // Clean HTML content for description field
+    if (field === "description") {
+      const cleanedValue = cleanHtmlContent(value);
+      console.log(`Cleaned description:`, cleanedValue);
+      setFormData((prev) => ({ ...prev, [field]: cleanedValue }));
+    } else {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+    }
   };
 
   const handleDimensionChange = (field, value) => {
@@ -358,12 +390,32 @@ export default function NewProductPage() {
     setIsLoading(true);
 
     try {
-      if (!formData.sku) {
-        const sku = formData.name.toUpperCase().replace(/[^A-Z0-9]/g, "");
+      // Validate required fields
+      if (!formData.name.trim()) {
+        throw new Error("Product name is required");
       }
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      
+      // Check if description has meaningful content
+      const descriptionText = formData.description ? formData.description.replace(/<[^>]*>/g, '').trim() : "";
+      console.log("Description validation:", {
+        original: formData.description,
+        cleaned: descriptionText,
+        length: descriptionText.length,
+        isEmpty: !descriptionText
+      });
+      if (!descriptionText) {
+        throw new Error("Product description is required");
+      }
+      
+      if (!formData.categoryId) {
+        throw new Error("Product category is required");
+      }
+      if (!formData.thumbnail) {
+        throw new Error("Thumbnail is required");
+      }
+      if (formData.images.length === 0) {
+        throw new Error("At least one detailed image is required");
+      }
 
       // Generate SKU if not provided
       if (!formData.sku) {
@@ -390,18 +442,19 @@ export default function NewProductPage() {
       }
 
       const formDataToSend = new FormData();
-      formDataToSend.append("name", formData.name);
-      formDataToSend.append("description", formData.description);
-      formDataToSend.append("shortDescription", formData.shortDescription);
+      
+      // Required fields
+      formDataToSend.append("name", formData.name.trim());
+      formDataToSend.append("description", formData.description.trim());
+      formDataToSend.append("shortDescription", formData.shortDescription.trim());
       formDataToSend.append("sku", formData.sku);
       formDataToSend.append("price", formData.price);
       formDataToSend.append("categoryId", formData.categoryId);
 
-      //optional
+      // Optional fields with proper handling
       formDataToSend.append("compareAtPrice", formData.compareAtPrice || "");
       formDataToSend.append("costPrice", formData.costPrice || "");
-      formDataToSend.append("trackQuantity", formData.trackQuantity);
-      // Better handling for optional numbers
+      formDataToSend.append("trackQuantity", formData.trackQuantity ? "true" : "false");
       formDataToSend.append(
         "quantity",
         formData.quantity !== undefined ? formData.quantity : 0
@@ -413,39 +466,47 @@ export default function NewProductPage() {
           : 5
       );
       formDataToSend.append("weight", formData.weight || "");
-      formDataToSend.append(
-        "dimensions",
-        JSON.stringify(formData.dimensions) || ""
-      );
+      formDataToSend.append("length", formData.dimensions.length || 0);
+      formDataToSend.append("width", formData.dimensions.width || 0);
+      formDataToSend.append("height", formData.dimensions.height || 0);
+      formDataToSend.append("unit", formData.dimensions.unit || "cm");
       formDataToSend.append("status", formData.status || "draft");
       formDataToSend.append("visibility", formData.visibility || "visible");
 
-      formDataToSend.append("tags", formData.tags || []);
+      // Handle arrays properly - send empty strings for empty arrays
+      formDataToSend.append("tags", formData.tags && formData.tags.length > 0 ? formData.tags.join(',') : "");
+      formDataToSend.append("attributes", formData.attributes && formData.attributes.length > 0 ? 
+        formData.attributes.map(attr => `${attr.name}:${attr.value}`).join(',') : "");
+      
       formDataToSend.append("seo_title", formData.seoTitle || "");
       formDataToSend.append("seo_description", formData.seoDescription || "");
       formDataToSend.append("vendor", formData.vendor || "");
-      formDataToSend.append("is_featured", formData.isFeatured || false);
-      formDataToSend.append("is_new", formData.isNew || false);
-      formDataToSend.append("on_sale", formData.onSale || false);
+      formDataToSend.append("is_featured", formData.isFeatured ? "true" : "false");
+      formDataToSend.append("is_new", formData.isNew ? "true" : "false");
+      formDataToSend.append("on_sale", formData.onSale ? "true" : "false");
 
-      if (formData.thumbnail) {
-        formDataToSend.append("thumbnail", formData.thumbnail);
-      } else {
-        throw new Error("Thumbnail is required");
-      }
+      // Handle files
+      formDataToSend.append("thumbnail", formData.thumbnail);
 
-      if (formData.images.length > 0) {
-        formData.images.forEach((image, index) => {
-          formDataToSend.append("detailedImages", image);
-        });
-      } else {
-        throw new Error("At least one detailed image is required");
-      }
+      formData.images.forEach((image, index) => {
+        formDataToSend.append("detailedImages", image);
+      });
 
       // Debug FormData contents
+      console.log("FormData contents:");
       for (const [key, value] of formDataToSend.entries()) {
-        console.log(`FormData: ${key} =`, value);
+        console.log(`FormData: ${key} =`, value, `(type: ${typeof value})`);
       }
+
+      // Additional debugging for arrays and special fields
+      console.log("Tags array:", formData.tags);
+      console.log("Attributes array:", formData.attributes);
+      console.log("Boolean fields:", {
+        trackQuantity: formData.trackQuantity,
+        isFeatured: formData.isFeatured,
+        isNew: formData.isNew,
+        onSale: formData.onSale
+      });
 
       // Send data to the backend
       const backendUrl =
@@ -468,8 +529,8 @@ export default function NewProductPage() {
       router.push("/admin/products");
     } catch (error) {
       console.error("Error creating product:", error.message);
-      // Show error to user (you could set an error state here)
-      setImageError(error.message); // Example: reuse imageError for feedback
+      // Show error to user
+      setImageError(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -533,6 +594,17 @@ export default function NewProductPage() {
                     className="min-h-[300px]"
                     required
                   />
+                  {/* Hidden input for form validation */}
+                  <input
+                    type="hidden"
+                    name="description"
+                    value={formData.description}
+                    required
+                  />
+                  {/* Character count and status */}
+                  <div className="mt-2 text-sm text-stone-600">
+                    <DescriptionStatus description={formData.description} />
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
