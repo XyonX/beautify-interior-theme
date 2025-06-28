@@ -88,7 +88,7 @@ const RelatedProducts = ({ relatedProducts }) => {
             <span className="text-sm sm:text-base font-bold text-gray-900">
               ₹{prod.price.toLocaleString("en-IN")}
             </span>
-            {prod.originalPrice && (
+            {prod.originalPrice && prod.originalPrice > 0 && (
               <span className="text-xs text-gray-500 line-through ml-1 sm:ml-2">
                 ₹{prod.originalPrice.toLocaleString("en-IN")}
               </span>

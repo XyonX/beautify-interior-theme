@@ -227,27 +227,29 @@ export function ProductGridClient({ productCategories }) {
                         <span className="text-sm font-semibold text-stone-900">
                           ₹{currentPrice.toLocaleString("en-IN")}
                         </span>
-                        {originalPrice && originalPrice > currentPrice && (
+                        {originalPrice && originalPrice > 0 && originalPrice > currentPrice && (
                           <span className="text-xs text-stone-500 line-through">
                             ₹{originalPrice.toLocaleString("en-IN")}
                           </span>
                         )}
                       </div>
 
-                      {/* Savings */}
-                      {originalPrice && originalPrice > currentPrice && (
+                      {/* Savings - Only show if there's a valid discount */}
+                      {originalPrice && originalPrice > 0 && originalPrice > currentPrice && (
                         <p className="text-xs text-green-600 font-medium">
                           Save ₹{savings.toLocaleString("en-IN")}
                         </p>
                       )}
                     </div>
 
-                    {/* Stock Info */}
-                    {product.quantity > 0 && product.quantity <= 10 && (
-                      <p className="text-xs text-red-600 mb-2">
-                        Only {product.quantity} left
-                      </p>
-                    )}
+                    {/* Stock Info - Fixed height container for consistent spacing */}
+                    <div className="h-5 mb-2">
+                      {product.quantity > 0 && product.quantity <= 10 && (
+                        <p className="text-xs text-red-600">
+                          Only {product.quantity} left
+                        </p>
+                      )}
+                    </div>
 
                     {/* Add to Cart Button - Now properly functional */}
                     <AddToCartButton

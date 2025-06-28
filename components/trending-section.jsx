@@ -152,7 +152,7 @@ export async function TrendingSection() {
                   <span className="text-sm font-semibold text-stone-900">
                     ₹{product.price.toLocaleString("en-IN")}
                   </span>
-                  {product.originalPrice && (
+                  {product.originalPrice && product.originalPrice > 0 && (
                     <span className="text-xs text-stone-500 line-through">
                       ₹{product.originalPrice.toLocaleString("en-IN")}
                     </span>
@@ -160,6 +160,7 @@ export async function TrendingSection() {
                 </div>
 
                 {product.originalPrice &&
+                  product.originalPrice > 0 &&
                   product.originalPrice > product.price && (
                     <p className="text-xs text-green-600 font-medium mb-3">
                       Save ₹
