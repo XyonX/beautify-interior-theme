@@ -654,7 +654,7 @@ export default function PaymentPage() {
             ) : (
               <>
                 <Lock className="h-4 w-4 mr-2" />
-                Complete Payment - ${checkoutData.total.toFixed(2)}
+                Complete Payment - ₹{checkoutData.total.toFixed(2)}
               </>
             )}
           </Button>
@@ -692,7 +692,7 @@ export default function PaymentPage() {
                       )}
                     </div>
                     <p className="text-xs font-medium">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      ₹{(item.price * item.quantity).toFixed(2)}
                     </p>
                   </div>
                 ))}
@@ -704,7 +704,7 @@ export default function PaymentPage() {
                 <div className="flex justify-between">
                   <span className="text-xs text-stone-600">Subtotal</span>
                   <span className="text-xs font-medium">
-                    $
+                    ₹
                     {(
                       checkoutData.total -
                       checkoutData.total * 0.08 -
@@ -724,16 +724,16 @@ export default function PaymentPage() {
                     {checkoutData.shippingMethod === "standard"
                       ? checkoutData.total > 99
                         ? "Free"
-                        : "$9.99"
+                        : "₹9.99"
                       : checkoutData.shippingMethod === "express"
-                      ? "$19.99"
-                      : "$39.99"}
+                      ? "₹19.99"
+                      : "₹39.99"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-xs text-stone-600">Tax</span>
                   <span className="text-xs font-medium">
-                    ${(checkoutData.total * 0.08).toFixed(2)}
+                    ₹{(checkoutData.total * 0.08).toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -742,7 +742,7 @@ export default function PaymentPage() {
 
               <div className="flex justify-between text-sm font-medium">
                 <span>Total</span>
-                <span>${checkoutData.total.toFixed(2)}</span>
+                <span>₹{checkoutData.total.toFixed(2)}</span>
               </div>
 
               <div className="space-y-2 pt-3 border-t border-stone-100">

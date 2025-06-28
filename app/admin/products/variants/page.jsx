@@ -107,10 +107,12 @@ export default function ProductVariantsPage() {
   }
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat("en-IN", {
       style: "currency",
-      currency: "USD",
-    }).format(amount)
+      currency: "INR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(amount);
   }
 
   const getStockStatus = (quantity) => {

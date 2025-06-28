@@ -15,6 +15,7 @@ import {
   TrendingUp,
   Tag,
 } from "lucide-react";
+import { AddToCartButton } from "@/components/add-to-cart-button";
 
 const iconMap = {
   Sparkles,
@@ -133,138 +134,137 @@ export function ProductGridClient({ productCategories }) {
                   : 0;
 
               return (
-                <Link key={product.id} href={`/products/${product.id}`}>
-                  <Card className="group hover:shadow-lg transition-all duration-300 border-stone-100 overflow-hidden rounded-lg h-full bg-white">
-                    <div className="relative aspect-square overflow-hidden">
-                      <Image
-                        src={product.thumbnail || "/placeholder.svg"}
-                        alt={product.name}
-                        width={300}
-                        height={300}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
+                <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 border-stone-100 overflow-hidden rounded-lg h-full bg-white">
+                  <div className="relative aspect-square overflow-hidden">
+                    <Image
+                      src={product.thumbnail || "/placeholder.svg"}
+                      alt={product.name}
+                      width={300}
+                      height={300}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
 
-                      {/* Single Primary Badge */}
-                      {/* {primaryBadge && (
-                        <div className="absolute top-2 left-2">
-                          <Badge
-                            className={`${primaryBadge.className} text-xs px-1.5 py-0.5 font-medium rounded`}
-                          >
-                            <span className="hidden sm:inline">
-                              {primaryBadge.text}
-                            </span>
-                            <span className="sm:hidden">
-                              {primaryBadge.text.includes("#")
-                                ? primaryBadge.text
-                                : primaryBadge.text.charAt(0)}
-                            </span>
-                          </Badge>
-                        </div>
-                      )} */}
-
-                      {/* Discount Badge - Only for significant discounts */}
-                      {/* {originalPrice &&
-                        currentPrice &&
-                        ((originalPrice - currentPrice) / originalPrice) * 100 >
-                          15 && (
-                          <Badge className="absolute top-2 right-2 bg-red-600 text-white text-xs px-1.5 py-0.5 font-medium rounded">
-                            -
-                            {Math.round(
-                              ((originalPrice - currentPrice) / originalPrice) *
-                                100
-                            )}
-                            %
-                          </Badge>
-                        )} */}
-
-                      {/* Quick Actions */}
-                      <div className="absolute bottom-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          className="h-7 w-7 p-0 bg-white/90 hover:bg-white rounded-lg"
+                    {/* Single Primary Badge */}
+                    {/* {primaryBadge && (
+                      <div className="absolute top-2 left-2">
+                        <Badge
+                          className={`${primaryBadge.className} text-xs px-1.5 py-0.5 font-medium rounded`}
                         >
-                          <Heart className="h-3.5 w-3.5" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          className="h-7 w-7 p-0 bg-white/90 hover:bg-white rounded-lg"
-                        >
-                          <Eye className="h-3.5 w-3.5" />
-                        </Button>
+                          <span className="hidden sm:inline">
+                            {primaryBadge.text}
+                          </span>
+                          <span className="sm:hidden">
+                            {primaryBadge.text.includes("#")
+                              ? primaryBadge.text
+                              : primaryBadge.text.charAt(0)}
+                          </span>
+                        </Badge>
                       </div>
+                    )} */}
 
-                      {/* Stock Status */}
-                      {product.quantity <= 0 && (
-                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                          <Badge className="bg-red-600 text-white text-xs">
-                            Out of Stock
-                          </Badge>
-                        </div>
-                      )}
+                    {/* Discount Badge - Only for significant discounts */}
+                    {/* {originalPrice &&
+                      currentPrice &&
+                      ((originalPrice - currentPrice) / originalPrice) * 100 >
+                        15 && (
+                      <Badge className="absolute top-2 right-2 bg-red-600 text-white text-xs px-1.5 py-0.5 font-medium rounded">
+                        -
+                        {Math.round(
+                          ((originalPrice - currentPrice) / originalPrice) *
+                            100
+                        )}
+                        %
+                      </Badge>
+                    )} */}
 
-                      {/* Subtle overlay for visual appeal */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-stone-900/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    {/* Quick Actions */}
+                    <div className="absolute bottom-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="h-7 w-7 p-0 bg-white/90 hover:bg-white rounded-lg"
+                      >
+                        <Heart className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="h-7 w-7 p-0 bg-white/90 hover:bg-white rounded-lg"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                      </Button>
                     </div>
 
-                    <CardContent className="p-4">
-                      {/* Category */}
-                      <p className="text-xs text-stone-500 mb-1">
-                        {product.category?.name || "Product"}
-                      </p>
+                    {/* Stock Status */}
+                    {product.quantity <= 0 && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <Badge className="bg-red-600 text-white text-xs">
+                          Out of Stock
+                        </Badge>
+                      </div>
+                    )}
 
-                      {/* Product Name */}
-                      <h3 className="text-sm font-medium text-stone-800 mb-2 line-clamp-2 group-hover:text-stone-900 transition-colors cursor-pointer">
+                    {/* Subtle overlay for visual appeal */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-stone-900/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </div>
+
+                  <CardContent className="p-4">
+                    {/* Category */}
+                    <p className="text-xs text-stone-500 mb-1">
+                      {product.category?.name || "Product"}
+                    </p>
+
+                    {/* Product Name - Only this links to product details */}
+                    <Link href={`/products/${product.id}`}>
+                      <h3 className="text-sm font-medium text-stone-800 mb-2 line-clamp-2 hover:text-amazon-orange transition-colors cursor-pointer">
                         {product.name}
                       </h3>
+                    </Link>
 
-                      {/* Pricing */}
-                      <div className="mb-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-semibold text-stone-900">
-                            ₹{currentPrice.toLocaleString("en-IN")}
-                          </span>
-                          {originalPrice && originalPrice > currentPrice && (
-                            <span className="text-xs text-stone-500 line-through">
-                              ₹{originalPrice.toLocaleString("en-IN")}
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Savings */}
+                    {/* Pricing */}
+                    <div className="mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-semibold text-stone-900">
+                          ₹{currentPrice.toLocaleString("en-IN")}
+                        </span>
                         {originalPrice && originalPrice > currentPrice && (
-                          <p className="text-xs text-green-600 font-medium">
-                            Save ₹{savings.toLocaleString("en-IN")}
-                          </p>
+                          <span className="text-xs text-stone-500 line-through">
+                            ₹{originalPrice.toLocaleString("en-IN")}
+                          </span>
                         )}
                       </div>
 
-                      {/* Stock Info */}
-                      {product.quantity > 0 && product.quantity <= 10 && (
-                        <p className="text-xs text-red-600 mb-2">
-                          Only {product.quantity} left
+                      {/* Savings */}
+                      {originalPrice && originalPrice > currentPrice && (
+                        <p className="text-xs text-green-600 font-medium">
+                          Save ₹{savings.toLocaleString("en-IN")}
                         </p>
                       )}
+                    </div>
 
-                      {/* Add to Cart Button */}
-                      <Button
-                        className="w-full bg-amazon-orange hover:bg-amazon-orange-dark text-white text-xs h-8 rounded-lg"
-                        disabled={product.quantity <= 0}
-                      >
-                        <ShoppingCart className="h-3 w-3 mr-1" />
-                        <span className="hidden sm:inline">
-                          {product.quantity > 0
-                            ? "Add to Cart"
-                            : "Out of Stock"}
-                        </span>
-                        <span className="sm:hidden">
-                          {product.quantity > 0 ? "Add" : "Out"}
-                        </span>
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </Link>
+                    {/* Stock Info */}
+                    {product.quantity > 0 && product.quantity <= 10 && (
+                      <p className="text-xs text-red-600 mb-2">
+                        Only {product.quantity} left
+                      </p>
+                    )}
+
+                    {/* Add to Cart Button - Now properly functional */}
+                    <AddToCartButton
+                      product={{
+                        id: product.id,
+                        name: product.name,
+                        price: currentPrice,
+                        image: product.thumbnail || "/placeholder.svg",
+                        quantity: product.quantity,
+                      }}
+                      className="w-full bg-amazon-orange hover:bg-amazon-orange-dark text-white text-xs h-8 rounded-lg"
+                      size="sm"
+                      disabled={product.quantity <= 0}
+                      maxQuantity={product.quantity}
+                    />
+                  </CardContent>
+                </Card>
               );
             })}
           </div>

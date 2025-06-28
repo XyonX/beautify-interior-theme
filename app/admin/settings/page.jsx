@@ -19,7 +19,7 @@ export default function AdminSettingsPage() {
     storeEmail: "hello@beautifyinterior.com",
     storePhone: "+1 (555) 123-4567",
     storeAddress: "123 Design Street, Creative City, CC 12345",
-    currency: "USD",
+    currency: "INR",
     timezone: "America/New_York",
     language: "en",
 
@@ -192,7 +192,7 @@ export default function AdminSettingsPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="USD">USD - US Dollar</SelectItem>
+                      <SelectItem value="INR">INR - Indian Rupee</SelectItem>
                       <SelectItem value="EUR">EUR - Euro</SelectItem>
                       <SelectItem value="GBP">GBP - British Pound</SelectItem>
                       <SelectItem value="CAD">CAD - Canadian Dollar</SelectItem>
@@ -256,7 +256,7 @@ export default function AdminSettingsPage() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="freeShippingThreshold">Free Shipping Threshold ($)</Label>
+                  <Label htmlFor="freeShippingThreshold">Free Shipping Threshold (₹)</Label>
                   <Input
                     id="freeShippingThreshold"
                     type="number"
@@ -266,7 +266,7 @@ export default function AdminSettingsPage() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="defaultShippingRate">Default Shipping Rate ($)</Label>
+                  <Label htmlFor="defaultShippingRate">Default Shipping Rate (₹)</Label>
                   <Input
                     id="defaultShippingRate"
                     type="number"

@@ -276,7 +276,7 @@ export default function AdminCouponsPage() {
                   <Label htmlFor="value">
                     {formData.type === "percentage"
                       ? "Discount Percentage (%)"
-                      : "Discount Amount ($)"}
+                      : "Discount Amount (₹)"}
                   </Label>
                   <Input
                     id="value"
@@ -292,7 +292,7 @@ export default function AdminCouponsPage() {
 
               <div>
                 <Label htmlFor="minimumAmount">
-                  Minimum Purchase Amount ($)
+                  Minimum Purchase Amount (₹)
                 </Label>
                 <Input
                   id="minimumAmount"
