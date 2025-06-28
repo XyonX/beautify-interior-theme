@@ -353,7 +353,7 @@ export default function CheckoutPage() {
     return null; // Will redirect via useEffect
   }
   return (
-    <main className="container mx-auto px-4 py-6">
+    <main className="container mx-auto px-4 py-6 max-w-full overflow-x-hidden">
       <div className="max-w-6xl mx-auto">
         {/* Breadcrumb */}
         <div className="mb-6">
@@ -369,43 +369,43 @@ export default function CheckoutPage() {
             Checkout
           </h1>
 
-          {/* Progress Steps */}
-          <div className="flex items-center gap-4 mb-6">
+          {/* Progress Steps - Improved mobile layout */}
+          <div className="flex items-center gap-2 sm:gap-4 mb-6 overflow-x-auto pb-2">
             {[
               { step: 1, title: "Shipping", icon: MapPin },
               { step: 2, title: "Delivery", icon: Truck },
               { step: 3, title: "Payment", icon: CreditCard },
             ].map(({ step, title, icon: Icon }) => (
-              <div key={step} className="flex items-center gap-2">
+              <div key={step} className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium ${
                     currentStep >= step
                       ? "bg-amazon-orange text-white"
                       : "bg-stone-200 text-stone-600"
                   }`}
                 >
                   {currentStep > step ? (
-                    <CheckCircle className="h-4 w-4" />
+                    <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                   ) : (
-                    <Icon className="h-4 w-4" />
+                    <Icon className="h-3 w-3 sm:h-4 sm:w-4" />
                   )}
                 </div>
                 <span
-                  className={`text-sm font-medium ${
+                  className={`text-xs sm:text-sm font-medium whitespace-nowrap ${
                     currentStep >= step ? "text-stone-900" : "text-stone-600"
                   }`}
                 >
                   {title}
                 </span>
-                {step < 3 && <div className="w-8 h-px bg-stone-300 ml-2" />}
+                {step < 3 && <div className="w-4 sm:w-8 h-px bg-stone-300 ml-1 sm:ml-2" />}
               </div>
             ))}
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* Step 1: Shipping Information */}
             {currentStep === 1 && (
               <Card className="border-stone-200">
@@ -428,15 +428,15 @@ export default function CheckoutPage() {
                       <div className="space-y-3">
                         {/* Saved Addresses Option */}
                         {user?.addresses && user.addresses.length > 0 && (
-                          <div className="flex items-center space-x-3 p-4 border border-stone-200 rounded-lg hover:border-amazon-orange transition-colors">
+                          <div className="flex items-center space-x-3 p-3 sm:p-4 border border-stone-200 rounded-lg hover:border-amazon-orange transition-colors">
                             <RadioGroupItem value="saved" id="saved" />
-                            <div className="flex-1">
+                            <div className="flex-1 min-w-0">
                               <Label
                                 htmlFor="saved"
                                 className="font-medium text-stone-900 cursor-pointer flex items-center gap-2"
                               >
-                                <Home className="h-4 w-4" />
-                                Choose from Saved Addresses
+                                <Home className="h-4 w-4 flex-shrink-0" />
+                                <span className="truncate">Choose from Saved Addresses</span>
                               </Label>
                               <p className="text-sm text-stone-600 mt-1">
                                 Select from your {user.addresses.length} saved
@@ -448,15 +448,15 @@ export default function CheckoutPage() {
                         )}
 
                         {/* New Address Option */}
-                        <div className="flex items-center space-x-3 p-4 border border-stone-200 rounded-lg hover:border-amazon-orange transition-colors">
+                        <div className="flex items-center space-x-3 p-3 sm:p-4 border border-stone-200 rounded-lg hover:border-amazon-orange transition-colors">
                           <RadioGroupItem value="new" id="new" />
-                          <div className="flex-1">
+                          <div className="flex-1 min-w-0">
                             <Label
                               htmlFor="new"
                               className="font-medium text-stone-900 cursor-pointer flex items-center gap-2"
                             >
-                              <Plus className="h-4 w-4" />
-                              Enter New Address
+                              <Plus className="h-4 w-4 flex-shrink-0" />
+                              <span className="truncate">Enter New Address</span>
                             </Label>
                             <p className="text-sm text-stone-600 mt-1">
                               Add a new shipping address manually
@@ -483,22 +483,22 @@ export default function CheckoutPage() {
                             {user.addresses.map((address) => (
                               <div
                                 key={address.id}
-                                className="flex items-start space-x-3 p-4 border border-stone-200 rounded-lg hover:border-amazon-orange transition-colors"
+                                className="flex items-start space-x-3 p-3 sm:p-4 border border-stone-200 rounded-lg hover:border-amazon-orange transition-colors"
                               >
                                 <RadioGroupItem
                                   value={address.id}
                                   id={address.id}
-                                  className="mt-1"
+                                  className="mt-1 flex-shrink-0"
                                 />
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-2 mb-2">
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-2 mb-2 flex-wrap">
                                     <Label
                                       htmlFor={address.id}
-                                      className="font-medium text-stone-900 cursor-pointer"
+                                      className="font-medium text-stone-900 cursor-pointer truncate"
                                     >
                                       {address.firstName} {address.lastName}
                                     </Label>
-                                    <div className="flex items-center gap-1">
+                                    <div className="flex items-center gap-1 flex-shrink-0">
                                       {address.type === "home" && (
                                         <Home className="h-3 w-3 text-stone-500" />
                                       )}
@@ -513,25 +513,25 @@ export default function CheckoutPage() {
                                       </span>
                                     </div>
                                     {address.isDefault && (
-                                      <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
+                                      <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full flex-shrink-0">
                                         Default
                                       </span>
                                     )}
                                   </div>
                                   <div className="text-sm text-stone-600 space-y-1">
-                                    <p>{address.address}</p>
+                                    <p className="break-words">{address.address}</p>
                                     {address.address2 && (
-                                      <p>{address.address2}</p>
+                                      <p className="break-words">{address.address2}</p>
                                     )}
-                                    <p>
+                                    <p className="break-words">
                                       {address.city}, {address.state}{" "}
                                       {address.zipCode}
                                     </p>
-                                    <p>{address.country}</p>
+                                    <p className="break-words">{address.country}</p>
                                     {address.phone && (
                                       <p className="flex items-center gap-1">
-                                        <Phone className="h-3 w-3" />
-                                        {address.phone}
+                                        <Phone className="h-3 w-3 flex-shrink-0" />
+                                        <span className="break-all">{address.phone}</span>
                                       </p>
                                     )}
                                   </div>
@@ -539,7 +539,7 @@ export default function CheckoutPage() {
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="text-stone-500 hover:text-amazon-orange"
+                                  className="text-stone-500 hover:text-amazon-orange flex-shrink-0"
                                 >
                                   <Edit className="h-4 w-4" />
                                 </Button>
@@ -557,7 +557,7 @@ export default function CheckoutPage() {
                         Enter New Address
                       </Label>
 
-                      <div className="grid md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                           <Label
                             htmlFor="firstName"
@@ -600,7 +600,7 @@ export default function CheckoutPage() {
                         </div>
                       </div>
 
-                      <div className="grid md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                           <Label
                             htmlFor="email"
@@ -698,7 +698,7 @@ export default function CheckoutPage() {
                         />
                       </div>
 
-                      <div className="grid md:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div>
                           <Label htmlFor="city" className="text-sm font-medium">
                             City *
@@ -807,47 +807,49 @@ export default function CheckoutPage() {
                       ].map((option) => (
                         <div
                           key={option.id}
-                          className="flex items-center space-x-3 p-4 border border-stone-200 rounded-lg hover:border-amazon-orange transition-colors"
+                          className="flex items-center space-x-3 p-3 sm:p-4 border border-stone-200 rounded-lg hover:border-amazon-orange transition-colors"
                         >
-                          <RadioGroupItem value={option.id} id={option.id} />
-                          <div className="flex-1 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-stone-100 rounded-lg flex items-center justify-center">
-                                <option.icon className="h-5 w-5 text-stone-600" />
-                              </div>
-                              <div>
-                                <div className="flex items-center gap-2">
-                                  <Label
-                                    htmlFor={option.id}
-                                    className="font-medium text-stone-900 cursor-pointer"
-                                  >
-                                    {option.title}
-                                  </Label>
-                                  {option.badge && (
-                                    <span
-                                      className={`px-2 py-1 text-xs font-medium rounded-full ${
-                                        option.badge === "FREE"
-                                          ? "bg-green-100 text-green-700"
-                                          : option.badge === "FAST"
-                                          ? "bg-blue-100 text-blue-700"
-                                          : "bg-red-100 text-red-700"
-                                      }`}
-                                    >
-                                      {option.badge}
-                                    </span>
-                                  )}
+                          <RadioGroupItem value={option.id} id={option.id} className="flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between flex-wrap gap-2">
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-stone-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                  <option.icon className="h-4 w-4 sm:h-5 sm:w-5 text-stone-600" />
                                 </div>
-                                <p className="text-sm text-stone-600">
-                                  {option.description}
+                                <div className="min-w-0">
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <Label
+                                      htmlFor={option.id}
+                                      className="font-medium text-stone-900 cursor-pointer truncate"
+                                    >
+                                      {option.title}
+                                    </Label>
+                                    {option.badge && (
+                                      <span
+                                        className={`px-2 py-1 text-xs font-medium rounded-full flex-shrink-0 ${
+                                          option.badge === "FREE"
+                                            ? "bg-green-100 text-green-700"
+                                            : option.badge === "FAST"
+                                            ? "bg-blue-100 text-blue-700"
+                                            : "bg-red-100 text-red-700"
+                                        }`}
+                                      >
+                                        {option.badge}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <p className="text-sm text-stone-600 truncate">
+                                    {option.description}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="text-right flex-shrink-0">
+                                <p className="font-semibold text-stone-900">
+                                  {option.price === 0
+                                    ? "FREE"
+                                    : `₹${option.price}`}
                                 </p>
                               </div>
-                            </div>
-                            <div className="text-right">
-                              <p className="font-semibold text-stone-900">
-                                {option.price === 0
-                                  ? "FREE"
-                                  : `₹${option.price}`}
-                              </p>
                             </div>
                           </div>
                         </div>
@@ -921,35 +923,37 @@ export default function CheckoutPage() {
                           key={option.id}
                           className="border border-stone-200 rounded-lg overflow-hidden hover:border-amazon-orange transition-colors"
                         >
-                          <div className="flex items-center space-x-3 p-4">
-                            <RadioGroupItem value={option.id} id={option.id} />
-                            <div className="flex-1 flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-stone-100 rounded-lg flex items-center justify-center">
-                                  <option.icon className="h-5 w-5 text-stone-600" />
-                                </div>
-                                <div>
-                                  <div className="flex items-center gap-2">
-                                    <Label
-                                      htmlFor={option.id}
-                                      className="font-medium text-stone-900 cursor-pointer"
-                                    >
-                                      {option.title}
-                                    </Label>
-                                    <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">
-                                      {option.badge}
-                                    </span>
+                          <div className="flex items-center space-x-3 p-3 sm:p-4">
+                            <RadioGroupItem value={option.id} id={option.id} className="flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between flex-wrap gap-2">
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-stone-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <option.icon className="h-4 w-4 sm:h-5 sm:w-5 text-stone-600" />
                                   </div>
-                                  <p className="text-sm text-stone-600">
-                                    {option.description}
-                                  </p>
+                                  <div className="min-w-0">
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                      <Label
+                                        htmlFor={option.id}
+                                        className="font-medium text-stone-900 cursor-pointer truncate"
+                                      >
+                                        {option.title}
+                                      </Label>
+                                      <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700 flex-shrink-0">
+                                        {option.badge}
+                                      </span>
+                                    </div>
+                                    <p className="text-sm text-stone-600 truncate">
+                                      {option.description}
+                                    </p>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
 
                           {paymentMethod === option.id && (
-                            <div className="px-4 pb-4 border-t border-stone-100 bg-stone-50">
+                            <div className="px-3 sm:px-4 pb-4 border-t border-stone-100 bg-stone-50">
                               <div className="pt-3">
                                 <ul className="space-y-1">
                                   {option.features.map((feature, index) => (
@@ -957,8 +961,8 @@ export default function CheckoutPage() {
                                       key={index}
                                       className="flex items-center gap-2 text-sm text-stone-600"
                                     >
-                                      <CheckCircle className="h-3 w-3 text-green-600" />
-                                      {feature}
+                                      <CheckCircle className="h-3 w-3 text-green-600 flex-shrink-0" />
+                                      <span className="break-words">{feature}</span>
                                     </li>
                                   ))}
                                 </ul>
@@ -971,14 +975,14 @@ export default function CheckoutPage() {
                   </RadioGroup>
 
                   {/* Security Notice */}
-                  <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="mt-6 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg">
                     <div className="flex items-start gap-3">
-                      <Shield className="h-5 w-5 text-blue-600 mt-0.5" />
-                      <div>
+                      <Shield className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <div className="min-w-0">
                         <h4 className="font-medium text-blue-900 mb-1">
                           Secure Payment
                         </h4>
-                        <p className="text-sm text-blue-700">
+                        <p className="text-sm text-blue-700 break-words">
                           Your payment information is encrypted and secure. We
                           use industry-standard security measures to protect
                           your data.
@@ -991,40 +995,44 @@ export default function CheckoutPage() {
             )}
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between pt-4">
+            <div className="flex justify-between pt-4 gap-2">
               <Button
                 variant="outline"
                 onClick={handlePreviousStep}
                 disabled={currentStep === 1}
-                className="border-stone-300 hover:bg-stone-50"
+                className="border-stone-300 hover:bg-stone-50 flex-shrink-0"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Previous
+                <span className="hidden sm:inline">Previous</span>
+                <span className="sm:hidden">Back</span>
               </Button>
 
               {currentStep < 3 ? (
                 <Button
                   onClick={handleNextStep}
-                  className="bg-amazon-orange hover:bg-amazon-orange-dark text-white"
+                  className="bg-amazon-orange hover:bg-amazon-orange-dark text-white flex-shrink-0"
                 >
-                  Continue
+                  <span className="hidden sm:inline">Continue</span>
+                  <span className="sm:hidden">Next</span>
                   <ArrowLeft className="h-4 w-4 ml-2 rotate-180" />
                 </Button>
               ) : (
                 <Button
                   onClick={handlePlaceOrder}
                   disabled={isProcessing}
-                  className="bg-amazon-orange hover:bg-amazon-orange-dark text-white min-w-[140px]"
+                  className="bg-amazon-orange hover:bg-amazon-orange-dark text-white min-w-[120px] sm:min-w-[140px] flex-shrink-0"
                 >
                   {isProcessing ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                      Processing...
+                      <span className="hidden sm:inline">Processing...</span>
+                      <span className="sm:hidden">Processing</span>
                     </>
                   ) : (
                     <>
                       <Shield className="h-4 w-4 mr-2" />
-                      Place Order
+                      <span className="hidden sm:inline">Place Order</span>
+                      <span className="sm:hidden">Order</span>
                     </>
                   )}
                 </Button>
@@ -1034,7 +1042,7 @@ export default function CheckoutPage() {
 
           {/* Order Summary Sidebar */}
           <div className="lg:col-span-1">
-            <Card className="border-stone-200 sticky top-24">
+            <Card className="border-stone-200 lg:sticky lg:top-24">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg">Order Summary</CardTitle>
               </CardHeader>
@@ -1046,7 +1054,7 @@ export default function CheckoutPage() {
                       key={`${item.id}-${item.variant || ""}`}
                       className="flex items-center gap-3"
                     >
-                      <div className="w-12 h-12 bg-stone-100 rounded-lg overflow-hidden">
+                      <div className="w-12 h-12 bg-stone-100 rounded-lg overflow-hidden flex-shrink-0">
                         <Image
                           src={item.image || "/placeholder.svg"}
                           alt={item.name}
@@ -1063,12 +1071,12 @@ export default function CheckoutPage() {
                           Qty: {item.quantity}
                         </p>
                         {item.variant && (
-                          <p className="text-xs text-stone-500">
+                          <p className="text-xs text-stone-500 truncate">
                             {item.variant}
                           </p>
                         )}
                       </div>
-                      <p className="text-sm font-semibold text-stone-900">
+                      <p className="text-sm font-semibold text-stone-900 flex-shrink-0">
                         ₹{(item.price * item.quantity).toLocaleString("en-IN")}
                       </p>
                     </div>
@@ -1126,8 +1134,8 @@ export default function CheckoutPage() {
                 {currentStep >= 2 && (
                   <div className="pt-3 border-t border-stone-100">
                     <div className="flex items-center gap-2 text-sm text-stone-600 mb-2">
-                      <Truck className="h-4 w-4" />
-                      <span>
+                      <Truck className="h-4 w-4 flex-shrink-0" />
+                      <span className="break-words">
                         {shippingMethod === "standard"
                           ? "Standard Delivery (5-7 days)"
                           : shippingMethod === "express"
@@ -1138,8 +1146,8 @@ export default function CheckoutPage() {
 
                     {currentStep >= 3 && (
                       <div className="flex items-center gap-2 text-sm text-stone-600">
-                        <CreditCard className="h-4 w-4" />
-                        <span>
+                        <CreditCard className="h-4 w-4 flex-shrink-0" />
+                        <span className="break-words">
                           {paymentMethod === "razorpay"
                             ? "Online Payment"
                             : "Cash on Delivery"}
