@@ -34,7 +34,7 @@ export default function OrderConfirmationPage() {
           return;
         }
 
-        const url = `₹{process.env.NEXT_PUBLIC_BACKEND_URL}/api/orders/₹{orderId}`;
+        const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/orders/${orderId}`;
         const response = await fetch(url, {
           method: "GET",
           credentials: "include",
@@ -69,7 +69,7 @@ export default function OrderConfirmationPage() {
     if (navigator.share) {
       navigator.share({
         title: "My BeautifyInterior Order",
-        text: `I just ordered from BeautifyInterior! Order #₹{orderNumber}`,
+        text: `I just ordered from BeautifyInterior! Order #${orderNumber}`,
         url,
       });
     } else {
@@ -159,13 +159,13 @@ export default function OrderConfirmationPage() {
               <div className="space-y-3">
                 {orderData.items.map((item) => (
                   <div
-                    key={`₹{item.id}-₹{item.variant}`}
+                    key={`${item.id}-${item.variant}`}
                     className="flex items-center gap-3 p-3 border border-stone-100 rounded-sm"
                   >
                     <Image
                       src={
                         item.image
-                          ? `₹{process.env.NEXT_PUBLIC_CDN_URL}₹{item.image}`
+                          ? `${process.env.NEXT_PUBLIC_CDN_URL}${item.image}`
                           : "/placeholder.svg"
                       }
                       alt={item.name}
@@ -374,7 +374,7 @@ export default function OrderConfirmationPage() {
               <CardTitle className="text-sm">Order Actions</CardTitle>
             </CardHeader>
             <CardContent className="p-4 space-y-2">
-              <Link href={`/order-tracking?order=₹{orderData.id}`}>
+              <Link href={`/order-tracking?order=${orderData.id}`}>
                 <Button className="w-full bg-stone-800 hover:bg-stone-700 text-xs rounded-sm h-8">
                   <MapPin className="h-3 w-3 mr-1" />
                   Track Order
