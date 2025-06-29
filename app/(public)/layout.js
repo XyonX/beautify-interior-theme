@@ -5,6 +5,7 @@ import { ToastProvider } from "@/components/toast-provider";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import Clarity from "@/components/Clarity";
 import { EngagementManager } from "@/components/engagement/engagement-manager";
+import MetaPixel from "@/components/meta-pixel";
 
 export const metadata = {
   title: "Beautify Interior | Handcrafted Home Decor & Interior Accents",
@@ -160,6 +161,7 @@ export default function RootLayout({ children }) {
       <body className="flex flex-col min-h-screen">
         <GoogleAnalytics />
         <Clarity />
+        <MetaPixel />
         <Header />
         <main className="h-full w-full  flex-grow ">{children}</main>
         <ToastProvider />

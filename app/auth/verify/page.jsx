@@ -1,10 +1,27 @@
 "use client";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import ResendVerificationForm from "@/components/ResendVerificationForm";
 
-const VerifyPage = () => {
+// Loading fallback component
+const LoadingFallback = () => (
+  <div className="text-center">
+    <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-800 text-white rounded-full flex items-center justify-center mx-auto mb-6 md:mb-8 text-2xl md:text-3xl font-bold animate-pulse">
+      ⋯
+    </div>
+    <h2 className="text-xl md:text-2xl font-normal text-gray-800 mb-4 md:mb-5 leading-tight">
+      Verifying Your Email
+    </h2>
+    <p className="text-sm md:text-base text-gray-600 leading-relaxed max-w-lg mx-auto px-4">
+      Please wait while we verify your email address...
+    </p>
+  </div>
+);
+
+// Component that uses searchParams
+const VerifyContent = () => {
   const searchParams = useSearchParams();
   const status = searchParams.get("status");
 
@@ -102,22 +119,14 @@ const VerifyPage = () => {
         );
 
       default:
-        return (
-          <div className="text-center">
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-800 text-white rounded-full flex items-center justify-center mx-auto mb-6 md:mb-8 text-2xl md:text-3xl font-bold animate-pulse">
-              ⋯
-            </div>
-            <h2 className="text-xl md:text-2xl font-normal text-gray-800 mb-4 md:mb-5 leading-tight">
-              Verifying Your Email
-            </h2>
-            <p className="text-sm md:text-base text-gray-600 leading-relaxed max-w-lg mx-auto px-4">
-              Please wait while we verify your email address...
-            </p>
-          </div>
-        );
+        return <LoadingFallback />;
     }
   };
 
+  return renderContent();
+};
+
+const VerifyPage = () => {
   return (
     <>
       <Head>
@@ -153,7 +162,11 @@ const VerifyPage = () => {
             </div>
 
             {/* Main Content */}
-            <div className="px-6 md:px-10 py-8 md:py-10">{renderContent()}</div>
+            <div className="px-6 md:px-10 py-8 md:py-10">
+              <Suspense fallback={<LoadingFallback />}>
+                <VerifyContent />
+              </Suspense>
+            </div>
 
             {/* Footer */}
             <div className="px-6 md:px-10 py-6 md:py-8 border-t border-gray-100 bg-gray-50 text-center">
