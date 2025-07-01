@@ -71,7 +71,7 @@ export async function TrendingSection() {
             <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 border-stone-100 overflow-hidden rounded-lg h-full bg-white">
               <div className="relative aspect-square overflow-hidden">
                 <Image
-                  src={product.image || "/placeholder.svg"}
+                  src={product.image || `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`}
                   alt={product.name}
                   width={300}
                   height={300}
@@ -176,7 +176,7 @@ export async function TrendingSection() {
                     id: product.id,
                     name: product.name,
                     price: product.price,
-                    image: product.image || "/placeholder.svg",
+                    image: product.image || `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`,
                     quantity: product.quantity,
                   }}
                   className="w-full bg-amazon-orange hover:bg-amazon-orange-dark text-white text-xs h-8 rounded-lg"

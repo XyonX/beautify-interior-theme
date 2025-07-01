@@ -21,7 +21,7 @@ export function Footer() {
             <div className="flex items-center space-x-2">
               <div className="w-6 h-6  ">
                 <img
-                  src="/BI.svg"
+                  src={`${process.env.NEXT_PUBLIC_CDN_URL}/site-data/BI.svg`}
                   alt="Logo"
                   className="w-full h-full object-contain"
                 />

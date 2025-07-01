@@ -12,7 +12,7 @@ const PopularProducts = ({ popularProducts }) => {
         <Image
           src={
             `${process.env.NEXT_PUBLIC_CDN_URL}${prod.thumbnail}` ||
-            "/placeholder.svg"
+            `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`
           }
           alt={prod.name}
           width={200}

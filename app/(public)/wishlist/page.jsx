@@ -108,7 +108,7 @@ export default function WishlistPage() {
                   <CardContent className="p-0">
                     <div className="relative">
                       <img
-                        src={item.image || "/placeholder.svg"}
+                        src={item.image || `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`}
                         alt={item.name}
                         className="w-full h-64 object-cover rounded-t-lg"
                       />

@@ -11,7 +11,7 @@ export function ProductImages({ images }) {
       <div className="aspect-square overflow-hidden rounded-sm bg-white border border-stone-100">
         <Image
           src={`${process.env.NEXT_PUBLIC_CDN_URL}${
-            images[selectedImage]?.url || "/placeholder.svg"
+            images[selectedImage]?.url || `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`
           }`}
           alt={images[selectedImage]?.alt_text || "Product image"}
           width={600}

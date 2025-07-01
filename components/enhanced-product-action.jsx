@@ -258,7 +258,7 @@ const EnhancedProductAction = ({ product }) => {
               id: product.id,
               name: product.name,
               price: product.price,
-              image: product.images?.[0]?.url || "/placeholder.svg",
+              image: product.images?.[0]?.url || `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`,
             }}
             quantity={quantity}
             className="h-10 sm:h-12 text-sm sm:text-base font-semibold"

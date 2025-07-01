@@ -28,7 +28,7 @@ const ComingSoon = () => {
           <div className="flex items-center space-x-2">
             <div className="w-12 h-12  ">
               <img
-                src="/BI.svg"
+                src={`${process.env.NEXT_PUBLIC_CDN_URL}/site-data/BI.svg`}
                 alt="Logo"
                 className="w-full h-full object-contain"
               />
@@ -133,7 +133,7 @@ const ComingSoon = () => {
             {/* Image - Hidden on mobile, visible on md and up */}
             <div className="hidden md:block relative aspect-square">
               <Image
-                src="/logo_transparent.png?height=500&width=500"
+                src={`${process.env.NEXT_PUBLIC_CDN_URL}/site-data/logo_transparent.png?height=500&width=500`}
                 alt="BeautifyInterior Coming Soon"
                 fill
                 className="object-cover rounded-sm"

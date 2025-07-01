@@ -44,7 +44,7 @@ export async function CategorySection() {
                   <Image
                     src={
                       `${process.env.NEXT_PUBLIC_CDN_URL}${category.image}` ||
-                      "/placeholder.svg"
+                      `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`
                     }
                     alt={category.name}
                     width={300}

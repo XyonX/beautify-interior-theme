@@ -277,7 +277,7 @@ export default function AdminCategoriesPage() {
                     <div className="relative">
                       <div className="border border-stone-200 rounded-lg p-2">
                         <img
-                          src={imagePreview || "/placeholder.svg"}
+                          src={imagePreview || `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`}
                           alt="Category preview"
                           className="w-full h-32 object-cover rounded-md"
                         />
@@ -472,7 +472,7 @@ export default function AdminCategoriesPage() {
                             <img
                               src={
                                 `${cdnUrl}${parentCategory.image}` ||
-                                "/placeholder.svg"
+                                `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`
                               }
                               alt={parentCategory.name}
                               className="h-10 w-10 rounded-md object-cover"
@@ -559,7 +559,8 @@ export default function AdminCategoriesPage() {
                                 {childCategory.image ? (
                                   <img
                                     src={
-                                      childCategory.image || "/placeholder.svg"
+                                      childCategory.image ||
+                                      `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`
                                     }
                                     alt={childCategory.name}
                                     className="h-8 w-8 rounded-md object-cover"

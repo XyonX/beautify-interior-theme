@@ -303,7 +303,7 @@ export default function ProductVariantsPage() {
                     <div className="w-16 h-16 bg-stone-100 rounded overflow-hidden">
                       {variant.image ? (
                         <img
-                          src={variant.image || "/placeholder.svg"}
+                          src={variant.image || `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`}
                           alt={variant.name}
                           className="w-full h-full object-cover"
                         />

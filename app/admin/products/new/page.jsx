@@ -687,7 +687,7 @@ export default function NewProductPage() {
                     <div className="relative border rounded-lg overflow-hidden bg-stone-50">
                       <div className="aspect-square max-w-xs mx-auto">
                         <img
-                          src={thumbnailPreview.url || "/placeholder.svg"}
+                          src={thumbnailPreview.url || `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`}
                           alt={thumbnailPreview.name}
                           className="w-full h-full object-cover"
                         />
@@ -838,7 +838,7 @@ export default function NewProductPage() {
                           {/* Image */}
                           <div className="aspect-square relative">
                             <img
-                              src={image.url || "/placeholder.svg"}
+                              src={image.url || `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`}
                               alt={image.name}
                               className="w-full h-full object-cover"
                             />

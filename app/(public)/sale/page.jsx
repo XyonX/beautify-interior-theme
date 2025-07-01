@@ -476,7 +476,7 @@ export default async function SalePage() {
                         } overflow-hidden`}
                       >
                         <Image
-                          src={product.image || "/placeholder.svg"}
+                          src={product.image || `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`}
                           alt={product.name}
                           width={300}
                           height={300}

@@ -127,7 +127,7 @@ export function HeroSection() {
                     <div className="h-full aspect-square relative overflow-hidden">
                       {/* Image fills the square container, cropped from center if rectangular */}
                       <Image
-                        src={slide.image || "/placeholder.svg"}
+                        src={slide.image || `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`}
                         alt={slide.alt}
                         fill
                         className="object-cover object-center"

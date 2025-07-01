@@ -213,7 +213,7 @@ export function Header() {
               <div className="flex items-center space-x-2">
                 <div className="w-12 h-12  ">
                   <img
-                    src="/BI.svg"
+                    src={`${process.env.NEXT_PUBLIC_CDN_URL}/site-data/BI.svg`}
                     alt="Logo"
                     className="w-full h-full object-contain"
                   />
@@ -431,7 +431,7 @@ export function Header() {
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8  ">
                   <img
-                    src="/BI.svg"
+                    src={`${process.env.NEXT_PUBLIC_CDN_URL}/site-data/BI.svg`}
                     alt="Logo"
                     className="w-full h-full object-contain"
                   />

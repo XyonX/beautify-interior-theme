@@ -55,7 +55,7 @@ export async function FeaturedProducts() {
                   <Image
                     src={
                       `${process.env.NEXT_PUBLIC_CDN_URL}${product.thumbnail}` ||
-                      "/placeholder.svg"
+                      `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`
                     }
                     alt={product.name}
                     width={300}

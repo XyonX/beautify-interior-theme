@@ -82,7 +82,7 @@ export function EnhancedProductGallery({ images, productName }) {
           {isTransitioning && previousIndex !== null && (
             <Image
               src={
-                `${process.env.NEXT_PUBLIC_CDN_URL}${images[previousIndex]?.url}` ||
+                `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/${images[previousIndex]?.url}` ||
                 "/placeholder.svg"
               }
               alt={images[previousIndex]?.alt_text || productName}
@@ -93,7 +93,7 @@ export function EnhancedProductGallery({ images, productName }) {
           )}
           <Image
             src={
-              `${process.env.NEXT_PUBLIC_CDN_URL}${currentImage?.url}` ||
+              `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/${currentImage?.url}` ||
               "/placeholder.svg"
             }
             alt={currentImage?.alt_text || productName}
@@ -168,7 +168,7 @@ export function EnhancedProductGallery({ images, productName }) {
             <div
               className="w-full h-full"
               style={{
-                backgroundImage: `url(${process.env.NEXT_PUBLIC_CDN_URL}${currentImage.url})`,
+                backgroundImage: `url(${process.env.NEXT_PUBLIC_CDN_URL}/site-data/${currentImage.url})`,
                 backgroundSize: `${600 * zoomFactor}px ${600 * zoomFactor}px`,
                 backgroundPosition: `${
                   150 - (zoomPosition.x / 100) * 600 * zoomFactor
@@ -201,7 +201,7 @@ export function EnhancedProductGallery({ images, productName }) {
           >
             <Image
               src={
-                `${process.env.NEXT_PUBLIC_CDN_URL}${image.url}` ||
+                `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/${image.url}` ||
                 "/placeholder.svg"
               }
               alt={image.alt_text || `${productName} ${index + 1}`}
@@ -291,7 +291,7 @@ function FullscreenGallery({
         >
           <Image
             src={
-              `${process.env.NEXT_PUBLIC_CDN_URL}${images[currentIndex]?.url}` ||
+              `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/${images[currentIndex]?.url}` ||
               "/placeholder.svg"
             }
             alt={images[currentIndex]?.alt_text || productName}
@@ -341,7 +341,7 @@ function FullscreenGallery({
           >
             <Image
               src={
-                `${process.env.NEXT_PUBLIC_CDN_URL}${image.url}` ||
+                `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/${image.url}` ||
                 "/placeholder.svg"
               }
               alt={image.alt_text || `${productName} ${index + 1}`}

@@ -204,7 +204,7 @@ export default function OrderDetailsPage({ params }) {
                       <div className="w-16 h-16 bg-stone-100 rounded overflow-hidden">
                         {product?.images[0] ? (
                           <img
-                            src={product.images[0].url || "/placeholder.svg"}
+                            src={product.images[0].url || `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`}
                             alt={product.name}
                             className="w-full h-full object-cover"
                           />

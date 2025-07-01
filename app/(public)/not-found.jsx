@@ -53,7 +53,7 @@ export default function NotFound() {
             <div className="mb-8">
               <div className="relative w-64 h-48 mx-auto mb-6">
                 <Image
-                  src="/placeholder.svg?height=192&width=256"
+                  src={`${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg?height=192&width=256`}
                   alt="Page not found illustration"
                   fill
                   className="object-contain opacity-60"

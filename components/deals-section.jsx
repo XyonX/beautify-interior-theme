@@ -49,7 +49,7 @@ export function DealsSection() {
               <Card className="group hover:shadow-lg transition-all duration-300 border-stone-100 overflow-hidden rounded-lg h-full bg-white">
                 <div className="relative h-48 overflow-hidden">
                   <Image
-                    src={deal.image || "/placeholder.svg"}
+                    src={deal.image || `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`}
                     alt={deal.title}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
