@@ -7,8 +7,7 @@ import { useState, useEffect } from "react";
 const slides = [
   {
     id: 1,
-    image:
-      "https://images.unsplash.com/photo-1617806265182-7b3f847f0b75?q=80&w=1480&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://cdn.beautifyinterior.com/site-data/products/prod-5-1x1.png",
     alt: "Transform Your Space with Beautiful Home Decor",
     link: "/categories/seasonal-decor",
     title: "Transform Your Space",
