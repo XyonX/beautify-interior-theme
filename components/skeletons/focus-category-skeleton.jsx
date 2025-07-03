@@ -1,5 +1,3 @@
-"use client";
-
 export function FocusCategorySkeleton() {
   return (
     <section className="container mx-auto px-4 py-6">
@@ -7,7 +5,7 @@ export function FocusCategorySkeleton() {
         {[1, 2].map((_, index) => (
           <div
             key={index}
-            className="bg-white border border-stone-100 shadow-sm rounded-sm overflow-hidden"
+            className="bg-white border border-stone-200 shadow-sm rounded-sm overflow-hidden hover:shadow-md transition-shadow"
           >
             <div className="flex flex-col md:flex-row items-center p-4">
               {/* Text Section Placeholder */}
@@ -17,12 +15,12 @@ export function FocusCategorySkeleton() {
               </div>
               {/* Image Section Placeholder */}
               <div className="md:w-2/3 w-full">
-                <div className="h-48 bg-stone-200 animate-pulse"></div>
+                <div className="h-48 bg-stone-200 animate-pulse rounded-sm"></div>
               </div>
             </div>
           </div>
         ))}
       </div>
     </section>
-  );
+  )
 }
