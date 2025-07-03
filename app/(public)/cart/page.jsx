@@ -149,11 +149,11 @@ export default function CartPage() {
       }
 
       // Check for minimum order amount
-      if (subtotal < 829) {
+      if (subtotal < 100) {
         addToast({
           type: "warning",
           title: "Minimum Order Amount",
-          message: "Minimum order amount is ₹829.00. Please add more items.",
+          message: "Minimum order amount is ₹100.00. Please add more items.",
           duration: 4000,
         });
         return;

@@ -14,28 +14,28 @@ import {
   Plus,
   Minus,
   MessageCircle,
-  Eye,
-  ShoppingCart,
   Award,
   Clock,
-  CheckCircle,
   CreditCard,
   Headphones,
   MapPin,
   Zap,
   TrendingUp,
   Users,
-  Verified,
-  Package,
-  Phone,
-  Mail,
-  Wrench,
-  ArrowRight,
 } from "lucide-react";
 import { AddToCartButton } from "./add-to-cart-button";
+import { useToastStore } from "@/lib/toast-store";
+import { useAuthStore } from "@/lib/auth-store";
+import { useRouter } from "next/navigation";
+import { useCartStore } from "@/lib/cart-store";
 
 const EnhancedProductAction = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
+  const { user } = useAuthStore();
+  const addItem = useCartStore((state) => state.addItem);
+  const { items } = useCartStore();
+  const { addToast } = useToastStore();
+  const router = useRouter();
   console.log("Product in action: ", product);
   // Determine if fast delivery is available
   // const fastDeliveryAvailable = product.is_featured || product.quantity > 10
@@ -60,6 +60,95 @@ const EnhancedProductAction = ({ product }) => {
       message
     )}`;
     window.open(whatsappUrl, "_blank");
+  };
+  async function addToCart() {
+    const quantity = 1;
+    const maxQuantity = 10;
+    console.log("Product received: ", product);
+  
+    // Check if user is logged in
+    if (!user) {
+      addToast({
+        type: "warning",
+        title: "Sign In Required",
+        message: "Please sign in to add items to your cart.",
+        duration: 4000,
+      });
+      router.push(
+        `/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`
+      );
+      return { success: false, requiresLogin: true };
+    }
+  
+    try {
+      // Check if product already exists in cart
+      const existingItem = items.find((item) => item.id === product.id);
+  
+      const currentQuantity = existingItem ? existingItem.quantity : 0;
+      const newTotalQuantity = currentQuantity + quantity;
+  
+      // Validate quantity limits
+      if (newTotalQuantity > maxQuantity) {
+        addToast({
+          type: "warning",
+          title: "Quantity Limit Reached",
+          message: `You can only add up to ${maxQuantity} of this item to your cart.`,
+          duration: 4000,
+        });
+        return { success: false, reason: "quantityLimit" };
+      }
+  
+      // Check available stock
+      if (newTotalQuantity > product.quantity) {
+        addToast({
+          type: "error",
+          title: "Insufficient Stock",
+          message: `Only ${product.quantity} units of ${product.name} are available.`,
+          duration: 5000,
+        });
+        return { success: false, reason: "insufficientStock" };
+      }
+  
+      // Add to cart
+      addItem({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+        variant: product.variant,
+        quantity,
+        maxQuantity,
+      });
+  
+      addToast({
+        type: "success",
+        title: "Added to Cart",
+        message: `${product.name} has been added to your cart.`,
+        duration: 3000,
+      });
+  
+      return { success: true };
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      addToast({
+        type: "error",
+        title: "Error",
+        message: "Failed to add item to cart. Please try again.",
+        duration: 4000,
+      });
+      return { success: false, reason: "error", error };
+    }
+  }
+  const handleBuyNow = async () => {
+    await addToCart();
+    // Wait until the cart contains the item
+    const checkCart = () => useCartStore.getState().items.find(i => i.id === product.id);
+    let tries = 0;
+    while (!checkCart() && tries < 10) {
+      await new Promise(res => setTimeout(res, 50));
+      tries++;
+    }
+    router.push("/cart");
   };
 
   return (
@@ -266,15 +355,15 @@ const EnhancedProductAction = ({ product }) => {
             disabled={product.quantity === 0}
             maxQuantity={product.quantity}
           />
-          <Link href="/checkout">
+
             <Button
               size="sm"
               className="w-full bg-amazon-orange hover:bg-amazon-orange-dark text-white h-10 sm:h-12 text-sm sm:text-base font-semibold"
               disabled={product.quantity === 0}
+              onClick={handleBuyNow}
             >
               Buy Now
             </Button>
-          </Link>
         </div>
 
         <div className="grid grid-cols-2 gap-2 sm:gap-3">
