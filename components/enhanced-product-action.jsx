@@ -405,7 +405,7 @@ const EnhancedProductAction = ({ product }) => {
             <p className="text-xs sm:text-sm font-semibold text-green-900">
               Free Shipping
             </p>
-            <p className="text-xs text-green-700">On orders over ₹2,999</p>
+            <p className="text-xs text-green-700">On orders over ₹499</p>
           </div>
         </div>
         <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-blue-50 rounded-lg">
@@ -421,9 +421,9 @@ const EnhancedProductAction = ({ product }) => {
           <RotateCcw className="h-5 w-5 sm:h-6 sm:w-6 text-orange-600" />
           <div>
             <p className="text-xs sm:text-sm font-semibold text-orange-900">
-              30 Day Returns
+            Hassle-Free Returns 
             </p>
-            <p className="text-xs text-orange-700">Easy return policy</p>
+            <p className="text-xs text-orange-700"> For Damaged or Wrong Items</p>
           </div>
         </div>
         <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-purple-50 rounded-lg">

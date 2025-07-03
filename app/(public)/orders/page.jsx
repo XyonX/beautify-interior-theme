@@ -51,7 +51,7 @@ export default function OrdersPage() {
       );
       const data = await response.json();
       setOrders(data);
-      console.log("data", data);
+      console.log("orders data", data);
 
       // setOrders(mockOrders);
     } catch (err) {
