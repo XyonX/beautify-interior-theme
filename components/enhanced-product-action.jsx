@@ -22,6 +22,7 @@ import {
   Zap,
   TrendingUp,
   Users,
+  Search,
 } from "lucide-react";
 import { AddToCartButton } from "./add-to-cart-button";
 import { useToastStore } from "@/lib/toast-store";
@@ -65,7 +66,7 @@ const EnhancedProductAction = ({ product }) => {
     const quantity = 1;
     const maxQuantity = 10;
     console.log("Product received: ", product);
-  
+
     // Check if user is logged in
     if (!user) {
       addToast({
@@ -79,14 +80,14 @@ const EnhancedProductAction = ({ product }) => {
       );
       return { success: false, requiresLogin: true };
     }
-  
+
     try {
       // Check if product already exists in cart
       const existingItem = items.find((item) => item.id === product.id);
-  
+
       const currentQuantity = existingItem ? existingItem.quantity : 0;
       const newTotalQuantity = currentQuantity + quantity;
-  
+
       // Validate quantity limits
       if (newTotalQuantity > maxQuantity) {
         addToast({
@@ -97,7 +98,7 @@ const EnhancedProductAction = ({ product }) => {
         });
         return { success: false, reason: "quantityLimit" };
       }
-  
+
       // Check available stock
       if (newTotalQuantity > product.quantity) {
         addToast({
@@ -108,7 +109,7 @@ const EnhancedProductAction = ({ product }) => {
         });
         return { success: false, reason: "insufficientStock" };
       }
-  
+
       // Add to cart
       addItem({
         id: product.id,
@@ -119,14 +120,14 @@ const EnhancedProductAction = ({ product }) => {
         quantity,
         maxQuantity,
       });
-  
+
       addToast({
         type: "success",
         title: "Added to Cart",
         message: `${product.name} has been added to your cart.`,
         duration: 3000,
       });
-  
+
       return { success: true };
     } catch (error) {
       console.error("Error adding to cart:", error);
@@ -142,10 +143,11 @@ const EnhancedProductAction = ({ product }) => {
   const handleBuyNow = async () => {
     await addToCart();
     // Wait until the cart contains the item
-    const checkCart = () => useCartStore.getState().items.find(i => i.id === product.id);
+    const checkCart = () =>
+      useCartStore.getState().items.find((i) => i.id === product.id);
     let tries = 0;
     while (!checkCart() && tries < 10) {
-      await new Promise(res => setTimeout(res, 50));
+      await new Promise((res) => setTimeout(res, 50));
       tries++;
     }
     router.push("/cart");
@@ -189,7 +191,7 @@ const EnhancedProductAction = ({ product }) => {
         </p>
 
         <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             {[...Array(5)].map((_, i) => (
               <Star
                 key={i}
@@ -200,8 +202,8 @@ const EnhancedProductAction = ({ product }) => {
                 }`}
               />
             ))}
-          </div>
-          <span className="text-sm sm:text-base text-gray-700">
+          </div> */}
+          {/* <span className="text-sm sm:text-base text-gray-700">
             {product.average_rating} ({product.review_count} reviews)
           </span>
           {product.sales_count > 50 && (
@@ -209,7 +211,7 @@ const EnhancedProductAction = ({ product }) => {
               <Users className="h-3 w-3 mr-1" />
               {product.sales_count}+ sold
             </Badge>
-          )}
+          )} */}
         </div>
 
         <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -347,7 +349,9 @@ const EnhancedProductAction = ({ product }) => {
               id: product.id,
               name: product.name,
               price: product.price,
-              image: product.images?.[0]?.url || `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`,
+              image:
+                product.images?.[0]?.url ||
+                `${process.env.NEXT_PUBLIC_CDN_URL}/site-data/placeholder.svg`,
             }}
             quantity={quantity}
             className="h-10 sm:h-12 text-sm sm:text-base font-semibold"
@@ -356,14 +360,14 @@ const EnhancedProductAction = ({ product }) => {
             maxQuantity={product.quantity}
           />
 
-            <Button
-              size="sm"
-              className="w-full bg-amazon-orange hover:bg-amazon-orange-dark text-white h-10 sm:h-12 text-sm sm:text-base font-semibold"
-              disabled={product.quantity === 0}
-              onClick={handleBuyNow}
-            >
-              Buy Now
-            </Button>
+          <Button
+            size="sm"
+            className="w-full bg-amazon-orange hover:bg-amazon-orange-dark text-white h-10 sm:h-12 text-sm sm:text-base font-semibold"
+            disabled={product.quantity === 0}
+            onClick={handleBuyNow}
+          >
+            Buy Now
+          </Button>
         </div>
 
         <div className="grid grid-cols-2 gap-2 sm:gap-3">
@@ -421,9 +425,12 @@ const EnhancedProductAction = ({ product }) => {
           <RotateCcw className="h-5 w-5 sm:h-6 sm:w-6 text-orange-600" />
           <div>
             <p className="text-xs sm:text-sm font-semibold text-orange-900">
-            Hassle-Free Returns 
+              Hassle-Free Returns
             </p>
-            <p className="text-xs text-orange-700"> For Damaged or Wrong Items</p>
+            <p className="text-xs text-orange-700">
+              {" "}
+              For Damaged or Wrong Items
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-purple-50 rounded-lg">

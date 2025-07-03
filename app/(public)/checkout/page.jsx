@@ -376,7 +376,10 @@ export default function CheckoutPage() {
               { step: 2, title: "Delivery", icon: Truck },
               { step: 3, title: "Payment", icon: CreditCard },
             ].map(({ step, title, icon: Icon }) => (
-              <div key={step} className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+              <div
+                key={step}
+                className="flex items-center gap-1 sm:gap-2 flex-shrink-0"
+              >
                 <div
                   className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium ${
                     currentStep >= step
@@ -397,7 +400,9 @@ export default function CheckoutPage() {
                 >
                   {title}
                 </span>
-                {step < 3 && <div className="w-4 sm:w-8 h-px bg-stone-300 ml-1 sm:ml-2" />}
+                {step < 3 && (
+                  <div className="w-4 sm:w-8 h-px bg-stone-300 ml-1 sm:ml-2" />
+                )}
               </div>
             ))}
           </div>
@@ -436,7 +441,9 @@ export default function CheckoutPage() {
                                 className="font-medium text-stone-900 cursor-pointer flex items-center gap-2"
                               >
                                 <Home className="h-4 w-4 flex-shrink-0" />
-                                <span className="truncate">Choose from Saved Addresses</span>
+                                <span className="truncate">
+                                  Choose from Saved Addresses
+                                </span>
                               </Label>
                               <p className="text-sm text-stone-600 mt-1">
                                 Select from your {user.addresses.length} saved
@@ -456,7 +463,9 @@ export default function CheckoutPage() {
                               className="font-medium text-stone-900 cursor-pointer flex items-center gap-2"
                             >
                               <Plus className="h-4 w-4 flex-shrink-0" />
-                              <span className="truncate">Enter New Address</span>
+                              <span className="truncate">
+                                Enter New Address
+                              </span>
                             </Label>
                             <p className="text-sm text-stone-600 mt-1">
                               Add a new shipping address manually
@@ -519,19 +528,27 @@ export default function CheckoutPage() {
                                     )}
                                   </div>
                                   <div className="text-sm text-stone-600 space-y-1">
-                                    <p className="break-words">{address.address}</p>
+                                    <p className="break-words">
+                                      {address.address}
+                                    </p>
                                     {address.address2 && (
-                                      <p className="break-words">{address.address2}</p>
+                                      <p className="break-words">
+                                        {address.address2}
+                                      </p>
                                     )}
                                     <p className="break-words">
                                       {address.city}, {address.state}{" "}
                                       {address.zipCode}
                                     </p>
-                                    <p className="break-words">{address.country}</p>
+                                    <p className="break-words">
+                                      {address.country}
+                                    </p>
                                     {address.phone && (
                                       <p className="flex items-center gap-1">
                                         <Phone className="h-3 w-3 flex-shrink-0" />
-                                        <span className="break-all">{address.phone}</span>
+                                        <span className="break-all">
+                                          {address.phone}
+                                        </span>
                                       </p>
                                     )}
                                   </div>
@@ -783,33 +800,29 @@ export default function CheckoutPage() {
                         {
                           id: "standard",
                           title: "Standard Delivery",
-                          description: "5-7 business days",
-                          price: subtotal > 5000 ? 0 : 299,
+                          description: "7-10 business days",
+                          price: subtotal > 500 ? 0 : 100,
                           icon: Package,
                           badge: subtotal > 5000 ? "FREE" : null,
                         },
                         {
-                          id: "express",
-                          title: "Express Delivery",
-                          description: "2-3 business days",
+                          id: "Fast Delhivery",
+                          title: "Fast Delhivery",
+                          description: "5-7 business days",
                           price: 599,
                           icon: Clock,
                           badge: "FAST",
                         },
-                        {
-                          id: "priority",
-                          title: "Priority Delivery",
-                          description: "Next business day",
-                          price: 999,
-                          icon: Truck,
-                          badge: "URGENT",
-                        },
                       ].map((option) => (
                         <div
                           key={option.id}
-                          className="flex items-center space-x-3 p-3 sm:p-4 border border-stone-200 rounded-lg hover:border-amazon-orange transition-colors"
+                          className=" flex items-center space-x-3 p-3 sm:p-4 border border-stone-200 rounded-lg hover:border-amazon-orange transition-colors"
                         >
-                          <RadioGroupItem value={option.id} id={option.id} className="flex-shrink-0" />
+                          <RadioGroupItem
+                            value={option.id}
+                            id={option.id}
+                            className="flex-shrink-0"
+                          />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between flex-wrap gap-2">
                               <div className="flex items-center gap-3 min-w-0">
@@ -921,10 +934,14 @@ export default function CheckoutPage() {
                       ].map((option) => (
                         <div
                           key={option.id}
-                          className="border border-stone-200 rounded-lg overflow-hidden hover:border-amazon-orange transition-colors"
+                          className=" border border-stone-200 rounded-lg overflow-hidden hover:border-amazon-orange transition-colors"
                         >
                           <div className="flex items-center space-x-3 p-3 sm:p-4">
-                            <RadioGroupItem value={option.id} id={option.id} className="flex-shrink-0" />
+                            <RadioGroupItem
+                              value={option.id}
+                              id={option.id}
+                              className="flex-shrink-0"
+                            />
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center justify-between flex-wrap gap-2">
                                 <div className="flex items-center gap-3 min-w-0">
@@ -962,7 +979,9 @@ export default function CheckoutPage() {
                                       className="flex items-center gap-2 text-sm text-stone-600"
                                     >
                                       <CheckCircle className="h-3 w-3 text-green-600 flex-shrink-0" />
-                                      <span className="break-words">{feature}</span>
+                                      <span className="break-words">
+                                        {feature}
+                                      </span>
                                     </li>
                                   ))}
                                 </ul>

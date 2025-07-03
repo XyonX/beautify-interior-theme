@@ -1,251 +1,208 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Mail,
-  CheckCircle,
-  AlertCircle,
-  Loader2,
-  RefreshCw,
-} from "lucide-react";
-import { useAuthStore } from "@/lib/auth-store";
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Mail, Loader2, CheckCircle, XCircle } from "lucide-react"
+import { useAuthStore } from "@/lib/auth-store"
 
 export default function VerifyEmailPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const { user, verifyEmail, isLoading, error, clearError } = useAuthStore();
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const { verifyEmail, resendVerification, isLoading, error, clearError } = useAuthStore()
 
-  const [verificationStatus, setVerificationStatus] = useState("pending");
-  const [resendCooldown, setResendCooldown] = useState(0);
-
-  const token = searchParams.get("token");
-
-  useEffect(() => {
-    if (token) {
-      handleVerification(token);
-    }
-  }, [token]);
+  const [verificationStatus, setVerificationStatus] = useState("verifying") // verifying, success, error
+  const [token, setToken] = useState("")
+  const [email, setEmail] = useState("")
+  const [resendLoading, setResendLoading] = useState(false)
+  const [resendSuccess, setResendSuccess] = useState(false)
 
   useEffect(() => {
-    if (!user) {
-      router.push("/auth/login");
-      return;
-    }
+    const tokenFromUrl = searchParams.get("token")
+    const emailFromUrl = searchParams.get("email")
 
-    if (user.isEmailVerified && !token) {
-      router.push("/account");
+    if (tokenFromUrl) {
+      setToken(tokenFromUrl)
+      setEmail(emailFromUrl || "")
+      handleVerification(tokenFromUrl)
+    } else {
+      setVerificationStatus("error")
     }
-  }, [user, router, token]);
-
-  useEffect(() => {
-    let interval;
-    if (resendCooldown > 0) {
-      interval = setInterval(() => {
-        setResendCooldown((prev) => prev - 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [resendCooldown]);
+  }, [searchParams])
 
   const handleVerification = async (verificationToken) => {
-    const success = await verifyEmail(verificationToken);
-    if (success) {
-      setVerificationStatus("success");
-      setTimeout(() => {
-        router.push("/account");
-      }, 3000);
-    } else {
-      setVerificationStatus("error");
+    try {
+      const success = await verifyEmail(verificationToken)
+      if (success) {
+        setVerificationStatus("success")
+        setTimeout(() => {
+          router.push("/auth/login")
+        }, 3000)
+      } else {
+        setVerificationStatus("error")
+      }
+    } catch (err) {
+      setVerificationStatus("error")
     }
-  };
+  }
 
-  const handleResendEmail = async () => {
-    if (resendCooldown > 0) return;
+  const handleResendVerification = async () => {
+    if (!email) return
 
-    // Simulate resending email
-    setResendCooldown(60);
-    // In a real app, you'd call an API to resend the verification email
-    console.log("Resending verification email...");
-  };
+    setResendLoading(true)
+    try {
+      const success = await resendVerification(email)
+      if (success) {
+        setResendSuccess(true)
+      }
+    } finally {
+      setResendLoading(false)
+    }
+  }
 
-  if (!user) {
-    return null;
+  if (verificationStatus === "verifying") {
+    return (
+      <div className="min-h-screen bg-stone-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <Card className="border-stone-200 shadow-sm">
+            <CardHeader className="text-center space-y-4">
+              <div className="mx-auto w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center">
+                <Loader2 className="w-8 h-8 text-stone-600 animate-spin" />
+              </div>
+              <div className="space-y-2">
+                <CardTitle className="text-2xl font-bold text-stone-900">Verifying Your Email</CardTitle>
+                <CardDescription className="text-stone-600">
+                  Please wait while we verify your email address
+                </CardDescription>
+              </div>
+            </CardHeader>
+          </Card>
+        </div>
+      </div>
+    )
   }
 
   if (verificationStatus === "success") {
     return (
-      <main className="flex-grow container mx-auto px-4 py-8">
-        <div className="max-w-md mx-auto">
-          <Card className="border-gray-200">
-            <CardHeader className="text-center">
-              <div className="mx-auto w-12 h-12 bg-accent3-100 rounded-full flex items-center justify-center mb-4">
-                <CheckCircle className="w-6 h-6 text-accent3-600" />
+      <div className="min-h-screen bg-stone-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <Card className="border-stone-200 shadow-sm">
+            <CardHeader className="text-center space-y-4">
+              <div className="mx-auto w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center">
+                <CheckCircle className="w-8 h-8 text-stone-600" />
               </div>
-              <CardTitle className="text-2xl font-bold text-gray-900">
-                Email Verified!
-              </CardTitle>
-              <CardDescription className="text-gray-600">
-                Your email has been successfully verified
-              </CardDescription>
+              <div className="space-y-2">
+                <CardTitle className="text-2xl font-bold text-stone-900">Email Verified Successfully</CardTitle>
+                <CardDescription className="text-stone-600">
+                  Your email has been verified. You can now sign in to your account.
+                </CardDescription>
+              </div>
             </CardHeader>
 
             <CardContent className="space-y-6">
-              <div className="text-center">
-                <p className="text-sm text-gray-600 mb-4">
-                  Welcome to BeautifyInterior! You can now access all features
-                  of your account.
-                </p>
-
-                <div className="flex items-center justify-center text-sm text-gray-500 mb-4">
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Redirecting to your account...
-                </div>
-
-                <Button
-                  onClick={() => router.push("/account")}
-                  className="w-full bg-accent2-600 hover:bg-accent2-700 text-white"
-                >
-                  Go to Account
-                </Button>
+              <div className="bg-stone-50 p-4 rounded-lg border border-stone-200 text-center">
+                <p className="text-sm text-stone-600 mb-2">Welcome to BeautifyInterior!</p>
+                <p className="text-sm text-stone-500">Redirecting to login page in 3 seconds...</p>
               </div>
+
+              <Button
+                onClick={() => router.push("/auth/login")}
+                className="w-full bg-stone-800 hover:bg-stone-900 text-white"
+              >
+                Continue to Login
+              </Button>
             </CardContent>
           </Card>
         </div>
-      </main>
-    );
-  }
-
-  if (verificationStatus === "error") {
-    return (
-      <main className="flex-grow container mx-auto px-4 py-8">
-        <div className="max-w-md mx-auto">
-          <Card className="border-gray-200">
-            <CardHeader className="text-center">
-              <div className="mx-auto w-12 h-12 bg-accent1-100 rounded-full flex items-center justify-center mb-4">
-                <AlertCircle className="w-6 h-6 text-accent1-600" />
-              </div>
-              <CardTitle className="text-2xl font-bold text-gray-900">
-                Verification Failed
-              </CardTitle>
-              <CardDescription className="text-gray-600">
-                The verification link is invalid or has expired
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent className="space-y-6">
-              {error && (
-                <Alert className="border-accent1-200 bg-accent1-50">
-                  <AlertDescription className="text-accent1-700">
-                    {error}
-                  </AlertDescription>
-                </Alert>
-              )}
-
-              <div className="text-center">
-                <p className="text-sm text-gray-600 mb-4">
-                  Don't worry! We can send you a new verification email.
-                </p>
-
-                <Button
-                  onClick={handleResendEmail}
-                  disabled={resendCooldown > 0}
-                  className="w-full bg-accent2-600 hover:bg-accent2-700 text-white"
-                >
-                  {resendCooldown > 0 ? (
-                    <>
-                      <RefreshCw className="w-4 h-4 mr-2" />
-                      Resend in {resendCooldown}s
-                    </>
-                  ) : (
-                    <>
-                      <RefreshCw className="w-4 h-4 mr-2" />
-                      Resend Verification Email
-                    </>
-                  )}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </main>
-    );
+      </div>
+    )
   }
 
   return (
-    <main className="flex-grow container mx-auto px-4 py-8">
-      <div className="max-w-md mx-auto">
-        <Card className="border-gray-200">
-          <CardHeader className="text-center">
-            <div className="mx-auto w-12 h-12 bg-accent2-100 rounded-full flex items-center justify-center mb-4">
-              <Mail className="w-6 h-6 text-accent2-600" />
+    <div className="min-h-screen bg-stone-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <Card className="border-stone-200 shadow-sm">
+          <CardHeader className="text-center space-y-4">
+            <div className="mx-auto w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center">
+              <XCircle className="w-8 h-8 text-red-500" />
             </div>
-            <CardTitle className="text-2xl font-bold text-gray-900">
-              Verify Your Email
-            </CardTitle>
-            <CardDescription className="text-gray-600">
-              We've sent a verification link to your email address
-            </CardDescription>
+            <div className="space-y-2">
+              <CardTitle className="text-2xl font-bold text-stone-900">Verification Failed</CardTitle>
+              <CardDescription className="text-stone-600">We couldn't verify your email address</CardDescription>
+            </div>
           </CardHeader>
 
           <CardContent className="space-y-6">
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-sm text-gray-600 mb-2">
-                We sent a verification email to:
+            {error && (
+              <Alert className="border-red-200 bg-red-50">
+                <AlertDescription className="text-red-700">{error}</AlertDescription>
+              </Alert>
+            )}
+
+            {resendSuccess && (
+              <Alert className="border-green-200 bg-green-50">
+                <AlertDescription className="text-green-700">
+                  Verification email sent successfully! Please check your inbox.
+                </AlertDescription>
+              </Alert>
+            )}
+
+            <div className="bg-stone-50 p-4 rounded-lg border border-stone-200">
+              <p className="text-sm text-stone-600 mb-4">
+                The verification link may have expired or is invalid. You can request a new verification email.
               </p>
-              <p className="font-medium text-gray-900">{user.email}</p>
+
+              {email && (
+                <div className="space-y-3">
+                  <p className="text-sm text-stone-700">
+                    <span className="font-medium">Email:</span> {email}
+                  </p>
+                  <Button
+                    onClick={handleResendVerification}
+                    disabled={resendLoading || resendSuccess}
+                    variant="outline"
+                    className="w-full border-stone-300 text-stone-700 hover:bg-stone-50 bg-transparent"
+                  >
+                    {resendLoading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Sending...
+                      </>
+                    ) : resendSuccess ? (
+                      "Email Sent!"
+                    ) : (
+                      <>
+                        <Mail className="w-4 h-4 mr-2" />
+                        Resend Verification Email
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
             </div>
 
-            <div className="space-y-4">
-              <p className="text-sm text-gray-600">
-                Click the verification link in your email to activate your
-                account. If you don't see the email, check your spam folder.
-              </p>
-
+            <div className="text-center space-y-2">
               <Button
-                onClick={handleResendEmail}
-                disabled={resendCooldown > 0}
+                onClick={() => router.push("/auth/register")}
                 variant="outline"
-                className="w-full border-accent2-200 text-accent2-600 hover:bg-accent2-50"
+                className="w-full border-stone-300 text-stone-700 hover:bg-stone-50"
               >
-                {resendCooldown > 0 ? (
-                  <>
-                    <RefreshCw className="w-4 h-4 mr-2" />
-                    Resend in {resendCooldown}s
-                  </>
-                ) : (
-                  <>
-                    <RefreshCw className="w-4 h-4 mr-2" />
-                    Resend Verification Email
-                  </>
-                )}
+                Create New Account
               </Button>
-            </div>
 
-            <div className="text-center">
-              <p className="text-sm text-gray-600">
-                Wrong email address?{" "}
-                <Link
-                  href="/account"
-                  className="text-accent2-600 hover:text-accent2-700 hover:underline font-medium"
-                >
-                  Update in settings
+              <p className="text-sm text-stone-600">
+                Already have an account?{" "}
+                <Link href="/auth/login" className="text-stone-800 hover:text-stone-900 hover:underline font-medium">
+                  Sign in here
                 </Link>
               </p>
             </div>
           </CardContent>
         </Card>
       </div>
-    </main>
-  );
+    </div>
+  )
 }

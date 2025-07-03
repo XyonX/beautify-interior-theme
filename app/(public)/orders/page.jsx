@@ -25,6 +25,7 @@ import { useAuthStore } from "@/lib/auth-store";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function OrdersPage() {
   const router = useRouter();
@@ -255,7 +256,14 @@ export default function OrdersPage() {
                     <div className="space-y-4">
                       {order.items.map((item) => (
                         <div key={item.id} className="flex items-start gap-4">
-                          <div className="bg-stone-100 border border-stone-200 rounded-md w-16 h-16 flex-shrink-0" />
+                          <div className="relative w-16 h-16 flex-shrink-0 border border-stone-200 rounded-md overflow-hidden">
+                            <Image
+                              src={`${process.env.NEXT_PUBLIC_CDN_URL}${item.image}`} // Replace with your actual image path
+                              alt="Color Card"
+                              fill
+                              className="object-cover"
+                            />
+                          </div>{" "}
                           <div className="flex-1">
                             <p className="font-medium">{item.name}</p>
                             <p className="text-stone-600 text-sm">
