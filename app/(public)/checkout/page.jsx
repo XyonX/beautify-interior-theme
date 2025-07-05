@@ -809,7 +809,7 @@ export default function CheckoutPage() {
                           id: "Fast Delhivery",
                           title: "Fast Delhivery",
                           description: "5-7 business days",
-                          price: 599,
+                          price: 150,
                           icon: Clock,
                           badge: "FAST",
                         },
