@@ -29,6 +29,7 @@ import { useToastStore } from "@/lib/toast-store";
 import { useAuthStore } from "@/lib/auth-store";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/cart-store";
+import { useMetaPixel } from "@/hooks/use-meta-pixel";
 
 const EnhancedProductAction = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
@@ -36,6 +37,7 @@ const EnhancedProductAction = ({ product }) => {
   const addItem = useCartStore((state) => state.addItem);
   const { items } = useCartStore();
   const { addToast } = useToastStore();
+  const { trackWhatsAppChat } = useMetaPixel();
   const router = useRouter();
   console.log("Product in action: ", product);
   // Determine if fast delivery is available
@@ -52,6 +54,9 @@ const EnhancedProductAction = ({ product }) => {
     : 0;
 
   const handleWhatsAppChat = () => {
+    // Track Meta Pixel event
+    trackWhatsAppChat(product);
+    
     const message = `Hi! I'm interested in the ${
       product.name
     }, priced at ₹${product.price.toLocaleString(

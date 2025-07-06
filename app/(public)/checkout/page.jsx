@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useCartStore } from "@/lib/cart-store";
 import { useAuthStore } from "@/lib/auth-store";
 import { useToastStore } from "@/lib/toast-store";
+import { useMetaPixel } from "@/hooks/use-meta-pixel";
 import {
   MapPin,
   Truck,
@@ -49,6 +50,7 @@ export default function CheckoutPage() {
   const { user } = useAuthStore();
   const { items, getTotalPrice, getTotalItems } = useCartStore();
   const { addToast } = useToastStore();
+  const { trackAddPaymentInfo, trackAddShippingInfo } = useMetaPixel();
   const router = useRouter();
 
   const [currentStep, setCurrentStep] = useState(1);

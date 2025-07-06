@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Plus, Minus, X, ShoppingBag, Truck, Shield } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useToastStore } from "@/lib/toast-store";
+import { useMetaPixel } from "@/hooks/use-meta-pixel";
 
 export default function CartPage() {
   const {
@@ -23,6 +24,7 @@ export default function CartPage() {
     console.log(cartItems);
   }, []);
   const { addToast } = useToastStore();
+  const { trackRemoveFromCart, trackInitiateCheckout, trackPromoCodeApplied } = useMetaPixel();
 
   const [promoCode, setPromoCode] = useState("");
   const [isApplyingPromo, setIsApplyingPromo] = useState(false);
@@ -72,7 +74,21 @@ export default function CartPage() {
 
   const handleRemoveItem = (id, itemName) => {
     try {
+      // Find the item before removing to track it
+      const itemToRemove = cartItems.find(item => item.cart_item_id === id);
+      
       removeItem(id);
+      
+      // Track Meta Pixel event
+      if (itemToRemove) {
+        trackRemoveFromCart({
+          id: itemToRemove.id,
+          name: itemToRemove.name,
+          price: itemToRemove.price,
+          category: itemToRemove.category || "General"
+        }, itemToRemove.quantity);
+      }
+
       addToast({
         type: "success",
         title: "Item Removed",
@@ -108,6 +124,12 @@ export default function CartPage() {
       const validCodes = ["SAVE10", "WELCOME20", "FIRST15"];
 
       if (validCodes.includes(promoCode.toUpperCase())) {
+        // Track Meta Pixel event
+        const discountValue = promoCode.toUpperCase() === "SAVE10" ? subtotal * 0.1 : 
+                             promoCode.toUpperCase() === "WELCOME20" ? subtotal * 0.2 : 
+                             subtotal * 0.15;
+        trackPromoCodeApplied(promoCode.toUpperCase(), discountValue);
+        
         addToast({
           type: "success",
           title: "Promo Code Applied",
@@ -171,6 +193,9 @@ export default function CartPage() {
         });
         return;
       }
+
+      // Track Meta Pixel event
+      trackInitiateCheckout(cartItems, total);
 
       addToast({
         type: "info",

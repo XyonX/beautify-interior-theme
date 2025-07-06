@@ -30,6 +30,7 @@ import { EnhancedProductGallery } from "@/components/enhanced-product-gallery";
 import EnhancedProductAction from "@/components/enhanced-product-action";
 import RelatedProducts from "@/components/related-products";
 import PopularProducts from "@/components/popular-products";
+import { ProductViewTracker } from "@/components/product-view-tracker";
 
 async function fetchProduct(id) {
   try {
@@ -86,6 +87,8 @@ export default async function ProductDetailPage({ params }) {
   if (!product) return <div>Product not found</div>;
 
   return (
+    <>
+      <ProductViewTracker product={product} />
     <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
       {/* Breadcrumb */}
       <nav className="mb-4 sm:mb-6">
@@ -494,5 +497,6 @@ export default async function ProductDetailPage({ params }) {
         <PopularProducts popularProducts={popularProducts} />
       </div>
     </main>
+    </>
   );
 }

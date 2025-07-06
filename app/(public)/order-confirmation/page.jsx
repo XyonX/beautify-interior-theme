@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { useMetaPixel } from "@/hooks/use-meta-pixel";
 
 export default function OrderConfirmationPage() {
   const searchParams = useSearchParams();
@@ -24,6 +25,7 @@ export default function OrderConfirmationPage() {
   const [orderData, setOrderData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { trackPurchase } = useMetaPixel();
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -46,6 +48,11 @@ export default function OrderConfirmationPage() {
 
         const data = await response.json();
         setOrderData(data);
+        
+        // Track Meta Pixel purchase event
+        if (data && data.items && data.items.length > 0) {
+          trackPurchase(data);
+        }
       } catch (err) {
         setError(err.message);
       } finally {

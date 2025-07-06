@@ -324,6 +324,7 @@ import { Star, Heart } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProductGridSkeleton } from "@/components/skeletons/product-grid-skeleton";
+import { CategoryViewTracker } from "@/components/category-view-tracker";
 
 // Helper function to fetch categories
 async function fetchCategories() {
@@ -437,7 +438,9 @@ export default async function CategoryPage({ params, searchParams }) {
   const end = Math.min(page * limit, totalProducts);
 
   return (
-    <main className="flex-grow container mx-auto px-4 py-4">
+    <>
+      <CategoryViewTracker category={category.name} />
+      <main className="flex-grow container mx-auto px-4 py-4">
       <nav className="mb-4">
         <ol className="flex items-center space-x-2 text-xs text-stone-600">
           <li>
@@ -574,5 +577,6 @@ export default async function CategoryPage({ params, searchParams }) {
         </Link>
       </div>
     </main>
+    </>
   );
 }

@@ -7,6 +7,7 @@ import { useToastStore } from "@/lib/toast-store";
 import { ShoppingCart, Check } from "lucide-react";
 import { useAuthStore } from "@/lib/auth-store";
 import { useRouter } from "next/navigation";
+import { useMetaPixel } from "@/hooks/use-meta-pixel";
 
 export function AddToCartButton({
   product,
@@ -22,6 +23,7 @@ export function AddToCartButton({
   const { addToast } = useToastStore();
   const { user } = useAuthStore();
   const router = useRouter();
+  const { trackAddToCart } = useMetaPixel();
 
   const handleAddToCart = (e) => {
     console.log("Procut revceived: ", product);
@@ -80,6 +82,9 @@ export function AddToCartButton({
         quantity,
         maxQuantity,
       });
+
+      // Track Meta Pixel event
+      trackAddToCart(product, quantity);
 
       setIsAdded(true);
       setTimeout(() => setIsAdded(false), 2000);
