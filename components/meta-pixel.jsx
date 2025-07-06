@@ -2,7 +2,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-const META_PIXEL_ID = "678127081880146";
+const META_PIXEL_ID = "1280490363733815";
 
 // Enhanced Meta Pixel with comprehensive ecommerce tracking
 export default function MetaPixel() {
