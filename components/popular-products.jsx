@@ -62,7 +62,7 @@ const PopularProducts = ({ popularProducts }) => {
           </h3>
         </Link>
         <p className="text-xs text-gray-600 mb-2 line-clamp-2">
-          {prod.description}
+          {prod.shortDescription}
         </p>
 
         <div className="flex items-center gap-1 mb-2 sm:mb-3">
