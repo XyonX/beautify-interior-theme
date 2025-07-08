@@ -156,6 +156,8 @@ export default function RootLayout({ children }) {
           href={`${process.env.NEXT_PUBLIC_CDN_URL}/site-data/apple-touch-icon.png`}
         />
         <link rel="manifest" href="/site.webmanifest" />
+        <link rel="preconnect" href="https://cdn.beautifyinterior.com" crossOrigin="anonymous" />
+
       </head>
 
       <body className="flex flex-col min-h-screen">
