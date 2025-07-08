@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -29,24 +29,70 @@ import {
 } from "lucide-react";
 import { mockOrders, mockCustomers } from "@/lib/mock-data";
 
+
+
+function mapOrderFromBackend(order) {
+  return {
+    id: order.id,
+    orderNumber: order.order_number,
+    customerId: order.user_id,
+    status: order.status,
+    paymentStatus: order.payment_status,
+    shippingMethod: order.shipping_method_id,
+    shippingCost: Number(order.shipping_amount) || 0,
+    subtotal: Number(order.subtotal) || 0,
+    tax: Number(order.tax_amount) || 0,
+    total: Number(order.total) || 0,
+    shippingAddress: {
+      firstName: order.shipping_first_name || "",
+      lastName: order.shipping_last_name || "",
+      address1: order.shipping_address || "",
+      address2: order.shipping_address2 || "",
+      city: order.shipping_city || "",
+      state: order.shipping_state || "",
+      postalCode: order.shipping_zip_code || "",
+      country: order.shipping_country || "",
+      email: order.email || "",
+      phone: order.shipping_phone || "",
+    },
+    createdAt: order.created_at,
+    updatedAt: order.updated_at,
+    // ...add more fields as needed
+  };
+}
+
 export default function AdminOrdersPage() {
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [paymentFilter, setPaymentFilter] = useState("all");
-  const [orders] = useState(mockOrders);
+  //const [orders] = useState(mockOrders);
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/orders?limit=20&page=1`, {
+          credentials: "include",
+        });
+        const data = await response.json();
+        const mappedOrders = data.orders.map(mapOrderFromBackend); // Correct usage
+        setOrders(mappedOrders);
+      } catch (error) {
+        console.error("Failed to fetch orders:", error);
+      }
+    };
+  
+    fetchOrders();
+  }, []);
+  
 
   const filteredOrders = orders.filter((order) => {
     const matchesSearch =
-      order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.shippingAddress.email
-        ?.toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      order.shippingAddress.firstName
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      order.shippingAddress.lastName
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
+      (order.orderNumber || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (order.shippingAddress.email || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (order.shippingAddress.firstName || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (order.shippingAddress.lastName || "").toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesStatus =
       statusFilter === "all" || order.status === statusFilter;
@@ -210,9 +256,15 @@ export default function AdminOrdersPage() {
                           <p className="text-sm font-medium text-stone-900">
                             {order.orderNumber}
                           </p>
-                          <p className="text-xs text-stone-500">
-                            {order.items.length} items
-                          </p>
+                          {order.items && order.items.length > 0 ? (
+                            <p className="text-xs text-stone-500">
+                              {order.items.length} items
+                            </p>
+                          ) : (
+                            <p className="text-xs text-stone-500">
+                              No items
+                            </p>
+                          )}
                         </div>
                       </td>
                       <td className="p-4">
